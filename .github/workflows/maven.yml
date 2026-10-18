@@ -1,0 +1,27 @@
+# .github/workflows/maven.yml
+name: Build con Maven             # nombre en la pestaña Actions
+
+on:                               # EVENTO: cuándo se ejecuta
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:                          # JOB: es el nombre del check
+    runs-on: ubuntu-latest        # RUNNER: máquina virtual Linux
+    steps:                        # STEPS: se ejecutan en orden
+      - name: Descargar el código
+        uses: actions/checkout@v7
+      - name: Instalar Java 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'      # igual que en el pom
+          cache: maven            # guarda las dependencias
+      - name: Compilar y pasar los tests
+        run: mvn -B verify        # -B: sin preguntas
+
+      # Opción: empaquetar SIN pasar los tests
+      # - name: Compilar sin tests
+      #   run: mvn -B package -DskipTests
