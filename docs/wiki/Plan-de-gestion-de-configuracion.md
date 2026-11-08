@@ -21,6 +21,7 @@
 | `main` | — | — | Solo versiones entregables, etiquetadas `vX.Y.Z`. **Nunca** commits directos |
 | `develop` | `main` | — | Integración. Rama por defecto |
 | `feature/CUxx-<modulo>` | `develop` | `develop` | Un CU = una iteración (`feature/CU06-servidor`, `feature/CU06-cliente`) |
+| `feature/ItNN-<tema>-<modulo>` | `develop` | `develop` | Iteración que agrupa varios CU (`feature/It07-paciente-servidor`, D-016) |
 | `feature/<tarea>` | `develop` | `develop` | Tareas que no son un CU (documentación, pruebas, CI) |
 | `bugfix/<descripcion>` | `develop` | `develop` | Error encontrado en develop ya fusionado (un issue por fallo) |
 | `release/X.Y.Z` | `develop` | `main` y `develop` | Cerrar versión: quitar `-SNAPSHOT`, solo correcciones |
@@ -39,14 +40,14 @@ Dos niveles, como en la sesión de Maven:
 - **Producto** (`radiodiagnostico`, pom padre y etiquetas de `main`): `0.1.0-SNAPSHOT` mientras se
   desarrolla; en `release/0.1.0` pasa a `0.1.0` y se etiqueta `v0.1.0`. Después `develop` pasa a
   `0.2.0-SNAPSHOT`.
-- **Módulos**: `1.0.0` con su primer CU; sube la **menor** con cada CU nuevo y el **parche** con cada
+- **Módulos**: `1.0.0` con su primer CU; sube la **menor** con cada iteración (CU o grupo de CU, D-016) y el **parche** con cada
   corrección (`bugfix`/`hotfix`). La **mayor** solo si cambia un contrato `api` de forma incompatible.
 
 | Producto | servidor | cliente | CU incluidos |
 |---|---|---|---|
 | v0.1.0 | 1.5.0 | 1.1.0 | CU01–CU06 |
-| v0.2.0 | 1.15.0 | 1.3.0 | CU07–CU16 |
-| v1.0.0 | 1.21.0 | 1.4.0 | CU17–CU22 + ItN |
+| v0.2.0 | 1.9.0 | 1.2.0 | It7–It10: CU07–CU12, CU14, CU16 |
+| v1.0.0 | 1.12.0 | 1.4.0 | It11–It13: CU13, CU15, CU17–CU22 + ItN |
 
 En la rama `release` hay que cambiar también `<parent><version>` de los dos módulos.
 

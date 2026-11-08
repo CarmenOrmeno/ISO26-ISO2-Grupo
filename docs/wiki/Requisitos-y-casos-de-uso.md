@@ -69,6 +69,18 @@ de la arquitectura), después los que dependen de ellos, y al final consultas y 
 | 21 | CU21 | Generar informes operativos | Construcción | Media | [CU21](../casos-de-uso/CU21.md) |
 | 22 | CU22 | Generar estadísticas globales | Construcción | Baja | [CU22](../casos-de-uso/CU22.md) |
 
+### Agrupación en iteraciones de Construcción (D-016)
+
+| Iteración | CU | Criterio de agrupación |
+|---|---|---|
+| It7 | CU07, CU12 | Citas del paciente y los avisos que generan |
+| It8 | CU08, CU09 | Realización de la prueba y su informe |
+| It9 | CU10, CU16 | Seguimientos: prescribirlos y consultarlos |
+| It10 | CU11, CU14 | Esperas, prioridades y consultas sobre solicitudes y agendas |
+| It11 | CU13, CU15 | Portal del paciente: historial, incidencias y encuestas |
+| It12 | CU17, CU18, CU19 | Administración: permisos, auditoría e integración |
+| It13 | CU20, CU21, CU22 | Estadísticas e informes |
+
 ## 4. Diagrama general de casos de uso (cliente)
 
 ```plantuml
