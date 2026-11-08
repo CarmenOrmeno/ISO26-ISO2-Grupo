@@ -21,4 +21,10 @@ public interface ServicioSolicitudes {
     List<SolicitudPrueba> pendientes();
 
     List<SolicitudPrueba> todas();
+
+    /** SOLICITADA → CITADA (lo invoca el componente de citas). */
+    void marcarCitada(long idSolicitud);
+
+    /** CITADA → SOLICITADA al cancelar la cita (vuelve a la lista de espera). */
+    void anularCita(long idSolicitud);
 }
