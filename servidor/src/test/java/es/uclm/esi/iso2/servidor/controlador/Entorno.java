@@ -2,8 +2,10 @@ package es.uclm.esi.iso2.servidor.controlador;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import es.uclm.esi.iso2.servidor.Servidor;
+import es.uclm.esi.iso2.servidor.agendas.DatosAgenda;
 import es.uclm.esi.iso2.servidor.catalogo.Modalidad;
 import es.uclm.esi.iso2.servidor.catalogo.Prioridad;
 import es.uclm.esi.iso2.servidor.catalogo.TipoPrueba;
@@ -52,5 +54,21 @@ class Entorno {
     long solicitar(String medico, String paciente, String tipo, Prioridad prioridad) {
         return servidor.solicitudes().solicitar(token(medico),
                 new DatosSolicitud(paciente, tipo, "Indicación", "Justificación", prioridad)).getId();
+    }
+
+    static final LocalDate MANANA = INICIO.toLocalDate().plusDays(1);
+
+    /** Agenda de mañana de 09:00 a 10:00 con huecos de 15 min. Devuelve su id. */
+    long agenda(Modalidad modalidad, String sala) {
+        return agenda(modalidad, sala, "medico1");
+    }
+
+    long agenda(Modalidad modalidad, String sala, String medico) {
+        return servidor.agendas().crear(token("admision1"), new DatosAgenda(MANANA, sala, modalidad, medico,
+                LocalTime.of(9, 0), LocalTime.of(10, 0), 15)).getId();
+    }
+
+    long citar(long idSolicitud, long idAgenda, String hora) {
+        return servidor.citas().asignar(token("admision1"), idSolicitud, idAgenda, LocalTime.parse(hora)).getId();
     }
 }

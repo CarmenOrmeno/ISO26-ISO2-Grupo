@@ -80,4 +80,18 @@ public class ServicioSolicitudesImpl implements ServicioSolicitudes {
     public List<SolicitudPrueba> todas() {
         return repositorio.todos();
     }
+
+    @Override
+    public void marcarCitada(long idSolicitud) {
+        SolicitudPrueba s = repositorio.obtener(idSolicitud);
+        s.citar();
+        repositorio.guardar(s);
+    }
+
+    @Override
+    public void anularCita(long idSolicitud) {
+        SolicitudPrueba s = repositorio.obtener(idSolicitud);
+        s.anularCita();
+        repositorio.guardar(s);
+    }
 }
