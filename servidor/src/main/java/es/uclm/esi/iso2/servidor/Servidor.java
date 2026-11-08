@@ -2,11 +2,16 @@ package es.uclm.esi.iso2.servidor;
 
 import java.time.Clock;
 
+import es.uclm.esi.iso2.servidor.api.ApiPacientes;
 import es.uclm.esi.iso2.servidor.api.ApiSesion;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
 import es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria;
+import es.uclm.esi.iso2.servidor.controlador.ControladorPacientes;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSesion;
 import es.uclm.esi.iso2.servidor.integracion.SsoSimulado;
+import es.uclm.esi.iso2.servidor.pacientes.Paciente;
+import es.uclm.esi.iso2.servidor.pacientes.ServicioPacientes;
+import es.uclm.esi.iso2.servidor.pacientes.ServicioPacientesImpl;
 import es.uclm.esi.iso2.servidor.seguridad.ControlAcceso;
 import es.uclm.esi.iso2.servidor.seguridad.PoliticaPermisos;
 import es.uclm.esi.iso2.servidor.seguridad.Rol;
@@ -26,15 +31,19 @@ public class Servidor {
     private final PoliticaPermisos politica = PoliticaPermisos.porDefecto();
     private final ServicioSesion servicioSesion;
     private final ControlAcceso acceso;
+    private final ServicioPacientes servicioPacientes;
 
     private final ApiSesion apiSesion;
+    private final ApiPacientes apiPacientes;
 
     public Servidor(Clock reloj) {
         this.reloj = reloj;
         this.servicioSesion = new ServicioSesionImpl(sso, usuarios, reloj);
         this.acceso = new ControlAcceso(servicioSesion, politica);
+        this.servicioPacientes = new ServicioPacientesImpl(new RepositorioEnMemoria<>(Paciente::getId), reloj);
 
         this.apiSesion = new ControladorSesion(servicioSesion, acceso);
+        this.apiPacientes = new ControladorPacientes(servicioPacientes, acceso);
     }
 
     /** Servidor con el reloj del sistema y los datos de demostración cargados. */
@@ -60,5 +69,13 @@ public class Servidor {
 
     public ApiSesion sesion() {
         return apiSesion;
+    }
+
+    public ApiPacientes pacientes() {
+        return apiPacientes;
+    }
+
+    ServicioPacientes servicioPacientes() {
+        return servicioPacientes;
     }
 }

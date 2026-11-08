@@ -1,20 +1,39 @@
 package es.uclm.esi.iso2.servidor.seguridad;
 
+import static es.uclm.esi.iso2.servidor.seguridad.Rol.ADMINISTRADOR;
+import static es.uclm.esi.iso2.servidor.seguridad.Rol.ADMINISTRATIVO;
+import static es.uclm.esi.iso2.servidor.seguridad.Rol.MEDICO;
+import static es.uclm.esi.iso2.servidor.seguridad.Rol.PACIENTE;
+
+import java.util.EnumSet;
+import java.util.Set;
+
 /**
- * Operaciones protegidas de la API (D-011). {@code datosClinicos} indica si la operación accede a
- * datos clínicos y, por tanto, debe auditarse con especial atención (RNF-S2).
+ * Operaciones protegidas de la API (D-011). Cada permiso declara si accede a datos clínicos (se
+ * audita, RNF-S2) y a qué roles se concede en la política por defecto. Añadir un permiso no obliga a
+ * modificar {@link PoliticaPermisos} (principio abierto/cerrado).
  */
 public enum Permiso {
     // CU01
-    CONSULTAR_PERFIL(false);
+    CONSULTAR_PERFIL(false, PACIENTE, ADMINISTRATIVO, ADMINISTRADOR),
+    // CU02
+    GESTIONAR_PACIENTES(false, ADMINISTRATIVO),
+    CONSULTAR_PACIENTES(false, ADMINISTRATIVO, MEDICO);
 
     private final boolean datosClinicos;
+    private final Set<Rol> rolesPorDefecto;
 
-    Permiso(boolean datosClinicos) {
+    Permiso(boolean datosClinicos, Rol primero, Rol... resto) {
         this.datosClinicos = datosClinicos;
+        this.rolesPorDefecto = EnumSet.of(primero, resto);
     }
 
     public boolean accedeADatosClinicos() {
         return datosClinicos;
+    }
+
+    /** Roles que tienen el permiso en la política por defecto (el médico hereda los del paciente). */
+    public Set<Rol> rolesPorDefecto() {
+        return EnumSet.copyOf(rolesPorDefecto);
     }
 }
