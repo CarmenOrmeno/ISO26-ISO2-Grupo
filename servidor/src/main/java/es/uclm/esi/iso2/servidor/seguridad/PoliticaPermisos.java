@@ -20,14 +20,14 @@ public class PoliticaPermisos {
     /** Política inicial del SESCAM. El médico incluye los permisos del paciente (D-005). */
     public static PoliticaPermisos porDefecto() {
         PoliticaPermisos p = new PoliticaPermisos();
-        EnumSet<Permiso> paciente = EnumSet.of(Permiso.CONSULTAR_PERFIL);
-        p.permisos.get(Rol.PACIENTE).addAll(paciente);
-
-        p.permisos.get(Rol.MEDICO).addAll(paciente);
-
-        p.permisos.get(Rol.ADMINISTRATIVO).addAll(EnumSet.of(Permiso.CONSULTAR_PERFIL));
-
-        p.permisos.get(Rol.ADMINISTRADOR).addAll(EnumSet.of(Permiso.CONSULTAR_PERFIL));
+        for (Permiso permiso : Permiso.values()) {
+            for (Rol rol : permiso.rolesPorDefecto()) {
+                p.conceder(rol, permiso);
+                if (rol == Rol.PACIENTE) {
+                    p.conceder(Rol.MEDICO, permiso);
+                }
+            }
+        }
         return p;
     }
 
