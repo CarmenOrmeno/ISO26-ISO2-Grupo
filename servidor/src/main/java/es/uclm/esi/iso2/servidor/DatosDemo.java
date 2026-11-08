@@ -1,7 +1,9 @@
 package es.uclm.esi.iso2.servidor;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
+import es.uclm.esi.iso2.servidor.agendas.DatosAgenda;
 import es.uclm.esi.iso2.servidor.catalogo.Modalidad;
 import es.uclm.esi.iso2.servidor.catalogo.Prioridad;
 import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogo;
@@ -49,5 +51,17 @@ final class DatosDemo {
                 "Tos persistente de 3 semanas", "Descartar neumonía", Prioridad.ORDINARIO));
         s.servicioSolicitudes().solicitar("medico1", new DatosSolicitud("PAC-2", "TC-CRANEO",
                 "Cefalea con signos de alarma", "Descartar lesión ocupante de espacio", Prioridad.PREFERENTE));
+
+        // CU05: agendas de los próximos 5 días laborables a partir de mañana
+        LocalDate dia = LocalDate.now(s.reloj()).plusDays(1);
+        for (int creadas = 0; creadas < 5; dia = dia.plusDays(1)) {
+            if (dia.getDayOfWeek().getValue() <= 5) {
+                s.servicioAgendas().crear(new DatosAgenda(dia, "RX1", Modalidad.RX, "medico1",
+                        LocalTime.of(9, 0), LocalTime.of(11, 0), 15));
+                s.servicioAgendas().crear(new DatosAgenda(dia, "TC1", Modalidad.TC, "medico1",
+                        LocalTime.of(12, 0), LocalTime.of(14, 0), 30));
+                creadas++;
+            }
+        }
     }
 }
