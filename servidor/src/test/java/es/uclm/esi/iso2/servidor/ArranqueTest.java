@@ -1,4 +1,5 @@
-// servidor/src/test/java/ArranqueTest.java
+package es.uclm.esi.iso2.servidor;
+
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
