@@ -1,0 +1,49 @@
+package es.uclm.esi.iso2.servidor.seguridad;
+
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.Set;
+
+/** Asignación de permisos a roles (D-011). Configurable en ejecución por el administrador (CU17). */
+public class PoliticaPermisos {
+
+    private final Map<Rol, EnumSet<Permiso>> permisos = new EnumMap<>(Rol.class);
+
+    public PoliticaPermisos() {
+        for (Rol rol : Rol.values()) {
+            permisos.put(rol, EnumSet.noneOf(Permiso.class));
+        }
+    }
+
+    /** Política inicial del SESCAM. El médico incluye los permisos del paciente (D-005). */
+    public static PoliticaPermisos porDefecto() {
+        PoliticaPermisos p = new PoliticaPermisos();
+        for (Permiso permiso : Permiso.values()) {
+            for (Rol rol : permiso.rolesPorDefecto()) {
+                p.conceder(rol, permiso);
+                if (rol == Rol.PACIENTE) {
+                    p.conceder(Rol.MEDICO, permiso);
+                }
+            }
+        }
+        return p;
+    }
+
+    public boolean tiene(Rol rol, Permiso permiso) {
+        return permisos.get(rol).contains(permiso);
+    }
+
+    public Set<Permiso> permisosDe(Rol rol) {
+        return Collections.unmodifiableSet(EnumSet.copyOf(permisos.get(rol)));
+    }
+
+    public void conceder(Rol rol, Permiso permiso) {
+        permisos.get(rol).add(permiso);
+    }
+
+    public void revocar(Rol rol, Permiso permiso) {
+        permisos.get(rol).remove(permiso);
+    }
+}
