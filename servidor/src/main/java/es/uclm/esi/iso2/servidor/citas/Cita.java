@@ -17,6 +17,7 @@ public class Cita {
     private int reprogramaciones;
     private String motivoCancelacion = "";
     private LocalDateTime fechaCancelacion;
+    private String motivoCambio = "";
 
     public Cita(long id, long idSolicitud, String idPaciente, long idAgenda, LocalDateTime fechaHora) {
         this.id = id;
@@ -39,6 +40,23 @@ public class Cita {
         fechaHora = Validaciones.obligatorio(nuevaFechaHora, "fecha y hora");
         estado = EstadoCita.PROGRAMADA;
         reprogramaciones++;
+    }
+
+    /** CU07: el paciente confirma su asistencia (solo desde PROGRAMADA). */
+    public void confirmar() {
+        if (estado != EstadoCita.PROGRAMADA) {
+            throw new ReglaNegocioException("Solo se puede confirmar una cita programada (está " + estado + ")");
+        }
+        estado = EstadoCita.CONFIRMADA;
+    }
+
+    /** CU07: el paciente pide un cambio; admisión la reprogramará (CU06). */
+    public void solicitarCambio(String motivo) {
+        if (estado != EstadoCita.PROGRAMADA && estado != EstadoCita.CONFIRMADA) {
+            throw new ReglaNegocioException("No se puede pedir un cambio de una cita " + estado);
+        }
+        motivoCambio = Validaciones.texto(motivo, "motivo del cambio");
+        estado = EstadoCita.CAMBIO_SOLICITADO;
     }
 
     public void cancelar(String motivo, LocalDateTime cuando) {
@@ -78,6 +96,10 @@ public class Cita {
 
     public String getMotivoCancelacion() {
         return motivoCancelacion;
+    }
+
+    public String getMotivoCambio() {
+        return motivoCambio;
     }
 
     public LocalDateTime getFechaCancelacion() {

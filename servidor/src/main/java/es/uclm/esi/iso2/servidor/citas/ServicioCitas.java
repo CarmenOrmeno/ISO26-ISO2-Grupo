@@ -22,4 +22,16 @@ public interface ServicioCitas {
     List<Cita> delDia(LocalDate fecha);
 
     List<Cita> todas();
+
+    /** CU07: el paciente confirma su cita. */
+    Cita confirmar(long idCita, String idPaciente);
+
+    /** CU07: el paciente solicita un cambio de su cita. */
+    Cita solicitarCambio(long idCita, String idPaciente, String motivo);
+
+    /** CU07: el paciente cancela su cita. */
+    void cancelarPorPaciente(long idCita, String idPaciente, String motivo);
+
+    /** Citas con cambio solicitado, para que admisión las reprograme. */
+    List<Cita> conCambioSolicitado();
 }

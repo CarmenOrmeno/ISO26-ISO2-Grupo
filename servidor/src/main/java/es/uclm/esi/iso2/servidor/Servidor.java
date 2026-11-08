@@ -8,6 +8,8 @@ import es.uclm.esi.iso2.servidor.agendas.ServicioAgendasImpl;
 import es.uclm.esi.iso2.servidor.api.ApiAgendas;
 import es.uclm.esi.iso2.servidor.api.ApiCatalogo;
 import es.uclm.esi.iso2.servidor.api.ApiCitas;
+import es.uclm.esi.iso2.servidor.api.ApiMisCitas;
+import es.uclm.esi.iso2.servidor.api.ApiNotificaciones;
 import es.uclm.esi.iso2.servidor.api.ApiPacientes;
 import es.uclm.esi.iso2.servidor.api.ApiSesion;
 import es.uclm.esi.iso2.servidor.api.ApiSolicitudes;
@@ -23,10 +25,16 @@ import es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria;
 import es.uclm.esi.iso2.servidor.controlador.ControladorAgendas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorCatalogo;
 import es.uclm.esi.iso2.servidor.controlador.ControladorCitas;
+import es.uclm.esi.iso2.servidor.controlador.ControladorMisCitas;
+import es.uclm.esi.iso2.servidor.controlador.ControladorNotificaciones;
 import es.uclm.esi.iso2.servidor.controlador.ControladorPacientes;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSesion;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSolicitudes;
 import es.uclm.esi.iso2.servidor.integracion.SsoSimulado;
+import es.uclm.esi.iso2.servidor.notificaciones.Notificacion;
+import es.uclm.esi.iso2.servidor.notificaciones.ServicioNotificaciones;
+import es.uclm.esi.iso2.servidor.notificaciones.ServicioNotificacionesImpl;
+import es.uclm.esi.iso2.servidor.notificaciones.ServicioRecordatorios;
 import es.uclm.esi.iso2.servidor.pacientes.Paciente;
 import es.uclm.esi.iso2.servidor.pacientes.ServicioPacientes;
 import es.uclm.esi.iso2.servidor.pacientes.ServicioPacientesImpl;
@@ -61,6 +69,8 @@ public class Servidor {
     private final ServicioSolicitudes servicioSolicitudes;
     private final ServicioAgendas servicioAgendas;
     private final ServicioCitas servicioCitas;
+    private final ServicioNotificaciones servicioNotificaciones;
+    private final ServicioRecordatorios servicioRecordatorios;
 
     // --- api (contratos con el cliente) ---
     private final ApiSesion apiSesion;
@@ -69,6 +79,8 @@ public class Servidor {
     private final ApiSolicitudes apiSolicitudes;
     private final ApiAgendas apiAgendas;
     private final ApiCitas apiCitas;
+    private final ApiMisCitas apiMisCitas;
+    private final ApiNotificaciones apiNotificaciones;
 
     public Servidor(Clock reloj) {
         this.reloj = reloj;
@@ -83,8 +95,12 @@ public class Servidor {
                 servicioPacientes, servicioCatalogo, reloj);
         this.servicioAgendas = new ServicioAgendasImpl(new RepositorioEnMemoria<>(Agenda::getId),
                 servicioCatalogo.parametros(), reloj);
+        this.servicioNotificaciones = new ServicioNotificacionesImpl(new RepositorioEnMemoria<>(Notificacion::getId),
+                reloj);
         this.servicioCitas = new ServicioCitasImpl(new RepositorioEnMemoria<>(Cita::getId), servicioSolicitudes,
-                servicioAgendas, servicioCatalogo, reloj);
+                servicioAgendas, servicioCatalogo, servicioNotificaciones, reloj);
+        this.servicioRecordatorios = new ServicioRecordatorios(servicioCitas, servicioSolicitudes, servicioCatalogo,
+                servicioNotificaciones, reloj);
 
         // api
         this.apiSesion = new ControladorSesion(servicioSesion, acceso);
@@ -93,6 +109,8 @@ public class Servidor {
         this.apiSolicitudes = new ControladorSolicitudes(servicioSolicitudes, acceso);
         this.apiAgendas = new ControladorAgendas(servicioAgendas, acceso);
         this.apiCitas = new ControladorCitas(servicioCitas, servicioSolicitudes, acceso);
+        this.apiMisCitas = new ControladorMisCitas(servicioCitas, acceso);
+        this.apiNotificaciones = new ControladorNotificaciones(servicioNotificaciones, servicioRecordatorios, acceso);
     }
 
     /** Servidor con el reloj del sistema y los datos de demostración cargados. */
@@ -139,6 +157,14 @@ public class Servidor {
 
     public ApiCitas citas() {
         return apiCitas;
+    }
+
+    public ApiMisCitas misCitas() {
+        return apiMisCitas;
+    }
+
+    public ApiNotificaciones notificaciones() {
+        return apiNotificaciones;
     }
 
     // --- servicios internos (datos de demostración) ---
