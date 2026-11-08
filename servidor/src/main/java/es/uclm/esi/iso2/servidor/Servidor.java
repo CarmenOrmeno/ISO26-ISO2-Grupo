@@ -5,6 +5,7 @@ import java.time.Clock;
 import es.uclm.esi.iso2.servidor.api.ApiCatalogo;
 import es.uclm.esi.iso2.servidor.api.ApiPacientes;
 import es.uclm.esi.iso2.servidor.api.ApiSesion;
+import es.uclm.esi.iso2.servidor.api.ApiSolicitudes;
 import es.uclm.esi.iso2.servidor.catalogo.ParametrosSistema;
 import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogo;
 import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogoImpl;
@@ -14,6 +15,7 @@ import es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria;
 import es.uclm.esi.iso2.servidor.controlador.ControladorCatalogo;
 import es.uclm.esi.iso2.servidor.controlador.ControladorPacientes;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSesion;
+import es.uclm.esi.iso2.servidor.controlador.ControladorSolicitudes;
 import es.uclm.esi.iso2.servidor.integracion.SsoSimulado;
 import es.uclm.esi.iso2.servidor.pacientes.Paciente;
 import es.uclm.esi.iso2.servidor.pacientes.ServicioPacientes;
@@ -24,6 +26,9 @@ import es.uclm.esi.iso2.servidor.seguridad.Rol;
 import es.uclm.esi.iso2.servidor.seguridad.ServicioSesion;
 import es.uclm.esi.iso2.servidor.seguridad.ServicioSesionImpl;
 import es.uclm.esi.iso2.servidor.seguridad.Usuario;
+import es.uclm.esi.iso2.servidor.solicitudes.ServicioSolicitudes;
+import es.uclm.esi.iso2.servidor.solicitudes.ServicioSolicitudesImpl;
+import es.uclm.esi.iso2.servidor.solicitudes.SolicitudPrueba;
 
 /**
  * Raíz de composición del servidor (CONTEXT.md §3): el único sitio donde se crean las
@@ -43,11 +48,13 @@ public class Servidor {
     // --- servicios (contratos internos) ---
     private final ServicioPacientes servicioPacientes;
     private final ServicioCatalogo servicioCatalogo;
+    private final ServicioSolicitudes servicioSolicitudes;
 
     // --- api (contratos con el cliente) ---
     private final ApiSesion apiSesion;
     private final ApiPacientes apiPacientes;
     private final ApiCatalogo apiCatalogo;
+    private final ApiSolicitudes apiSolicitudes;
 
     public Servidor(Clock reloj) {
         this.reloj = reloj;
@@ -58,11 +65,14 @@ public class Servidor {
         this.servicioPacientes = new ServicioPacientesImpl(new RepositorioEnMemoria<>(Paciente::getId), reloj);
         this.servicioCatalogo = new ServicioCatalogoImpl(new RepositorioEnMemoria<>(TipoPrueba::codigo),
                 new ParametrosSistema());
+        this.servicioSolicitudes = new ServicioSolicitudesImpl(new RepositorioEnMemoria<>(SolicitudPrueba::getId),
+                servicioPacientes, servicioCatalogo, reloj);
 
         // api
         this.apiSesion = new ControladorSesion(servicioSesion, acceso);
         this.apiPacientes = new ControladorPacientes(servicioPacientes, acceso);
         this.apiCatalogo = new ControladorCatalogo(servicioCatalogo, acceso);
+        this.apiSolicitudes = new ControladorSolicitudes(servicioSolicitudes, acceso);
     }
 
     /** Servidor con el reloj del sistema y los datos de demostración cargados. */
@@ -99,6 +109,10 @@ public class Servidor {
         return apiCatalogo;
     }
 
+    public ApiSolicitudes solicitudes() {
+        return apiSolicitudes;
+    }
+
     // --- servicios internos (datos de demostración) ---
     ServicioPacientes servicioPacientes() {
         return servicioPacientes;
@@ -106,5 +120,9 @@ public class Servidor {
 
     ServicioCatalogo servicioCatalogo() {
         return servicioCatalogo;
+    }
+
+    ServicioSolicitudes servicioSolicitudes() {
+        return servicioSolicitudes;
     }
 }
