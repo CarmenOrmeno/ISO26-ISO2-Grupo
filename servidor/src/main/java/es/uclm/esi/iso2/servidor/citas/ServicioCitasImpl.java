@@ -11,8 +11,11 @@ import es.uclm.esi.iso2.servidor.agendas.Agenda;
 import es.uclm.esi.iso2.servidor.agendas.ServicioAgendas;
 import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogo;
 import es.uclm.esi.iso2.servidor.catalogo.TipoPrueba;
+import es.uclm.esi.iso2.servidor.comun.AccesoDenegadoException;
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
+import es.uclm.esi.iso2.servidor.notificaciones.Notificador;
+import es.uclm.esi.iso2.servidor.notificaciones.TipoNotificacion;
 import es.uclm.esi.iso2.servidor.solicitudes.EstadoSolicitud;
 import es.uclm.esi.iso2.servidor.solicitudes.ServicioSolicitudes;
 import es.uclm.esi.iso2.servidor.solicitudes.SolicitudPrueba;
@@ -23,15 +26,17 @@ public class ServicioCitasImpl implements ServicioCitas {
     private final ServicioSolicitudes solicitudes;
     private final ServicioAgendas agendas;
     private final ServicioCatalogo catalogo;
+    private final Notificador notificador;
     private final Clock reloj;
     private long secuencia;
 
     public ServicioCitasImpl(Repositorio<Cita, Long> repositorio, ServicioSolicitudes solicitudes,
-            ServicioAgendas agendas, ServicioCatalogo catalogo, Clock reloj) {
+            ServicioAgendas agendas, ServicioCatalogo catalogo, Notificador notificador, Clock reloj) {
         this.repositorio = repositorio;
         this.solicitudes = solicitudes;
         this.agendas = agendas;
         this.catalogo = catalogo;
+        this.notificador = notificador;
         this.reloj = reloj;
     }
 
@@ -47,7 +52,9 @@ public class ServicioCitasImpl implements ServicioCitas {
         agendas.ocupar(idAgenda, hora, cita.getId());
         solicitudes.marcarCitada(idSolicitud);
         secuencia++;
-        return repositorio.guardar(cita);
+        repositorio.guardar(cita);
+        avisar(cita, TipoNotificacion.CITA_ASIGNADA, "Cita asignada");
+        return cita;
     }
 
     @Override
@@ -61,7 +68,9 @@ public class ServicioCitasImpl implements ServicioCitas {
         agendas.ocupar(idAgenda, hora, cita.getId());
         agendas.liberar(cita.getIdAgenda(), cita.getFechaHora().toLocalTime());
         cita.reprogramar(idAgenda, momento);
-        return repositorio.guardar(cita);
+        repositorio.guardar(cita);
+        avisar(cita, TipoNotificacion.CITA_MODIFICADA, "Cita modificada");
+        return cita;
     }
 
     @Override
@@ -71,6 +80,53 @@ public class ServicioCitasImpl implements ServicioCitas {
         agendas.liberar(cita.getIdAgenda(), cita.getFechaHora().toLocalTime());
         solicitudes.anularCita(cita.getIdSolicitud());
         repositorio.guardar(cita);
+        notificador.notificar(cita.getIdPaciente(), TipoNotificacion.CITA_CANCELADA,
+                "Su cita del " + cita.getFechaHora() + " se ha cancelado: " + motivo);
+    }
+
+    @Override
+    public Cita confirmar(long idCita, String idPaciente) {
+        Cita cita = citaFuturaDe(idCita, idPaciente);
+        cita.confirmar();
+        return repositorio.guardar(cita);
+    }
+
+    @Override
+    public Cita solicitarCambio(long idCita, String idPaciente, String motivo) {
+        Cita cita = citaFuturaDe(idCita, idPaciente);
+        cita.solicitarCambio(motivo);
+        return repositorio.guardar(cita);
+    }
+
+    @Override
+    public void cancelarPorPaciente(long idCita, String idPaciente, String motivo) {
+        citaFuturaDe(idCita, idPaciente);
+        cancelar(idCita, motivo);
+    }
+
+    @Override
+    public List<Cita> conCambioSolicitado() {
+        return repositorio.filtrar(c -> c.getEstado() == EstadoCita.CAMBIO_SOLICITADO);
+    }
+
+    /** La cita debe ser del paciente y no haber pasado. */
+    private Cita citaFuturaDe(long idCita, String idPaciente) {
+        Cita cita = repositorio.obtener(idCita);
+        if (!cita.getIdPaciente().equals(idPaciente)) {
+            throw new AccesoDenegadoException("La cita " + idCita + " no es suya");
+        }
+        if (!cita.getFechaHora().isAfter(LocalDateTime.now(reloj))) {
+            throw new ReglaNegocioException("La cita " + idCita + " ya ha pasado");
+        }
+        return cita;
+    }
+
+    private void avisar(Cita cita, TipoNotificacion tipo, String titulo) {
+        Agenda agenda = agendas.obtener(cita.getIdAgenda());
+        TipoPrueba prueba = catalogo.obtener(solicitudes.obtener(cita.getIdSolicitud()).getCodigoTipo());
+        notificador.notificar(cita.getIdPaciente(), tipo, titulo + ": " + prueba.nombre() + " el "
+                + cita.getFechaHora().toLocalDate() + " a las " + cita.getFechaHora().toLocalTime()
+                + " (sala " + agenda.getSala() + ")");
     }
 
     /**

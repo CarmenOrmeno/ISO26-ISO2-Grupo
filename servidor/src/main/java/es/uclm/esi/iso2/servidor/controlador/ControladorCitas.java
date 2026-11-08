@@ -65,4 +65,10 @@ public class ControladorCitas implements ApiCitas {
         acceso.exigir(token, Permiso.GESTIONAR_CITAS);
         return citas.dePaciente(idPaciente);
     }
+
+    @Override
+    public List<Cita> conCambioSolicitado(String token) {
+        acceso.exigir(token, Permiso.GESTIONAR_CITAS);
+        return citas.conCambioSolicitado();
+    }
 }

@@ -29,7 +29,11 @@ public enum Permiso {
     GESTIONAR_AGENDAS(false, ADMINISTRATIVO),
     CONSULTAR_AGENDAS(false, ADMINISTRATIVO),
     // CU06
-    GESTIONAR_CITAS(false, ADMINISTRATIVO);
+    GESTIONAR_CITAS(false, ADMINISTRATIVO),
+    // It7: CU07 y CU12
+    GESTIONAR_MIS_CITAS(false, PACIENTE),
+    CONSULTAR_MIS_NOTIFICACIONES(false, PACIENTE),
+    EJECUTAR_TAREAS_PROGRAMADAS(false, ADMINISTRADOR);
 
     private final boolean datosClinicos;
     private final Set<Rol> rolesPorDefecto;

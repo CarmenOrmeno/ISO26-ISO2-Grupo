@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>es.uclm.esi.iso2</groupId>
   <artifactId>radiodiagnostico</artifactId>
-  <version>0.1.0</version>
+  <version>0.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Radiodiagnóstico SESCAM</name>
   <description>Sistema Integral de Gestión de Radiodiagnóstico e Imagen Médica (ISO2 26/27)</description>
