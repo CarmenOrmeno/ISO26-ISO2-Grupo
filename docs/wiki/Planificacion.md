@@ -33,7 +33,8 @@ tokens y en € de cada CU y anotarla aquí junto a la nuestra para compararlas.
 ## 3. Iteraciones, fases y calendario
 
 Duración = horas ÷ (4 personas × 8 h), con solape: mientras se revisa el PR de una iteración se empieza el
-análisis de la siguiente.
+análisis de la siguiente. En la fase de Construcción cada iteración agrupa 2 o 3 CU muy cohesionados (D-016);
+las horas y el coste de cada CU no cambian.
 
 | It. | Fase | CU (prioridad) | Cx | Horas | Fechas previstas | Coste (€) | Versión del módulo |
 |---|---|---|---|---|---|---|---|
@@ -45,23 +46,14 @@ análisis de la siguiente.
 | 5 | Elaboración | CU05 Gestionar agendas | A | 31 | 27/10 – 28/10 | 775 | servidor 1.4.0 |
 | 6 | Elaboración | CU06 Gestionar citas | A | 31 | 29/10 – 30/10 | 775 | servidor 1.5.0 · cliente 1.1.0 |
 | | **Hito** | **Línea base de la arquitectura · release v0.1.0** | | | **30/10** | | |
-| 7 | Construcción | CU07 Gestionar mis citas | M | 22 | 02/11 – 03/11 | 550 | servidor 1.6.0 |
-| 8 | Construcción | CU08 Registrar realización | M | 22 | 03/11 – 04/11 | 550 | servidor 1.7.0 |
-| 9 | Construcción | CU09 Informes e imágenes | A | 31 | 04/11 – 05/11 | 775 | servidor 1.8.0 · cliente 1.2.0 |
-| 10 | Construcción | CU10 Prescribir seguimiento | A | 31 | 05/11 – 06/11 | 775 | servidor 1.9.0 |
-| 11 | Construcción | CU11 Listas de espera | M | 22 | 09/11 – 10/11 | 550 | servidor 1.10.0 |
-| 12 | Construcción | CU12 Notificar y recordar | M | 22 | 10/11 – 11/11 | 550 | servidor 1.11.0 |
-| 13 | Construcción | CU13 Consultar historial | B | 12 | 11/11 | 300 | servidor 1.12.0 · cliente 1.3.0 |
-| 14 | Construcción | CU14 Estado solicitudes/agendas | B | 12 | 12/11 | 300 | servidor 1.13.0 |
-| 15 | Construcción | CU15 Incidencias y encuestas | B | 12 | 12/11 | 300 | servidor 1.14.0 |
-| 16 | Construcción | CU16 Consultar seguimientos | B | 12 | 13/11 | 300 | servidor 1.15.0 |
-| | **Hito** | **Release v0.2.0** (flujo clínico y portal del paciente) | | | **16/11** | | |
-| 17 | Construcción | CU17 Roles y permisos | M | 22 | 17/11 – 18/11 | 550 | servidor 1.16.0 |
-| 18 | Construcción | CU18 Auditar accesos | M | 22 | 18/11 – 19/11 | 550 | servidor 1.17.0 |
-| 19 | Construcción | CU19 Integrar sistemas | A | 31 | 19/11 – 20/11 | 775 | servidor 1.18.0 |
-| 20 | Construcción | CU20 Estadísticas del médico | M | 22 | 23/11 – 24/11 | 550 | servidor 1.19.0 |
-| 21 | Construcción | CU21 Informes operativos | M | 22 | 24/11 – 25/11 | 550 | servidor 1.20.0 |
-| 22 | Construcción | CU22 Estadísticas globales | B | 12 | 26/11 | 300 | servidor 1.21.0 · cliente 1.4.0 |
+| 7 | Construcción | CU07 Gestionar mis citas + CU12 Notificar y recordar | M+M | 44 | 02/11 – 04/11 | 1.100 | servidor 1.6.0 |
+| 8 | Construcción | CU08 Registrar realización + CU09 Informes e imágenes | M+A | 53 | 05/11 – 09/11 | 1.325 | servidor 1.7.0 |
+| 9 | Construcción | CU10 Prescribir seguimiento + CU16 Consultar seguimientos | A+B | 43 | 10/11 – 12/11 | 1.075 | servidor 1.8.0 |
+| 10 | Construcción | CU11 Listas de espera + CU14 Estado de solicitudes y agendas | M+B | 34 | 13/11 – 17/11 | 850 | servidor 1.9.0 · cliente 1.2.0 (médico) |
+| | **Hito** | **Release v0.2.0** (flujo clínico completo y avisos al paciente) | | | **17/11** | | |
+| 11 | Construcción | CU13 Consultar historial + CU15 Incidencias y encuestas | B+B | 24 | 18/11 – 19/11 | 600 | servidor 1.10.0 · cliente 1.3.0 (paciente) |
+| 12 | Construcción | CU17 Roles y permisos + CU18 Auditar accesos + CU19 Integrar sistemas | M+M+A | 75 | 20/11 – 24/11 | 1.875 | servidor 1.11.0 |
+| 13 | Construcción | CU20 Estadísticas del médico + CU21 Informes operativos + CU22 Estadísticas globales | M+M+B | 56 | 25/11 – 27/11 | 1.400 | servidor 1.12.0 · cliente 1.4.0 (administrador) |
 | | **Hito** | **Capacidad operacional inicial** | | | **27/11** | | |
 | N | Transición | Integración, pruebas de integración, manual, despliegue | — | — | 30/11 – 11/12 | 2.000 | — |
 | | **Hito** | **Release v1.0.0 · entrega** | | | **11/12 (entrega 15/12)** | | |
@@ -100,8 +92,8 @@ tareas del ingeniero. Un modelo especializado en código reduce revisiones (meno
 | Versión | Fecha | Contenido |
 |---|---|---|
 | v0.1.0 | 30/10 | Línea base de la arquitectura: CU01–CU06 (sesión, pacientes, catálogo, solicitudes, agendas, citas) |
-| v0.2.0 | 16/11 | Flujo clínico y portal del paciente: CU07–CU16 |
-| v1.0.0 | 11/12 | Producto completo: CU17–CU22 + integración (ItN) |
+| v0.2.0 | 17/11 | Flujo clínico completo y avisos al paciente: It7–It10 (CU07–CU12, CU14, CU16) |
+| v1.0.0 | 11/12 | Producto completo: It11–It13 (CU13, CU15, CU17–CU22) + integración (ItN) |
 
 Las versiones del producto están en el pom padre y en las etiquetas de `main`; cada módulo tiene la suya
 (ver [Plan de gestión de configuración](Plan-de-gestion-de-configuracion.md)).
