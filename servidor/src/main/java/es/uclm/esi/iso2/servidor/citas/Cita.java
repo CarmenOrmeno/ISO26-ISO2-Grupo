@@ -59,6 +59,14 @@ public class Cita {
         estado = EstadoCita.CAMBIO_SOLICITADO;
     }
 
+    /** CU08: la prueba se ha hecho. Solo desde PROGRAMADA o CONFIRMADA. */
+    public void marcarRealizada() {
+        if (estado != EstadoCita.PROGRAMADA && estado != EstadoCita.CONFIRMADA) {
+            throw new ReglaNegocioException("No se puede registrar como realizada una cita " + estado);
+        }
+        estado = EstadoCita.REALIZADA;
+    }
+
     public void cancelar(String motivo, LocalDateTime cuando) {
         exigirActiva("cancelar");
         motivoCancelacion = Validaciones.texto(motivo, "motivo");

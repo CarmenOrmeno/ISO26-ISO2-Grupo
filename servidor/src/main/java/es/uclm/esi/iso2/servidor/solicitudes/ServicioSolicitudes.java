@@ -27,4 +27,10 @@ public interface ServicioSolicitudes {
 
     /** CITADA → SOLICITADA al cancelar la cita (vuelve a la lista de espera). */
     void anularCita(long idSolicitud);
+
+    /** CU08: CITADA → REALIZADA. */
+    void registrarRealizacion(long idSolicitud, java.time.LocalDateTime fecha, String observaciones);
+
+    /** CU09: REALIZADA → INFORMADA. */
+    void marcarInformada(long idSolicitud);
 }
