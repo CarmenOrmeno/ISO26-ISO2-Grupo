@@ -2,6 +2,10 @@ package es.uclm.esi.iso2.servidor;
 
 import java.time.Clock;
 
+import es.uclm.esi.iso2.servidor.agendas.Agenda;
+import es.uclm.esi.iso2.servidor.agendas.ServicioAgendas;
+import es.uclm.esi.iso2.servidor.agendas.ServicioAgendasImpl;
+import es.uclm.esi.iso2.servidor.api.ApiAgendas;
 import es.uclm.esi.iso2.servidor.api.ApiCatalogo;
 import es.uclm.esi.iso2.servidor.api.ApiPacientes;
 import es.uclm.esi.iso2.servidor.api.ApiSesion;
@@ -12,6 +16,7 @@ import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogoImpl;
 import es.uclm.esi.iso2.servidor.catalogo.TipoPrueba;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
 import es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria;
+import es.uclm.esi.iso2.servidor.controlador.ControladorAgendas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorCatalogo;
 import es.uclm.esi.iso2.servidor.controlador.ControladorPacientes;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSesion;
@@ -49,12 +54,14 @@ public class Servidor {
     private final ServicioPacientes servicioPacientes;
     private final ServicioCatalogo servicioCatalogo;
     private final ServicioSolicitudes servicioSolicitudes;
+    private final ServicioAgendas servicioAgendas;
 
     // --- api (contratos con el cliente) ---
     private final ApiSesion apiSesion;
     private final ApiPacientes apiPacientes;
     private final ApiCatalogo apiCatalogo;
     private final ApiSolicitudes apiSolicitudes;
+    private final ApiAgendas apiAgendas;
 
     public Servidor(Clock reloj) {
         this.reloj = reloj;
@@ -67,12 +74,15 @@ public class Servidor {
                 new ParametrosSistema());
         this.servicioSolicitudes = new ServicioSolicitudesImpl(new RepositorioEnMemoria<>(SolicitudPrueba::getId),
                 servicioPacientes, servicioCatalogo, reloj);
+        this.servicioAgendas = new ServicioAgendasImpl(new RepositorioEnMemoria<>(Agenda::getId),
+                servicioCatalogo.parametros(), reloj);
 
         // api
         this.apiSesion = new ControladorSesion(servicioSesion, acceso);
         this.apiPacientes = new ControladorPacientes(servicioPacientes, acceso);
         this.apiCatalogo = new ControladorCatalogo(servicioCatalogo, acceso);
         this.apiSolicitudes = new ControladorSolicitudes(servicioSolicitudes, acceso);
+        this.apiAgendas = new ControladorAgendas(servicioAgendas, acceso);
     }
 
     /** Servidor con el reloj del sistema y los datos de demostración cargados. */
@@ -113,6 +123,10 @@ public class Servidor {
         return apiSolicitudes;
     }
 
+    public ApiAgendas agendas() {
+        return apiAgendas;
+    }
+
     // --- servicios internos (datos de demostración) ---
     ServicioPacientes servicioPacientes() {
         return servicioPacientes;
@@ -124,5 +138,9 @@ public class Servidor {
 
     ServicioSolicitudes servicioSolicitudes() {
         return servicioSolicitudes;
+    }
+
+    ServicioAgendas servicioAgendas() {
+        return servicioAgendas;
     }
 }
