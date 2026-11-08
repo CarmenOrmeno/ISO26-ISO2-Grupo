@@ -63,5 +63,9 @@ final class DatosDemo {
                 creadas++;
             }
         }
+
+        // CU06: la primera solicitud (Rx de tórax de PAC-1) se cita en el primer hueco libre de RX
+        var hueco = s.servicioAgendas().huecosLibres(Modalidad.RX, dia.minusDays(14), dia).get(0);
+        s.servicioCitas().asignar(1, hueco.idAgenda(), hueco.inicio());
     }
 }

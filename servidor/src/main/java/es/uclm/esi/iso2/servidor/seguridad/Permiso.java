@@ -27,7 +27,9 @@ public enum Permiso {
     CONSULTAR_SOLICITUDES(true, MEDICO, ADMINISTRATIVO),
     // CU05
     GESTIONAR_AGENDAS(false, ADMINISTRATIVO),
-    CONSULTAR_AGENDAS(false, ADMINISTRATIVO);
+    CONSULTAR_AGENDAS(false, ADMINISTRATIVO),
+    // CU06
+    GESTIONAR_CITAS(false, ADMINISTRATIVO);
 
     private final boolean datosClinicos;
     private final Set<Rol> rolesPorDefecto;
