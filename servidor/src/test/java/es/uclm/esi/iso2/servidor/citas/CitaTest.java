@@ -102,4 +102,19 @@ class CitaTest {
         cancelada.cancelar("x", MOMENTO);
         assertThrows(ReglaNegocioException.class, () -> cancelada.solicitarCambio("y"));
     }
+
+    @Test
+    @DisplayName("CU08: realizada desde PROGRAMADA o CONFIRMADA; no desde CAMBIO_SOLICITADO ni dos veces")
+    void marcarRealizada() {
+        Cita c = nueva();
+        c.marcarRealizada();
+        assertEquals(EstadoCita.REALIZADA, c.getEstado());
+        assertThrows(ReglaNegocioException.class, c::marcarRealizada);
+        Cita confirmada = nueva();
+        confirmada.confirmar();
+        confirmada.marcarRealizada();
+        Cita cambio = nueva();
+        cambio.solicitarCambio("x");
+        assertThrows(ReglaNegocioException.class, cambio::marcarRealizada);
+    }
 }
