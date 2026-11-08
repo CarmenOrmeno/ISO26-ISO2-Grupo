@@ -14,7 +14,8 @@ public final class FabricaMenus {
         return new AplicacionCliente(consola, servidor.sesion())
                 .conMenu(Rol.PACIENTE, new Menu("Menú del paciente", consola, servidor.sesion()))
                 .conMenu(Rol.MEDICO, new Menu("Menú del médico", consola, servidor.sesion()))
-                .conMenu(Rol.ADMINISTRATIVO, new Menu("Menú de admisión", consola, servidor.sesion()))
+                .conMenu(Rol.ADMINISTRATIVO, MenuAdmision.crear(consola, servidor.sesion(), servidor.pacientes(),
+                        servidor.agendas(), servidor.citas()))
                 .conMenu(Rol.ADMINISTRADOR, new Menu("Menú del administrador", consola, servidor.sesion()));
     }
 }
