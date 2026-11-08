@@ -1,3 +1,5 @@
+package es.uclm.esi.iso2.servidor;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
