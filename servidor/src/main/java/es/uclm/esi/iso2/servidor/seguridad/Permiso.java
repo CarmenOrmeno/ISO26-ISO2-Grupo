@@ -21,7 +21,10 @@ public enum Permiso {
     CONSULTAR_PACIENTES(false, ADMINISTRATIVO, MEDICO),
     // CU03
     CONSULTAR_CATALOGO(false, PACIENTE, ADMINISTRATIVO, ADMINISTRADOR),
-    CONFIGURAR_SISTEMA(false, ADMINISTRADOR);
+    CONFIGURAR_SISTEMA(false, ADMINISTRADOR),
+    // CU04
+    SOLICITAR_PRUEBAS(true, MEDICO),
+    CONSULTAR_SOLICITUDES(true, MEDICO, ADMINISTRATIVO);
 
     private final boolean datosClinicos;
     private final Set<Rol> rolesPorDefecto;
