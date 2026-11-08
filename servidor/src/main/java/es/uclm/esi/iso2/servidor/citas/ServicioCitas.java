@@ -34,4 +34,7 @@ public interface ServicioCitas {
 
     /** Citas con cambio solicitado, para que admisión las reprograme. */
     List<Cita> conCambioSolicitado();
+
+    /** CU08: marca la cita como realizada (lo invoca el componente de realización). */
+    Cita marcarRealizada(long idCita);
 }

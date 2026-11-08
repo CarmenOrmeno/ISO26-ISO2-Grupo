@@ -94,4 +94,18 @@ public class ServicioSolicitudesImpl implements ServicioSolicitudes {
         s.anularCita();
         repositorio.guardar(s);
     }
+
+    @Override
+    public void registrarRealizacion(long idSolicitud, LocalDateTime fecha, String observaciones) {
+        SolicitudPrueba s = repositorio.obtener(idSolicitud);
+        s.registrarRealizacion(fecha, observaciones);
+        repositorio.guardar(s);
+    }
+
+    @Override
+    public void marcarInformada(long idSolicitud) {
+        SolicitudPrueba s = repositorio.obtener(idSolicitud);
+        s.informar();
+        repositorio.guardar(s);
+    }
 }

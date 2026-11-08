@@ -33,7 +33,11 @@ public enum Permiso {
     // It7: CU07 y CU12
     GESTIONAR_MIS_CITAS(false, PACIENTE),
     CONSULTAR_MIS_NOTIFICACIONES(false, PACIENTE),
-    EJECUTAR_TAREAS_PROGRAMADAS(false, ADMINISTRADOR);
+    EJECUTAR_TAREAS_PROGRAMADAS(false, ADMINISTRADOR),
+    // It8: CU08 y CU09
+    REGISTRAR_REALIZACION(true, MEDICO),
+    CREAR_INFORMES(true, MEDICO),
+    CONSULTAR_INFORMES_PACIENTES(true, MEDICO);
 
     private final boolean datosClinicos;
     private final Set<Rol> rolesPorDefecto;

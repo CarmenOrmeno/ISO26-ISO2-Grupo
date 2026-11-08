@@ -177,4 +177,11 @@ public class ServicioCitasImpl implements ServicioCitas {
     public List<Cita> todas() {
         return repositorio.todos();
     }
+
+    @Override
+    public Cita marcarRealizada(long idCita) {
+        Cita cita = repositorio.obtener(idCita);
+        cita.marcarRealizada();
+        return repositorio.guardar(cita);
+    }
 }
