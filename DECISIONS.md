@@ -111,9 +111,22 @@ Fecha: 26/10 · It. 0 · Acta: 26/10
   humana por CU y un 15 % de contingencia por el sesgo de optimismo de la IA.
 - **Consecuencias:** ver [Planificación](docs/wiki/Planificacion.md).
 
-## D-015 · Cliente de consola agrupado por actor
+## D-015 · Cliente de consola agrupado por actor (revisada por D-016)
 Fecha: 26/10 · It. 0 · Acta: 26/10
 - **Contexto:** una rama de cliente por CU daría 22 ramas casi vacías.
-- **Decisión:** el cliente se desarrolla en ramas `feature/CUxx-cliente` agrupadas por actor (CU01 sesión,
-  CU06 administrativo, CU09 médico, CU13 paciente, CU22 administrador).
+- **Decisión:** el cliente se desarrolla en ramas agrupadas por actor: CU01 sesión, CU06 administrativo, It10
+  médico, It11 paciente, It13 administrador.
 - **Consecuencias:** el módulo cliente sube de versión menor con cada una de esas ramas.
+
+## D-016 · Agrupar varios CU por iteración en la Construcción
+Fecha: 08/11 · It. 6 · Acta: 09/11
+- **Contexto:** la regla 1 CU : 1 iteración convierte el PUD en una cascada de 22 pasos y genera 16 ramas y PR
+  más en Construcción. El enunciado anima a agrupar el software en bloques muy cohesionados y poco acoplados.
+- **Decisión:** las iteraciones de Elaboración (It1–It6) se mantienen 1:1. En Construcción, cada iteración
+  agrupa 2 o 3 CU del mismo componente o flujo: It7 (CU07+CU12), It8 (CU08+CU09), It9 (CU10+CU16),
+  It10 (CU11+CU14), It11 (CU13+CU15), It12 (CU17+CU18+CU19), It13 (CU20+CU21+CU22).
+- **Alternativas:** mantener 1:1 (16 iteraciones más); agrupar por actor (mezcla componentes distintos).
+- **Motivo:** máxima cohesión dentro de la iteración, menos sobrecoste de integración y revisión, y encaja
+  con el calendario (entrega el 15/12).
+- **Consecuencias:** ramas `feature/ItNN-<tema>-servidor`; el módulo servidor sube de versión menor por
+  iteración (1.6.0 … 1.12.0); v0.2.0 tras It10. El esfuerzo y el coste por CU no cambian.
