@@ -90,4 +90,15 @@ class ServidorMySqlTest {
         assertEquals(Rol.MEDICO, segundo.permisos().usuarios(admin).stream()
                 .filter(u -> u.login().equals("admision1")).findFirst().orElseThrow().rol());
     }
+
+    @Test
+    @DisplayName("Los registros de auditoría (CU18) se conservan tras el reinicio")
+    void auditoria() {
+        Servidor primero = arrancar();
+        primero.historial().miHistorial(token(primero, "paciente1"));
+        Servidor segundo = arrancar();
+        assertEquals(1, segundo.auditoria().registrosDeUsuario(token(segundo, "admin1"), "paciente1",
+                reloj.instant().atZone(reloj.getZone()).toLocalDate(),
+                reloj.instant().atZone(reloj.getZone()).toLocalDate()).size());
+    }
 }
