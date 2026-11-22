@@ -49,7 +49,9 @@ public enum Permiso {
     CONSULTAR_MI_HISTORIAL(true, PACIENTE),
     COMUNICAR_INCIDENCIAS(false, PACIENTE),
     RESPONDER_ENCUESTAS(false, PACIENTE),
-    ATENDER_INCIDENCIAS(false, ADMINISTRATIVO);
+    ATENDER_INCIDENCIAS(false, ADMINISTRATIVO),
+    // It12: CU17
+    GESTIONAR_PERMISOS(false, ADMINISTRADOR);
 
     private final boolean datosClinicos;
     private final Set<Rol> rolesPorDefecto;

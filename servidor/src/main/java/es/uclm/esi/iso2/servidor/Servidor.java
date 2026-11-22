@@ -18,6 +18,7 @@ import es.uclm.esi.iso2.servidor.api.ApiMisCitas;
 import es.uclm.esi.iso2.servidor.api.ApiMisSeguimientos;
 import es.uclm.esi.iso2.servidor.api.ApiNotificaciones;
 import es.uclm.esi.iso2.servidor.api.ApiPacientes;
+import es.uclm.esi.iso2.servidor.api.ApiPermisos;
 import es.uclm.esi.iso2.servidor.api.ApiRealizacion;
 import es.uclm.esi.iso2.servidor.api.ApiSeguimiento;
 import es.uclm.esi.iso2.servidor.api.ApiSesion;
@@ -46,6 +47,7 @@ import es.uclm.esi.iso2.servidor.controlador.ControladorMisCitas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorMisSeguimientos;
 import es.uclm.esi.iso2.servidor.controlador.ControladorNotificaciones;
 import es.uclm.esi.iso2.servidor.controlador.ControladorPacientes;
+import es.uclm.esi.iso2.servidor.controlador.ControladorPermisos;
 import es.uclm.esi.iso2.servidor.controlador.ControladorRealizacion;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSeguimiento;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSesion;
@@ -77,6 +79,8 @@ import es.uclm.esi.iso2.servidor.seguimiento.ServicioSeguimientoImpl;
 import es.uclm.esi.iso2.servidor.seguridad.ControlAcceso;
 import es.uclm.esi.iso2.servidor.seguridad.PoliticaPermisos;
 import es.uclm.esi.iso2.servidor.seguridad.Rol;
+import es.uclm.esi.iso2.servidor.seguridad.ServicioPermisos;
+import es.uclm.esi.iso2.servidor.seguridad.ServicioPermisosImpl;
 import es.uclm.esi.iso2.servidor.seguridad.ServicioSesion;
 import es.uclm.esi.iso2.servidor.seguridad.ServicioSesionImpl;
 import es.uclm.esi.iso2.servidor.seguridad.Usuario;
@@ -97,7 +101,7 @@ public class Servidor {
     private final SsoSimulado sso = new SsoSimulado();
     private final PacsSimulado pacs = new PacsSimulado();
     private final Repositorio<Usuario, String> usuarios;
-    private final PoliticaPermisos politica = PoliticaPermisos.porDefecto();
+    private final ServicioPermisos servicioPermisos;
     private final ServicioSesion servicioSesion;
     private final ControlAcceso acceso;
 
@@ -134,6 +138,7 @@ public class Servidor {
     private final ApiHistorial apiHistorial;
     private final ApiAtencionPaciente apiAtencionPaciente;
     private final ApiAtencion apiAtencion;
+    private final ApiPermisos apiPermisos;
 
     /** Servidor con los datos en memoria (pruebas). */
     public Servidor(Clock reloj) {
@@ -146,7 +151,10 @@ public class Servidor {
         this.repositorios = repositorios;
         this.usuarios = repositorios.crear("usuarios", Usuario::login);
         this.servicioSesion = new ServicioSesionImpl(sso, usuarios, reloj);
-        this.acceso = new ControlAcceso(servicioSesion, politica);
+        this.servicioPermisos = new ServicioPermisosImpl(
+                repositorios.crear("politica_permisos", (PoliticaPermisos p) -> ServicioPermisosImpl.ID_POLITICA),
+                usuarios);
+        this.acceso = new ControlAcceso(servicioSesion, servicioPermisos);
 
         // servicios
         this.servicioPacientes = new ServicioPacientesImpl(repositorios.crear("pacientes", Paciente::getId), reloj);
@@ -194,6 +202,7 @@ public class Servidor {
         this.apiHistorial = new ControladorHistorial(servicioHistorial, acceso);
         this.apiAtencionPaciente = new ControladorAtencionPaciente(servicioAtencion, acceso);
         this.apiAtencion = new ControladorAtencion(servicioAtencion, acceso);
+        this.apiPermisos = new ControladorPermisos(servicioPermisos, acceso);
     }
 
     /**
@@ -307,6 +316,10 @@ public class Servidor {
 
     public ApiAtencion atencion() {
         return apiAtencion;
+    }
+
+    public ApiPermisos permisos() {
+        return apiPermisos;
     }
 
     // --- servicios internos (datos de demostración) ---

@@ -6,9 +6,9 @@ import es.uclm.esi.iso2.servidor.comun.AccesoDenegadoException;
 public class ControlAcceso {
 
     private final ServicioSesion sesiones;
-    private final PoliticaPermisos politica;
+    private final ConsultaPermisos politica;
 
-    public ControlAcceso(ServicioSesion sesiones, PoliticaPermisos politica) {
+    public ControlAcceso(ServicioSesion sesiones, ConsultaPermisos politica) {
         this.sesiones = sesiones;
         this.politica = politica;
     }

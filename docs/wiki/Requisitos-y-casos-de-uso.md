@@ -68,7 +68,7 @@ de la arquitectura), después los que dependen de ellos, y al final consultas y 
 | 14 | CU14 | Consultar estado de solicitudes y agendas | Construcción | Baja | [CU14](../casos-de-uso/CU14.md) |
 | 15 | CU15 | Comunicar incidencias y encuestas | Construcción | Baja | [CU15](../casos-de-uso/CU15.md) |
 | 16 | CU16 | Consultar seguimientos | Construcción | Baja | [CU16](../casos-de-uso/CU16.md) |
-| 17 | CU17 | Gestionar roles y permisos | Construcción | Media | _pendiente_ |
+| 17 | CU17 | Gestionar roles y permisos | Construcción | Media | [CU17](../casos-de-uso/CU17.md) |
 | 18 | CU18 | Auditar accesos | Construcción | Media | _pendiente_ |
 | 19 | CU19 | Integrar sistemas hospitalarios | Construcción | Alta | _pendiente_ |
 | 20 | CU20 | Consultar estadísticas del médico | Construcción | Media | _pendiente_ |
