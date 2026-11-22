@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import es.uclm.esi.iso2.servidor.Simulados;
 import es.uclm.esi.iso2.servidor.api.ApiIntegracion;
 import es.uclm.esi.iso2.servidor.catalogo.Modalidad;
 import es.uclm.esi.iso2.servidor.catalogo.Prioridad;
@@ -55,7 +56,7 @@ class ControladorIntegracionTest {
         assertEquals(List.of("SSO corporativo", "HCE", "Admisión", "RIS/PACS"),
                 integracion.estado(admin()).stream().map(EstadoSistema::nombre).toList());
         assertTrue(integracion.estado(admin()).stream().allMatch(EstadoSistema::disponible));
-        e.servidor.pacs().setDisponible(false);
+        Simulados.pacs(e.servidor).setDisponible(false);
         EstadoSistema pacs = integracion.estado(admin()).get(3);
         assertFalse(pacs.disponible());
         assertEquals("RIS/PACS: NO disponible", pacs.toString());
@@ -65,7 +66,7 @@ class ControladorIntegracionTest {
     @DisplayName("CU19: con el SSO caído nadie puede iniciar sesión; las sesiones abiertas siguen")
     void ssoCaido() {
         String abierta = admin();
-        e.servidor.sso().setDisponible(false);
+        Simulados.sso(e.servidor).setDisponible(false);
         assertThrows(ReglaNegocioException.class, () -> e.token("medico1"));
         assertFalse(integracion.estado(abierta).get(0).disponible());
     }
@@ -73,7 +74,7 @@ class ControladorIntegracionTest {
     @Test
     @DisplayName("CU19: importa de admisión los pacientes nuevos; omite los que ya existen y rechaza los inválidos")
     void importar() {
-        e.servidor.admision().registrar(enAdmision("11223344B", "Rosa"))      // nuevo
+        Simulados.admision(e.servidor).registrar(enAdmision("11223344B", "Rosa"))      // nuevo
                 .registrar(enAdmision("12345678Z", "Lucía"))                  // ya es PAC-1
                 .registrar(enAdmision("12345678A", "Erróneo"));               // letra del DNI incorrecta
         Sincronizacion s = integracion.importarPacientes(admin());
@@ -95,7 +96,7 @@ class ControladorIntegracionTest {
     @Test
     @DisplayName("CU19: con admisión caída la importación queda guardada como fallida y no cambia nada")
     void admisionCaida() {
-        e.servidor.admision().registrar(enAdmision("11223344B", "Rosa")).setDisponible(false);
+        Simulados.admision(e.servidor).registrar(enAdmision("11223344B", "Rosa")).setDisponible(false);
         Sincronizacion s = integracion.importarPacientes(admin());
         assertFalse(s.correcta());
         assertEquals(0, s.procesados());
@@ -111,7 +112,7 @@ class ControladorIntegracionTest {
         Sincronizacion s = integracion.enviarInformesHce(admin());
         assertTrue(s.correcta());
         assertEquals(1, s.procesados());
-        List<DocumentoHce> enHce = e.servidor.hce().documentos("12345678Z");
+        List<DocumentoHce> enHce = Simulados.hce(e.servidor).documentos("12345678Z");
         assertEquals(1, enHce.size());
         assertTrue(enHce.get(0).titulo().endsWith("solicitud " + eco));
         assertTrue(enHce.get(0).texto().contains("Sin alteraciones"));
@@ -119,18 +120,18 @@ class ControladorIntegracionTest {
         Sincronizacion otra = integracion.enviarInformesHce(admin());
         assertEquals(0, otra.procesados());
         assertEquals(1, otra.omitidos());
-        assertEquals(1, e.servidor.hce().documentos("12345678Z").size());
+        assertEquals(1, Simulados.hce(e.servidor).documentos("12345678Z").size());
     }
 
     @Test
     @DisplayName("CU19: con la HCE caída no se pierde nada: se envía en la siguiente sincronización")
     void hceCaida() {
         informar();
-        e.servidor.hce().setDisponible(false);
+        Simulados.hce(e.servidor).setDisponible(false);
         Sincronizacion fallida = integracion.enviarInformesHce(admin());
         assertFalse(fallida.correcta());
         assertTrue(fallida.detalle().contains("1 informes pendientes"));
-        e.servidor.hce().setDisponible(true);
+        Simulados.hce(e.servidor).setDisponible(true);
         Sincronizacion buena = integracion.enviarInformesHce(admin());
         assertEquals(1, buena.procesados());
         assertEquals(List.of(buena.id(), fallida.id()),

@@ -96,4 +96,12 @@ class ControlAccesoTest {
         assertThrows(AccesoDenegadoException.class, () -> acceso.exigir("x", Permiso.CONSULTAR_MI_HISTORIAL, null));
         assertTrue(auditados.isEmpty());
     }
+
+    @Test
+    @DisplayName("CU18: no se puede crear un control de acceso sin auditor")
+    void auditorObligatorio() {
+        ServicioSesion sesiones = new ServicioSesionImpl(new SsoSimulado(), new RepositorioEnMemoria<>(Usuario::login),
+                new RelojAjustable(LocalDateTime.of(2026, 11, 2, 9, 0)));
+        assertThrows(NullPointerException.class, () -> new ControlAcceso(sesiones, politica, null));
+    }
 }

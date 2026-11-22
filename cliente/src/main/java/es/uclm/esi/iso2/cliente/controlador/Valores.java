@@ -66,9 +66,28 @@ public final class Valores {
         return mayusculas;
     }
 
+    /** Prefijo de los errores de programación de una acción (índice o tipo de campo equivocado). */
+    public static final String ERROR_DE_PROGRAMACION = "Error de programación en la acción";
+
+    /**
+     * Valor del campo {@code i} con el tipo que espera la acción. Si la acción lee un índice que no existe o con
+     * otro tipo, es un error de programación (no del usuario) y lo dice, para que las pruebas lo detecten.
+     */
+    private <T> T valor(int i, Class<T> tipo) {
+        if (i < 0 || i >= valores.size()) {
+            throw new IllegalStateException(ERROR_DE_PROGRAMACION + ": no hay campo " + i);
+        }
+        Object v = valores.get(i);
+        if (v != null && !tipo.isInstance(v)) {
+            throw new IllegalStateException(ERROR_DE_PROGRAMACION + ": el campo " + i + " es "
+                    + v.getClass().getSimpleName() + ", no " + tipo.getSimpleName());
+        }
+        return tipo.cast(v);
+    }
+
     /** Texto obligatorio, o {@code null} si era opcional y se dejó vacío. */
     public String texto(int i) {
-        return (String) valores.get(i);
+        return valor(i, String.class);
     }
 
     /** Texto opcional: vacío si no se escribió nada. */
@@ -78,31 +97,31 @@ public final class Valores {
     }
 
     public LocalDate fecha(int i) {
-        return (LocalDate) valores.get(i);
+        return valor(i, LocalDate.class);
     }
 
     public LocalTime hora(int i) {
-        return (LocalTime) valores.get(i);
+        return valor(i, LocalTime.class);
     }
 
     public int entero(int i) {
-        return (Integer) valores.get(i);
+        return valor(i, Integer.class);
     }
 
     public long largo(int i) {
-        return (Long) valores.get(i);
+        return valor(i, Long.class);
     }
 
     /** Número opcional: {@code null} si no se escribió nada. */
     public Long largoOpcional(int i) {
-        return (Long) valores.get(i);
+        return valor(i, Long.class);
     }
 
     public boolean siNo(int i) {
-        return "SI".equals(valores.get(i));
+        return "SI".equals(valor(i, String.class));
     }
 
     public <E extends Enum<E>> E opcion(int i, Class<E> tipo) {
-        return Enum.valueOf(tipo, (String) valores.get(i));
+        return Enum.valueOf(tipo, valor(i, String.class));
     }
 }

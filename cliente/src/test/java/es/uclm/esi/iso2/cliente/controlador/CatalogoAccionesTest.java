@@ -15,11 +15,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 /** Sistema: las acciones del cliente contra el servidor de demostración. */
 class CatalogoAccionesTest {
 
-    /** Un valor con el formato correcto para cada tipo de campo. */
+    /**
+     * Un valor con el formato correcto para cada tipo de campo. Los opcionales también se rellenan, para que la
+     * acción lea todos sus campos y se note si lee alguno con el índice o el tipo equivocado.
+     */
     private static String ejemplo(Campo c) {
         return switch (c.tipo()) {
-            case TEXTO -> "x";
-            case TEXTO_OPCIONAL, LARGO_OPCIONAL -> "";
+            case TEXTO, TEXTO_OPCIONAL -> "x";
+            case LARGO_OPCIONAL -> "1";
             case FECHA -> LocalDate.of(2026, 11, 2).toString();
             case HORA -> "09:00";
             case ENTERO, LARGO -> "1";
@@ -27,16 +30,27 @@ class CatalogoAccionesTest {
         };
     }
 
-    @ParameterizedTest(name = "todas las acciones de {0} están permitidas a su rol")
+    @ParameterizedTest(name = "todas las acciones de {0} están bien construidas y permitidas a su rol")
     @ValueSource(strings = { "paciente1", "medico1", "admision1", "admin1" })
-    @DisplayName("Coherencia cliente-servidor: ninguna acción del menú de un rol choca con la política de permisos")
-    void accionesPermitidas(String login) {
+    @DisplayName("Coherencia cliente-servidor: cada acción lee bien sus campos y no choca con la política de permisos")
+    void accionesCoherentes(String login) {
         SesionCliente s = Demo.sesion(login);
         for (Accion a : s.acciones()) {
             Resultado r = s.ejecutar(a, a.campos().stream().map(CatalogoAccionesTest::ejemplo).toList());
-            assertFalse(r.mensaje().contains("no tiene el permiso"), a.nombre() + ": " + r.mensaje());
-            assertFalse(r.mensaje().contains("Sesión no válida"), a.nombre() + ": " + r.mensaje());
+            String donde = a.nombre() + ": " + r.mensaje();
+            assertFalse(r.mensaje().startsWith(Valores.ERROR_DE_PROGRAMACION), donde);
+            assertFalse(r.mensaje().contains("no tiene el permiso"), donde);
+            assertFalse(r.mensaje().contains("Sesión no válida"), donde);
+            assertFalse(r.mensaje().endsWith("Exception"), donde); // error sin mensaje (NullPointerException…)
         }
+    }
+
+    @Test
+    @DisplayName("La prueba de coherencia detecta una acción que lee un campo con el tipo equivocado")
+    void detectaErrorDeProgramacion() {
+        Accion mala = Accion.de("G", "Mala", (t, v) -> v.largo(0), Campo.fecha("Fecha"));
+        Resultado r = mala.ejecutar("t", List.of(ejemplo(mala.campos().get(0))));
+        assertTrue(r.mensaje().startsWith(Valores.ERROR_DE_PROGRAMACION));
     }
 
     @Test

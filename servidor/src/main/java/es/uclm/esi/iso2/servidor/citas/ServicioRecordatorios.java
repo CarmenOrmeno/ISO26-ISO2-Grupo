@@ -1,19 +1,22 @@
-package es.uclm.esi.iso2.servidor.notificaciones;
+package es.uclm.esi.iso2.servidor.citas;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
 
 import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogo;
 import es.uclm.esi.iso2.servidor.catalogo.TipoPrueba;
-import es.uclm.esi.iso2.servidor.citas.Cita;
-import es.uclm.esi.iso2.servidor.citas.ServicioCitas;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
+import es.uclm.esi.iso2.servidor.notificaciones.Notificador;
+import es.uclm.esi.iso2.servidor.notificaciones.TipoNotificacion;
 import es.uclm.esi.iso2.servidor.solicitudes.ServicioSolicitudes;
 
 /**
  * Tarea programada (actor Temporizador, CU12): recuerda las citas activas que empiezan dentro de la
  * antelación configurada y avisa de la preparación previa. Cada cita se recuerda una sola vez (las ya
  * recordadas se guardan, también entre reinicios).
+ * <p>
+ * Está en {@code citas} (y no en {@code notificaciones}) para que la dependencia sea en un solo sentido:
+ * citas → notificaciones.
  */
 public class ServicioRecordatorios {
 

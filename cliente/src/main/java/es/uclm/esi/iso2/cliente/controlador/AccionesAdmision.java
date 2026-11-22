@@ -12,8 +12,13 @@ import static es.uclm.esi.iso2.cliente.controlador.Campo.textoOpcional;
 
 import java.util.List;
 
-import es.uclm.esi.iso2.servidor.Servidor;
 import es.uclm.esi.iso2.servidor.agendas.DatosAgenda;
+import es.uclm.esi.iso2.servidor.api.ApiAgendas;
+import es.uclm.esi.iso2.servidor.api.ApiAtencion;
+import es.uclm.esi.iso2.servidor.api.ApiCitas;
+import es.uclm.esi.iso2.servidor.api.ApiEsperas;
+import es.uclm.esi.iso2.servidor.api.ApiInformesOperativos;
+import es.uclm.esi.iso2.servidor.api.ApiPacientes;
 import es.uclm.esi.iso2.servidor.catalogo.Modalidad;
 import es.uclm.esi.iso2.servidor.catalogo.Prioridad;
 import es.uclm.esi.iso2.servidor.pacientes.DatosPaciente;
@@ -39,12 +44,8 @@ final class AccionesAdmision {
         return todos;
     }
 
-    static List<Accion> crear(Servidor s) {
-        var pacientes = s.pacientes();
-        var agendas = s.agendas();
-        var citas = s.citas();
-        var esperas = s.esperas();
-        var atencion = s.atencion();
+    static List<Accion> crear(ApiPacientes pacientes, ApiAgendas agendas, ApiCitas citas, ApiEsperas esperas,
+            ApiAtencion atencion, ApiInformesOperativos informes) {
         return List.of(
                 // CU02
                 de("CU02 Pacientes", "Pacientes activos", (t, v) -> pacientes.listarActivos(t)),
@@ -95,7 +96,7 @@ final class AccionesAdmision {
                         v.largo(0), v.texto(1)), id("Id de la incidencia"), texto("Respuesta")),
                 de("CU15 Atención al paciente", "Encuestas respondidas", (t, v) -> atencion.encuestas(t)),
                 // CU21
-                de("CU21 Informes operativos", "Informe operativo", (t, v) -> s.informesOperativos().generar(t,
+                de("CU21 Informes operativos", "Informe operativo", (t, v) -> informes.generar(t,
                         v.fecha(0), v.fecha(1)), fecha("Desde"), fecha("Hasta")));
     }
 }

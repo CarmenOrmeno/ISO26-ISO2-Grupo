@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import es.uclm.esi.iso2.servidor.Simulados;
 import es.uclm.esi.iso2.servidor.api.ApiInformes;
 import es.uclm.esi.iso2.servidor.api.ApiRealizacion;
 import es.uclm.esi.iso2.servidor.catalogo.Modalidad;
@@ -50,7 +51,7 @@ class ControladorClinicoTest {
         String adm = e.token("admision1");
         assertEquals(EstadoCita.REALIZADA, e.servidor.citas().obtener(adm, cita).getEstado());
         assertEquals(EstadoSolicitud.REALIZADA, e.servidor.solicitudes().obtener(adm, solicitud).getEstado());
-        assertEquals(1, e.servidor.pacs().imagenes(solicitud).size());
+        assertEquals(1, Simulados.pacs(e.servidor).imagenes(solicitud).size());
         assertThrows(ReglaNegocioException.class,
                 () -> realizacion.registrarRealizacion(e.token("medico1"), cita, 1, "otra vez"));
     }
@@ -68,7 +69,7 @@ class ControladorClinicoTest {
     @Test
     @DisplayName("CU08: PACS caído, no se registra nada (la cita sigue activa)")
     void pacsCaido() {
-        e.servidor.pacs().setDisponible(false);
+        Simulados.pacs(e.servidor).setDisponible(false);
         e.reloj.fijar(Entorno.MANANA.atTime(9, 5));
         assertThrows(ReglaNegocioException.class,
                 () -> realizacion.registrarRealizacion(e.token("medico1"), cita, 1, ""));
