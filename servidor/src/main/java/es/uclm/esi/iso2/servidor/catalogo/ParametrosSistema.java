@@ -18,7 +18,7 @@ public class ParametrosSistema implements Serializable {
             Prioridad.URGENTE, 1, Prioridad.PREFERENTE, 15, Prioridad.ORDINARIO, 90));
     private int horasAntelacionRecordatorio = 24;
 
-    public void cambiarHorario(LocalTime nuevaApertura, LocalTime nuevoCierre) {
+    void cambiarHorario(LocalTime nuevaApertura, LocalTime nuevoCierre) {
         Validaciones.obligatorio(nuevaApertura, "apertura");
         Validaciones.obligatorio(nuevoCierre, "cierre");
         if (!nuevaApertura.isBefore(nuevoCierre)) {
@@ -32,7 +32,7 @@ public class ParametrosSistema implements Serializable {
      * Cambia el plazo máximo de espera de una prioridad. Debe mantenerse el orden
      * URGENTE ≤ PREFERENTE ≤ ORDINARIO y ser de al menos 1 día.
      */
-    public void cambiarPlazo(Prioridad prioridad, int dias) {
+    void cambiarPlazo(Prioridad prioridad, int dias) {
         Validaciones.obligatorio(prioridad, "prioridad");
         Validaciones.rango(dias, 1, 365, "plazo (días)");
         Map<Prioridad, Integer> propuesta = new EnumMap<>(plazoMaximoDias);
@@ -44,7 +44,7 @@ public class ParametrosSistema implements Serializable {
         plazoMaximoDias.put(prioridad, dias);
     }
 
-    public void cambiarHorasRecordatorio(int horas) {
+    void cambiarHorasRecordatorio(int horas) {
         horasAntelacionRecordatorio = Validaciones.rango(horas, 1, 168, "antelación del recordatorio (h)");
     }
 

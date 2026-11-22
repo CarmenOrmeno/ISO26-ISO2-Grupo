@@ -84,7 +84,7 @@ Pruebas de integración de la ItN:
 | Paquete del servidor | Líneas | Ramas | Paquete del servidor | Líneas | Ramas |
 |---|---:|---:|---|---:|---:|
 | `agendas` | 99,1 % | 93,8 % | `integracion` | 100 % | 100 % |
-| `atencion` | 96,9 % | 86,7 % | `interoperabilidad` | 95,4 % | 62,5 % |
+| `atencion` | 96,9 % | 86,7 % | `sincronizacion` | 95,4 % | 62,5 % |
 | `auditoria` | 100 % | 87,5 % | `notificaciones` | 97,6 % | 100 % |
 | `catalogo` | 100 % | 93,3 % | `pacientes` | 100 % | 100 % |
 | `citas` | 100 % | 92,4 % | `persistencia` | 88,4 % | 94,4 % |
@@ -98,7 +98,7 @@ Lo que no se cubre y por qué:
 - **Vista JavaFX** (`cliente.vista.fx`): necesita pantalla. Se excluye de JaCoCo (D-017) y se prueba a mano con
   una prueba de humo: carga de `login.fxml` y `principal.fxml`, inicio de sesión, consultas sin campos y
   formularios con texto, desplegable y fecha, y arranque desde el jar ejecutable.
-- **`interoperabilidad` (ramas 62,5 %)**: quedan sin probar combinaciones de fallo poco probables (un paciente
+- **`sincronizacion` (ramas 62,5 %)**: quedan sin probar combinaciones de fallo poco probables (un paciente
   de admisión que deja de ser válido entre la lectura y el alta, o una caída de la HCE a mitad de un envío
   con varios informes pendientes). Los casos principales de caída y recuperación sí están probados.
 - **`persistencia` (88,4 % de líneas)**: los errores de conexión de JDBC que no se pueden provocar sin parar

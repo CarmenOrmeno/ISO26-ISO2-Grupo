@@ -69,7 +69,7 @@ public class PoliticaPermisos implements ConsultaPermisos, Serializable {
                 .collect(Collectors.toCollection(() -> EnumSet.noneOf(Permiso.class))));
     }
 
-    public void conceder(Rol rol, Permiso permiso) {
+    void conceder(Rol rol, Permiso permiso) {
         comprobar(rol, permiso);
         revocados.get(rol).remove(permiso);
         if (!enLaBase(rol, permiso)) {
@@ -77,7 +77,7 @@ public class PoliticaPermisos implements ConsultaPermisos, Serializable {
         }
     }
 
-    public void revocar(Rol rol, Permiso permiso) {
+    void revocar(Rol rol, Permiso permiso) {
         comprobar(rol, permiso);
         concedidos.get(rol).remove(permiso);
         if (enLaBase(rol, permiso)) {
@@ -86,7 +86,7 @@ public class PoliticaPermisos implements ConsultaPermisos, Serializable {
     }
 
     /** Deshace todos los cambios: vuelve a la base. */
-    public void restablecer() {
+    void restablecer() {
         concedidos.values().forEach(Set::clear);
         revocados.values().forEach(Set::clear);
     }

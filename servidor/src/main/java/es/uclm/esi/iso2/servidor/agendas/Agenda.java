@@ -60,11 +60,11 @@ public class Agenda implements Serializable {
                 .orElseThrow(() -> new NoEncontradoException("La agenda " + id + " no tiene hueco a las " + hora));
     }
 
-    public void ocupar(LocalTime hora, long idCita) {
+    void ocupar(LocalTime hora, long idCita) {
         hueco(hora).ocupar(idCita);
     }
 
-    public void liberar(LocalTime hora) {
+    void liberar(LocalTime hora) {
         hueco(hora).liberar();
     }
 

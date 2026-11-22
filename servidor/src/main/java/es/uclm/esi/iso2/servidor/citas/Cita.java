@@ -37,7 +37,7 @@ public class Cita implements Serializable {
     }
 
     /** Mueve la cita a otro hueco; vuelve a PROGRAMADA (hay que confirmarla de nuevo). */
-    public void reprogramar(long nuevaAgenda, LocalDateTime nuevaFechaHora) {
+    void reprogramar(long nuevaAgenda, LocalDateTime nuevaFechaHora) {
         exigirActiva("reprogramar");
         idAgenda = nuevaAgenda;
         fechaHora = Validaciones.obligatorio(nuevaFechaHora, "fecha y hora");
@@ -46,7 +46,7 @@ public class Cita implements Serializable {
     }
 
     /** CU07: el paciente confirma su asistencia (solo desde PROGRAMADA). */
-    public void confirmar() {
+    void confirmar() {
         if (estado != EstadoCita.PROGRAMADA) {
             throw new ReglaNegocioException("Solo se puede confirmar una cita programada (está " + estado + ")");
         }
@@ -54,7 +54,7 @@ public class Cita implements Serializable {
     }
 
     /** CU07: el paciente pide un cambio; admisión la reprogramará (CU06). */
-    public void solicitarCambio(String motivo) {
+    void solicitarCambio(String motivo) {
         if (estado != EstadoCita.PROGRAMADA && estado != EstadoCita.CONFIRMADA) {
             throw new ReglaNegocioException("No se puede pedir un cambio de una cita " + estado);
         }
@@ -63,14 +63,14 @@ public class Cita implements Serializable {
     }
 
     /** CU08: la prueba se ha hecho. Solo desde PROGRAMADA o CONFIRMADA. */
-    public void marcarRealizada() {
+    void marcarRealizada() {
         if (estado != EstadoCita.PROGRAMADA && estado != EstadoCita.CONFIRMADA) {
             throw new ReglaNegocioException("No se puede registrar como realizada una cita " + estado);
         }
         estado = EstadoCita.REALIZADA;
     }
 
-    public void cancelar(String motivo, LocalDateTime cuando) {
+    void cancelar(String motivo, LocalDateTime cuando) {
         exigirActiva("cancelar");
         motivoCancelacion = Validaciones.texto(motivo, "motivo");
         fechaCancelacion = cuando;

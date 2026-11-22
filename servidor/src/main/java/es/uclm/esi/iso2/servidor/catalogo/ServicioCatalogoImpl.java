@@ -5,7 +5,6 @@ import java.util.List;
 
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
-import es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria;
 
 public class ServicioCatalogoImpl implements ServicioCatalogo {
 
@@ -23,17 +22,6 @@ public class ServicioCatalogoImpl implements ServicioCatalogo {
         this.almacenParametros = almacenParametros;
         this.parametros = almacenParametros.buscar(ID_PARAMETROS)
                 .orElseGet(() -> almacenParametros.guardar(new ParametrosSistema()));
-    }
-
-    /** Con unos parámetros dados, en memoria (pruebas). */
-    public ServicioCatalogoImpl(Repositorio<TipoPrueba, String> tipos, ParametrosSistema parametros) {
-        this(tipos, almacenCon(parametros));
-    }
-
-    private static Repositorio<ParametrosSistema, String> almacenCon(ParametrosSistema parametros) {
-        Repositorio<ParametrosSistema, String> almacen = new RepositorioEnMemoria<>(p -> ID_PARAMETROS);
-        almacen.guardar(parametros);
-        return almacen;
     }
 
     @Override

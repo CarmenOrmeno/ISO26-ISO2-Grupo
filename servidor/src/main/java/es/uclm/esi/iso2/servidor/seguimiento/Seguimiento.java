@@ -77,7 +77,7 @@ public class Seguimiento implements Serializable {
     }
 
     /** Anota la solicitud generada para la revisión pendiente; con la última, el seguimiento FINALIZA. */
-    public void registrarRevision(long idSolicitud) {
+    void registrarRevision(long idSolicitud) {
         exigirActivo("generar revisiones de");
         solicitudes.add(idSolicitud);
         if (solicitudes.size() == numeroRevisiones) {
@@ -86,7 +86,7 @@ public class Seguimiento implements Serializable {
     }
 
     /** ACTIVO → CANCELADO. Las solicitudes ya generadas no se tocan. */
-    public void cancelar(String motivo) {
+    void cancelar(String motivo) {
         exigirActivo("cancelar");
         motivoCancelacion = Validaciones.texto(motivo, "motivo");
         estado = EstadoSeguimiento.CANCELADO;

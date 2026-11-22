@@ -65,11 +65,11 @@ Cada componente expone **dos** interfaces:
 
 | Paquete | Responsabilidad | CU |
 |---|---|---|
-| `comun` | Repositorio genérico, `Secuencia` de ids, excepciones, validaciones | — |
-| `persistencia` | `FabricaRepositorios` (memoria o MySQL según el entorno), `RepositorioMySql`, `ConfiguracionBd` | D-018 |
+| `comun` | Interfaz `Repositorio`, `Secuencia` de ids, excepciones, validaciones | — |
+| `persistencia` | Implementaciones de `Repositorio` (`RepositorioEnMemoria`, `RepositorioMySql`), `FabricaRepositorios` (memoria o MySQL según el entorno), `ConfiguracionBd` | D-018 |
 | `seguridad` | Usuarios, sesiones, roles, permisos (política configurable), control de acceso, interfaz `Auditor` | CU01, CU17, CU18 |
 | `integracion` | Interfaces de SSO, HCE, Admisión, RIS/PACS (`SistemaExterno`) y simulados | CU01, CU09, CU19 |
-| `interoperabilidad` | Sincronizaciones con Admisión y HCE y estado de los sistemas externos | CU19 |
+| `sincronizacion` | Sincronizaciones con Admisión y HCE y estado de los sistemas externos (orquesta los adaptadores de `integracion`) | CU19 |
 | `pacientes` | Alta, modificación y baja de pacientes | CU02 |
 | `catalogo` | Tipos de prueba, modalidades, prioridades y parámetros | CU03 |
 | `solicitudes` | Solicitudes de prueba y su ciclo de vida | CU04, CU14 |
