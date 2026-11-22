@@ -1,4 +1,4 @@
-package es.uclm.esi.iso2.servidor.interoperabilidad;
+package es.uclm.esi.iso2.servidor.sincronizacion;
 
 /** Intercambios de datos con los sistemas hospitalarios que lanza el administrador (CU19). */
 public enum TipoSincronizacion {

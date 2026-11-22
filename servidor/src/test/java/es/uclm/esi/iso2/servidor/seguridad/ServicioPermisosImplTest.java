@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import es.uclm.esi.iso2.servidor.comun.NoEncontradoException;
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
-import es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria;
+import es.uclm.esi.iso2.servidor.persistencia.RepositorioEnMemoria;
 
 /** CU17 · Reglas de la gestión de roles y permisos. */
 class ServicioPermisosImplTest {

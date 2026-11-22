@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import es.uclm.esi.iso2.servidor.comun.AccesoDenegadoException;
 import es.uclm.esi.iso2.servidor.comun.NoEncontradoException;
 import es.uclm.esi.iso2.servidor.comun.RelojAjustable;
-import es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria;
+import es.uclm.esi.iso2.servidor.persistencia.RepositorioEnMemoria;
 
 class ServicioNotificacionesImplTest {
 

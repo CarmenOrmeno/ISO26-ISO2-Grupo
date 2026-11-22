@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import es.uclm.esi.iso2.servidor.comun.RelojAjustable;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
-import es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria;
+import es.uclm.esi.iso2.servidor.persistencia.RepositorioEnMemoria;
 import es.uclm.esi.iso2.servidor.seguridad.Permiso;
 import es.uclm.esi.iso2.servidor.seguridad.Rol;
 import es.uclm.esi.iso2.servidor.seguridad.Usuario;
