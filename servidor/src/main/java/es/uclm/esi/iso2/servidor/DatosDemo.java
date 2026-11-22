@@ -9,6 +9,7 @@ import es.uclm.esi.iso2.servidor.catalogo.Modalidad;
 import es.uclm.esi.iso2.servidor.catalogo.Prioridad;
 import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogo;
 import es.uclm.esi.iso2.servidor.catalogo.TipoPrueba;
+import es.uclm.esi.iso2.servidor.integracion.PacienteAdmision;
 import es.uclm.esi.iso2.servidor.pacientes.DatosPaciente;
 import es.uclm.esi.iso2.servidor.seguimiento.DatosSeguimiento;
 import es.uclm.esi.iso2.servidor.seguridad.Rol;
@@ -45,6 +46,11 @@ final class DatosDemo {
                 s.registrarCuentaSso(c.login(), CONTRASENA, c.nombre());
             }
         }
+        // CU19: padrón del sistema de admisión simulado (externo, en memoria): Lucía ya está en la aplicación
+        s.admision().registrar(new PacienteAdmision("12345678Z", "Lucía", "Martín Pérez", LocalDate.of(1980, 5, 14),
+                "600111222", "lucia@example.com"));
+        s.admision().registrar(new PacienteAdmision("11223344B", "Rosa", "Navarro Ortega", LocalDate.of(1992, 2, 20),
+                "926123456", null));
         if (primerArranque) {
             cargarDatosClinicos(s);
         }

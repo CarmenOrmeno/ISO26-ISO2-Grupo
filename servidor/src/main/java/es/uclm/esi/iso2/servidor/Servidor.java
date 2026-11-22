@@ -1,6 +1,7 @@
 package es.uclm.esi.iso2.servidor;
 
 import java.time.Clock;
+import java.util.List;
 
 import es.uclm.esi.iso2.servidor.agendas.Agenda;
 import es.uclm.esi.iso2.servidor.agendas.ServicioAgendas;
@@ -15,6 +16,7 @@ import es.uclm.esi.iso2.servidor.api.ApiEsperas;
 import es.uclm.esi.iso2.servidor.api.ApiEstadoSolicitudes;
 import es.uclm.esi.iso2.servidor.api.ApiHistorial;
 import es.uclm.esi.iso2.servidor.api.ApiInformes;
+import es.uclm.esi.iso2.servidor.api.ApiIntegracion;
 import es.uclm.esi.iso2.servidor.api.ApiMisCitas;
 import es.uclm.esi.iso2.servidor.api.ApiMisSeguimientos;
 import es.uclm.esi.iso2.servidor.api.ApiNotificaciones;
@@ -48,6 +50,7 @@ import es.uclm.esi.iso2.servidor.controlador.ControladorEsperas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorEstadoSolicitudes;
 import es.uclm.esi.iso2.servidor.controlador.ControladorHistorial;
 import es.uclm.esi.iso2.servidor.controlador.ControladorInformes;
+import es.uclm.esi.iso2.servidor.controlador.ControladorIntegracion;
 import es.uclm.esi.iso2.servidor.controlador.ControladorMisCitas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorMisSeguimientos;
 import es.uclm.esi.iso2.servidor.controlador.ControladorNotificaciones;
@@ -64,8 +67,13 @@ import es.uclm.esi.iso2.servidor.historial.ServicioHistorialImpl;
 import es.uclm.esi.iso2.servidor.informes.Informe;
 import es.uclm.esi.iso2.servidor.informes.ServicioInformes;
 import es.uclm.esi.iso2.servidor.informes.ServicioInformesImpl;
+import es.uclm.esi.iso2.servidor.integracion.AdmisionSimulado;
+import es.uclm.esi.iso2.servidor.integracion.HceSimulado;
 import es.uclm.esi.iso2.servidor.integracion.PacsSimulado;
 import es.uclm.esi.iso2.servidor.integracion.SsoSimulado;
+import es.uclm.esi.iso2.servidor.interoperabilidad.ServicioIntegracion;
+import es.uclm.esi.iso2.servidor.interoperabilidad.ServicioIntegracionImpl;
+import es.uclm.esi.iso2.servidor.interoperabilidad.Sincronizacion;
 import es.uclm.esi.iso2.servidor.notificaciones.Notificacion;
 import es.uclm.esi.iso2.servidor.notificaciones.ServicioNotificaciones;
 import es.uclm.esi.iso2.servidor.notificaciones.ServicioNotificacionesImpl;
@@ -105,6 +113,8 @@ public class Servidor {
     // --- infraestructura y seguridad (CU01) ---
     private final SsoSimulado sso = new SsoSimulado();
     private final PacsSimulado pacs = new PacsSimulado();
+    private final HceSimulado hce = new HceSimulado();
+    private final AdmisionSimulado admision = new AdmisionSimulado();
     private final Repositorio<Usuario, String> usuarios;
     private final ServicioPermisos servicioPermisos;
     private final ServicioAuditoria servicioAuditoria;
@@ -125,6 +135,7 @@ public class Servidor {
     private final ServicioEsperas servicioEsperas;
     private final ServicioHistorial servicioHistorial;
     private final ServicioAtencion servicioAtencion;
+    private final ServicioIntegracion servicioIntegracion;
 
     // --- api (contratos con el cliente) ---
     private final ApiSesion apiSesion;
@@ -146,6 +157,7 @@ public class Servidor {
     private final ApiAtencion apiAtencion;
     private final ApiPermisos apiPermisos;
     private final ApiAuditoria apiAuditoria;
+    private final ApiIntegracion apiIntegracion;
 
     /** Servidor con los datos en memoria (pruebas). */
     public Servidor(Clock reloj) {
@@ -190,6 +202,9 @@ public class Servidor {
         this.servicioAtencion = new ServicioAtencionImpl(
                 repositorios.crear("incidencias_paciente", IncidenciaPaciente::getId),
                 repositorios.crear("encuestas", Encuesta::idSolicitud), servicioSolicitudes, reloj);
+        this.servicioIntegracion = new ServicioIntegracionImpl(List.of(sso, hce, admision, pacs), admision, hce,
+                servicioPacientes, servicioInformes, repositorios.crear("informes_enviados_hce", (Long id) -> id),
+                repositorios.crear("sincronizaciones", Sincronizacion::id), reloj);
 
         // api
         this.apiSesion = new ControladorSesion(servicioSesion, acceso);
@@ -212,6 +227,7 @@ public class Servidor {
         this.apiAtencion = new ControladorAtencion(servicioAtencion, acceso);
         this.apiPermisos = new ControladorPermisos(servicioPermisos, acceso);
         this.apiAuditoria = new ControladorAuditoria(servicioAuditoria, acceso);
+        this.apiIntegracion = new ControladorIntegracion(servicioIntegracion, acceso);
     }
 
     /**
@@ -335,6 +351,10 @@ public class Servidor {
         return apiAuditoria;
     }
 
+    public ApiIntegracion integracion() {
+        return apiIntegracion;
+    }
+
     // --- servicios internos (datos de demostración) ---
     ServicioPacientes servicioPacientes() {
         return servicioPacientes;
@@ -368,8 +388,20 @@ public class Servidor {
         return servicioSeguimiento;
     }
 
-    /** PACS simulado (para pruebas de tolerancia a fallos y CU19). */
+    // --- sistemas externos simulados (datos de demostración y pruebas de tolerancia a fallos, CU19) ---
     public PacsSimulado pacs() {
         return pacs;
+    }
+
+    public HceSimulado hce() {
+        return hce;
+    }
+
+    public AdmisionSimulado admision() {
+        return admision;
+    }
+
+    public SsoSimulado sso() {
+        return sso;
     }
 }
