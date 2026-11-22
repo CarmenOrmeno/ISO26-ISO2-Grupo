@@ -428,20 +428,20 @@ public class Servidor {
         return servicioSeguimiento;
     }
 
-    // --- sistemas externos simulados (datos de demostración y pruebas de tolerancia a fallos, CU19) ---
-    public PacsSimulado pacs() {
+    // --- sistemas externos simulados: solo para los datos de demostración y las pruebas (no son API) ---
+    PacsSimulado pacs() {
         return pacs;
     }
 
-    public HceSimulado hce() {
+    HceSimulado hce() {
         return hce;
     }
 
-    public AdmisionSimulado admision() {
+    AdmisionSimulado admision() {
         return admision;
     }
 
-    public SsoSimulado sso() {
+    SsoSimulado sso() {
         return sso;
     }
 }
