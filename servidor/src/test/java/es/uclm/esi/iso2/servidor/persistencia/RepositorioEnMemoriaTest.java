@@ -1,4 +1,4 @@
-package es.uclm.esi.iso2.servidor.comun;
+package es.uclm.esi.iso2.servidor.persistencia;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -10,6 +10,9 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import es.uclm.esi.iso2.servidor.comun.NoEncontradoException;
+import es.uclm.esi.iso2.servidor.comun.Repositorio;
 
 class RepositorioEnMemoriaTest {
 

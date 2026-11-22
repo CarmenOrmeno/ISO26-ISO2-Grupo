@@ -2,8 +2,8 @@ package es.uclm.esi.iso2.servidor.api;
 
 import java.util.List;
 
-import es.uclm.esi.iso2.servidor.interoperabilidad.EstadoSistema;
-import es.uclm.esi.iso2.servidor.interoperabilidad.Sincronizacion;
+import es.uclm.esi.iso2.servidor.sincronizacion.EstadoSistema;
+import es.uclm.esi.iso2.servidor.sincronizacion.Sincronizacion;
 
 /** CU19 · Integrar con SSO, HCE, admisión y RIS/PACS (administrador). */
 public interface ApiIntegracion {

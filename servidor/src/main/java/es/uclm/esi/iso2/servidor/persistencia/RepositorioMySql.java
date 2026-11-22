@@ -23,7 +23,7 @@ import es.uclm.esi.iso2.servidor.comun.Repositorio;
 /**
  * {@link Repositorio} en MySQL. Cada entidad (agregado) se guarda serializada en una fila de su tabla,
  * identificada por su id; el orden de inserción se conserva como en {@link
- * es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria}. Al leer solo se admiten clases del servidor y del
+ * es.uclm.esi.iso2.servidor.persistencia.RepositorioEnMemoria}. Al leer solo se admiten clases del servidor y del
  * JDK (filtro de deserialización).
  */
 public class RepositorioMySql<T extends Serializable, ID> implements Repositorio<T, ID> {

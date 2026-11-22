@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import es.uclm.esi.iso2.servidor.persistencia.RepositorioEnMemoria;
+
 /** D-018 · Los ids continúan desde el mayor guardado y solo se consumen al confirmar. */
 class SecuenciaTest {
 

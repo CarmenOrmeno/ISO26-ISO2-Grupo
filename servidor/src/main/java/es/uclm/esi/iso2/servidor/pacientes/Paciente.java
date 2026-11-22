@@ -34,7 +34,7 @@ public class Paciente implements Serializable {
     }
 
     /** Modifica los datos. El DNI identifica al paciente y no se puede cambiar. */
-    public void modificar(DatosPaciente datos, LocalDate hoy) {
+    void modificar(DatosPaciente datos, LocalDate hoy) {
         Validaciones.obligatorio(datos, "datos");
         if (!dni.equals(Dni.normalizar(datos.dni()))) {
             throw new ReglaNegocioException("El DNI de un paciente no se puede modificar");
@@ -67,7 +67,7 @@ public class Paciente implements Serializable {
         this.email = correo;
     }
 
-    public void darDeBaja() {
+    void darDeBaja() {
         if (!activo) {
             throw new ReglaNegocioException("El paciente " + id + " ya estaba dado de baja");
         }

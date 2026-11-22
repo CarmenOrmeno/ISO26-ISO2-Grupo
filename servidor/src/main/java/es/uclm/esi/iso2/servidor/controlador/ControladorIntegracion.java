@@ -3,11 +3,11 @@ package es.uclm.esi.iso2.servidor.controlador;
 import java.util.List;
 
 import es.uclm.esi.iso2.servidor.api.ApiIntegracion;
-import es.uclm.esi.iso2.servidor.interoperabilidad.EstadoSistema;
-import es.uclm.esi.iso2.servidor.interoperabilidad.ServicioIntegracion;
-import es.uclm.esi.iso2.servidor.interoperabilidad.Sincronizacion;
 import es.uclm.esi.iso2.servidor.seguridad.ControlAcceso;
 import es.uclm.esi.iso2.servidor.seguridad.Permiso;
+import es.uclm.esi.iso2.servidor.sincronizacion.EstadoSistema;
+import es.uclm.esi.iso2.servidor.sincronizacion.ServicioIntegracion;
+import es.uclm.esi.iso2.servidor.sincronizacion.Sincronizacion;
 
 /** Las sincronizaciones mueven datos de pacientes e informes: se auditan (RNF-S2). */
 public class ControladorIntegracion implements ApiIntegracion {

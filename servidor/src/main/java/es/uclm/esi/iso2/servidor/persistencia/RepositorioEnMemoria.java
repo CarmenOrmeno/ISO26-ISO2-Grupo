@@ -1,4 +1,4 @@
-package es.uclm.esi.iso2.servidor.comun;
+package es.uclm.esi.iso2.servidor.persistencia;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+
+import es.uclm.esi.iso2.servidor.comun.NoEncontradoException;
+import es.uclm.esi.iso2.servidor.comun.Repositorio;
 
 /** Implementación en memoria de {@link Repositorio}; conserva el orden de inserción. */
 public class RepositorioEnMemoria<T, ID> implements Repositorio<T, ID> {

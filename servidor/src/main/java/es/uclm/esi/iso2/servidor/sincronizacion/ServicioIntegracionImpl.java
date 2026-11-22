@@ -1,4 +1,4 @@
-package es.uclm.esi.iso2.servidor.interoperabilidad;
+package es.uclm.esi.iso2.servidor.sincronizacion;
 
 import java.time.Clock;
 import java.time.LocalDateTime;

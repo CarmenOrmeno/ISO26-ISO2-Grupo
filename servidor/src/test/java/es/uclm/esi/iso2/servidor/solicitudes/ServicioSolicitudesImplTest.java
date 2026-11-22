@@ -19,11 +19,11 @@ import es.uclm.esi.iso2.servidor.comun.AccesoDenegadoException;
 import es.uclm.esi.iso2.servidor.comun.NoEncontradoException;
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.RelojAjustable;
-import es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria;
 import es.uclm.esi.iso2.servidor.pacientes.DatosPaciente;
 import es.uclm.esi.iso2.servidor.pacientes.Paciente;
 import es.uclm.esi.iso2.servidor.pacientes.ServicioPacientes;
 import es.uclm.esi.iso2.servidor.pacientes.ServicioPacientesImpl;
+import es.uclm.esi.iso2.servidor.persistencia.RepositorioEnMemoria;
 
 class ServicioSolicitudesImplTest {
 
@@ -37,7 +37,7 @@ class ServicioSolicitudesImplTest {
         pacientes.alta(new DatosPaciente("12345678Z", "L", "M", LocalDate.of(1980, 1, 1), "600000000", null));
         pacientes.alta(new DatosPaciente("87654321X", "A", "G", LocalDate.of(1960, 1, 1), "600000001", null));
         ServicioCatalogoImpl catalogo = new ServicioCatalogoImpl(new RepositorioEnMemoria<>(TipoPrueba::codigo),
-                new ParametrosSistema());
+                new RepositorioEnMemoria<>(p -> ServicioCatalogoImpl.ID_PARAMETROS));
         catalogo.alta(new TipoPrueba("RX-T", "Rx", Modalidad.RX, "RX1", 10, "", false, false, "", false));
         catalogo.alta(new TipoPrueba("US-A", "Eco", Modalidad.US, "E1", 20, "", false, false, "", true));
         servicio = new ServicioSolicitudesImpl(new RepositorioEnMemoria<>(SolicitudPrueba::getId), pacientes,

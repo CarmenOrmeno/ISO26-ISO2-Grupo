@@ -45,7 +45,9 @@ def convertir_enlaces(texto: str, origen: Path) -> str:
         else:
             relativa = absoluta.relative_to(RAIZ).as_posix()
             tipo = 'tree' if absoluta.is_dir() or destino.endswith('/') else 'blob'
-            nuevo = f'https://github.com/{REPO}/{tipo}/{RAMA}/{relativa}' + ('#' + ancla if ancla else '')
+            imagen = absoluta.suffix.lower() in ('.png', '.jpg', '.jpeg', '.gif', '.svg')
+            nuevo = (f'https://github.com/{REPO}/{tipo}/{RAMA}/{relativa}' + ('?raw=true' if imagen else '')
+                     + ('#' + ancla if ancla else ''))
         return m.group(1) + nuevo + m.group(3)
     return ENLACE_MD.sub(convertir, texto)
 
@@ -85,6 +87,9 @@ def barra_lateral(casos) -> str:
 
 **🏛️ Diseño**
 - [🏛️ Arquitectura](Arquitectura)
+
+**📘 Uso**
+- [📘 Manual de usuario y de despliegue](Manual-de-usuario)
 
 **🛠️ Procesos**
 - [🔀 Gestión de configuración](Plan-de-gestion-de-configuracion)

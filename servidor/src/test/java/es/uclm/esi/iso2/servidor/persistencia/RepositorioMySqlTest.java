@@ -48,12 +48,10 @@ class RepositorioMySqlTest {
     @Test
     @DisplayName("Guardar una entidad existente la actualiza sin duplicarla")
     void actualizar() {
-        Paciente p = paciente("PAC-1", "12345678Z");
-        pacientes.guardar(p);
-        p.darDeBaja();
-        pacientes.guardar(p);
+        pacientes.guardar(paciente("PAC-1", "12345678Z"));
+        pacientes.guardar(paciente("PAC-1", "87654321X")); // misma entidad (mismo id), datos nuevos
         assertEquals(1, pacientes.todos().size());
-        assertFalse(pacientes.obtener("PAC-1").isActivo());
+        assertEquals("87654321X", pacientes.obtener("PAC-1").getDni());
     }
 
     @Test

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.function.Function;
 
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
-import es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria;
 
 /** Repositorios en memoria: pruebas unitarias y ejecución sin base de datos (los datos no se conservan). */
 public class FabricaEnMemoria implements FabricaRepositorios {

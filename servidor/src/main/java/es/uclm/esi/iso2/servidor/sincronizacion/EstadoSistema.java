@@ -1,4 +1,4 @@
-package es.uclm.esi.iso2.servidor.interoperabilidad;
+package es.uclm.esi.iso2.servidor.sincronizacion;
 
 /** Situación de un sistema externo en el momento de la consulta (CU19). */
 public record EstadoSistema(String nombre, boolean disponible) {

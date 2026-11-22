@@ -49,19 +49,19 @@ public class SolicitudPrueba implements Serializable {
     }
 
     /** SOLICITADA → CITADA (CU06). */
-    public void citar() {
+    void citar() {
         exigirEstado("citar", EstadoSolicitud.SOLICITADA);
         estado = EstadoSolicitud.CITADA;
     }
 
     /** CITADA → SOLICITADA: se cancela la cita y la solicitud vuelve a la lista de espera. */
-    public void anularCita() {
+    void anularCita() {
         exigirEstado("anular la cita de", EstadoSolicitud.CITADA);
         estado = EstadoSolicitud.SOLICITADA;
     }
 
     /** CITADA → REALIZADA (CU08). */
-    public void registrarRealizacion(LocalDateTime fecha, String obs) {
+    void registrarRealizacion(LocalDateTime fecha, String obs) {
         exigirEstado("registrar la realización de", EstadoSolicitud.CITADA);
         fechaRealizacion = Validaciones.obligatorio(fecha, "fecha de realización");
         observaciones = obs == null ? "" : obs.strip();
@@ -69,20 +69,20 @@ public class SolicitudPrueba implements Serializable {
     }
 
     /** REALIZADA → INFORMADA (CU09). */
-    public void informar() {
+    void informar() {
         exigirEstado("informar", EstadoSolicitud.REALIZADA);
         estado = EstadoSolicitud.INFORMADA;
     }
 
     /** SOLICITADA → CANCELADA. Si está citada hay que cancelar antes la cita. */
-    public void cancelar(String motivo) {
+    void cancelar(String motivo) {
         exigirEstado("cancelar", EstadoSolicitud.SOLICITADA);
         motivoCancelacion = Validaciones.texto(motivo, "motivo");
         estado = EstadoSolicitud.CANCELADA;
     }
 
     /** Solo se puede repriorizar mientras espera cita (CU11). */
-    public void cambiarPrioridad(Prioridad nueva) {
+    void cambiarPrioridad(Prioridad nueva) {
         exigirEstado("cambiar la prioridad de", EstadoSolicitud.SOLICITADA);
         prioridad = Validaciones.obligatorio(nueva, "prioridad");
     }

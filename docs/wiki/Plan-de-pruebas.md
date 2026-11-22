@@ -50,7 +50,69 @@ durante la propia iteración se corrigen en la rama `feature` con commits `fix(C
 
 ## 📊 6. Resultados
 
-_Se completa al final con los resultados de `mvn verify site` (Surefire y JaCoCo)._
+Ejecución final de la iteración de transición (ItN, 22/11/2026): `mvn verify site site:stage` sobre la
+versión 1.0.1-SNAPSHOT (servidor 1.12.1, cliente 2.0.1), con MySQL 8.0 (`RADIO_DB_TEST_URL`). Los informes HTML
+están en `target/staging` (`surefire.html` y `servidor/jacoco`, `cliente/jacoco`); el CI repite la misma
+ejecución en cada PR con el servicio MySQL.
+
+### 6.1 Pruebas por nivel (Surefire)
+
+| Nivel | Clases | Pruebas | Fallos | Omitidas | Tiempo |
+|---|---:|---:|---:|---:|---:|
+| Unitarias (servidor): dominio y servicios | 29 | 262 | 0 | 0 | 2,6 s |
+| Integración (servidor): controladores + control de acceso + servicios reales | 21 | 167 | 0 | 0 | 10,4 s |
+| Integración (MySQL): `RepositorioMySql` y reinicio del servidor completo | 4 | 24 | 0 | 0 | 33,5 s |
+| Unitarias (cliente): campos, valores, resultados, sesión y arranque | 5 | 25 | 0 | 0 | 0,7 s |
+| Sistema (cliente): acciones de los 4 roles, consola y flujo completo | 3 | 15 | 0 | 0 | 1,6 s |
+| **Total** | **62** | **493** | **0** | **0** | |
+
+Pruebas de integración de la ItN:
+- `FlujoCompletoTest`: el ciclo de vida completo de una prueba con los cuatro roles a través del cliente
+  (CU04 → CU05 → CU11 → CU07 → CU12 → CU08 → CU09 → CU13 → CU15 → CU19 → CU18 → CU20 → CU21 → CU22).
+- `ServidorMySqlTest.cicloCompletoTrasReinicio`: el mismo ciclo contra MySQL; tras reiniciar se conservan los
+  datos y la HCE no recibe duplicados.
+- `CatalogoAccionesTest.accionesCoherentes`: cada acción de cada rol lee bien sus campos y está permitida por
+  la política de permisos del servidor.
+
+### 6.2 Cobertura (JaCoCo)
+
+| Módulo | Líneas | Ramas | Umbral (líneas) |
+|---|---:|---:|---:|
+| servidor | 98,7 % | 93,6 % | 75 % ✅ |
+| cliente (sin la vista JavaFX) | 97,2 % | 96,4 % | 75 % ✅ |
+
+| Paquete del servidor | Líneas | Ramas | Paquete del servidor | Líneas | Ramas |
+|---|---:|---:|---|---:|---:|
+| `agendas` | 99,1 % | 93,8 % | `integracion` | 100 % | 100 % |
+| `atencion` | 96,9 % | 86,7 % | `sincronizacion` | 95,4 % | 62,5 % |
+| `auditoria` | 100 % | 87,5 % | `notificaciones` | 97,6 % | 100 % |
+| `catalogo` | 100 % | 93,3 % | `pacientes` | 100 % | 100 % |
+| `citas` | 100 % | 92,4 % | `persistencia` | 88,4 % | 94,4 % |
+| `comun` | 100 % | 100 % | `realizacion` | 97,6 % | 83,3 % |
+| `controlador` | 100 % | 100 % | `seguimiento` | 98,1 % | 100 % |
+| `esperas` | 100 % | 92,9 % | `seguridad` | 100 % | 94,6 % |
+| `estadisticas` | 100 % | 94,1 % | `solicitudes` | 100 % | 100 % |
+| `historial` | 100 % | 93,8 % | `informes` | 95,0 % | 100 % |
+
+Lo que no se cubre y por qué:
+- **Vista JavaFX** (`cliente.vista.fx`): necesita pantalla. Se excluye de JaCoCo (D-017) y se prueba a mano con
+  una prueba de humo: carga de `login.fxml` y `principal.fxml`, inicio de sesión, consultas sin campos y
+  formularios con texto, desplegable y fecha, y arranque desde el jar ejecutable.
+- **`sincronizacion` (ramas 62,5 %)**: quedan sin probar combinaciones de fallo poco probables (un paciente
+  de admisión que deja de ser válido entre la lectura y el alta, o una caída de la HCE a mitad de un envío
+  con varios informes pendientes). Los casos principales de caída y recuperación sí están probados.
+- **`persistencia` (88,4 % de líneas)**: los errores de conexión de JDBC que no se pueden provocar sin parar
+  MySQL a mitad de una prueba.
+
+### 6.3 Fallos encontrados
+
+Durante las iteraciones se encontraron y corrigieron fallos en las propias pruebas (valores esperados o datos
+de preparación incorrectos); cada uno está documentado en la sección «Fallos encontrados» de su CU.
+
+En la ItN se encontró un problema de usabilidad: si MySQL está configurado (`RADIO_DB_URL`) pero no responde,
+el cliente terminaba con un volcado de pila. Ahora muestra la causa y cómo seguir y termina con código 1
+(`fix(ItN)`, prueba `MainTest`). Tras la revisión de calidad (PR #109) se añadió la detección de
+acciones del cliente mal construidas, comprobada con una prueba de mutación.
 
 ---
 

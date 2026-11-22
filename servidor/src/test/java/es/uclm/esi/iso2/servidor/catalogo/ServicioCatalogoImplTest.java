@@ -10,15 +10,22 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import es.uclm.esi.iso2.servidor.comun.NoEncontradoException;
-import es.uclm.esi.iso2.servidor.comun.Repositorio;
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
-import es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria;
+import es.uclm.esi.iso2.servidor.comun.Repositorio;
+import es.uclm.esi.iso2.servidor.persistencia.RepositorioEnMemoria;
 
 class ServicioCatalogoImplTest {
 
     private final ParametrosSistema parametros = new ParametrosSistema();
     private final ServicioCatalogo servicio = new ServicioCatalogoImpl(
-            new RepositorioEnMemoria<>(TipoPrueba::codigo), parametros);
+            new RepositorioEnMemoria<>(TipoPrueba::codigo), almacenCon(parametros));
+
+    /** Almacén de parámetros que ya contiene los indicados (como si estuvieran guardados). */
+    private static Repositorio<ParametrosSistema, String> almacenCon(ParametrosSistema p) {
+        Repositorio<ParametrosSistema, String> almacen = new RepositorioEnMemoria<>(x -> ServicioCatalogoImpl.ID_PARAMETROS);
+        almacen.guardar(p);
+        return almacen;
+    }
 
     private static TipoPrueba tipo(String codigo, Modalidad m, int min) {
         return new TipoPrueba(codigo, "Prueba " + codigo, m, "S1", min, "", false, false, "", false);

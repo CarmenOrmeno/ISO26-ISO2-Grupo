@@ -21,9 +21,9 @@ import es.uclm.esi.iso2.servidor.comun.AccesoDenegadoException;
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.integracion.DocumentoHce;
 import es.uclm.esi.iso2.servidor.integracion.PacienteAdmision;
-import es.uclm.esi.iso2.servidor.interoperabilidad.EstadoSistema;
-import es.uclm.esi.iso2.servidor.interoperabilidad.Sincronizacion;
-import es.uclm.esi.iso2.servidor.interoperabilidad.TipoSincronizacion;
+import es.uclm.esi.iso2.servidor.sincronizacion.EstadoSistema;
+import es.uclm.esi.iso2.servidor.sincronizacion.Sincronizacion;
+import es.uclm.esi.iso2.servidor.sincronizacion.TipoSincronizacion;
 
 /** It12 · CU19 Integrar con SSO, HCE, admisión y RIS/PACS. */
 class ControladorIntegracionTest {
