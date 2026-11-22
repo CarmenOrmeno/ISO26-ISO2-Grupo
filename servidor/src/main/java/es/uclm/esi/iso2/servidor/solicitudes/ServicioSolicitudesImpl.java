@@ -31,6 +31,11 @@ public class ServicioSolicitudesImpl implements ServicioSolicitudes {
         return registrar(loginMedico, datos, null);
     }
 
+    @Override
+    public SolicitudPrueba solicitarSeguimiento(String loginMedico, DatosSolicitud datos, long idSeguimiento) {
+        return registrar(loginMedico, datos, idSeguimiento);
+    }
+
     /** Crea y guarda una solicitud validando paciente, tipo y duplicados. */
     protected SolicitudPrueba registrar(String loginMedico, DatosSolicitud datos, Long idSeguimiento) {
         SolicitudPrueba solicitud = new SolicitudPrueba(secuencia + 1, loginMedico, datos,

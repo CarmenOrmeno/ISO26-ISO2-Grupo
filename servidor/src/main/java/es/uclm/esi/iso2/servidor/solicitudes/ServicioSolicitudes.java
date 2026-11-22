@@ -8,6 +8,9 @@ public interface ServicioSolicitudes {
     /** CU04: el médico solicita una prueba para un paciente activo y un tipo del catálogo. */
     SolicitudPrueba solicitar(String loginMedico, DatosSolicitud datos);
 
+    /** CU10: solicitud generada por una revisión de un seguimiento (mismas validaciones que CU04). */
+    SolicitudPrueba solicitarSeguimiento(String loginMedico, DatosSolicitud datos, long idSeguimiento);
+
     /** Solo el médico que la pidió puede cancelarla, y solo si aún no está citada. */
     void cancelar(long idSolicitud, String loginMedico, String motivo);
 

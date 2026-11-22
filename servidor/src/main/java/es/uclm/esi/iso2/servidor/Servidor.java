@@ -10,9 +10,11 @@ import es.uclm.esi.iso2.servidor.api.ApiCatalogo;
 import es.uclm.esi.iso2.servidor.api.ApiCitas;
 import es.uclm.esi.iso2.servidor.api.ApiInformes;
 import es.uclm.esi.iso2.servidor.api.ApiMisCitas;
+import es.uclm.esi.iso2.servidor.api.ApiMisSeguimientos;
 import es.uclm.esi.iso2.servidor.api.ApiNotificaciones;
 import es.uclm.esi.iso2.servidor.api.ApiPacientes;
 import es.uclm.esi.iso2.servidor.api.ApiRealizacion;
+import es.uclm.esi.iso2.servidor.api.ApiSeguimiento;
 import es.uclm.esi.iso2.servidor.api.ApiSesion;
 import es.uclm.esi.iso2.servidor.api.ApiSolicitudes;
 import es.uclm.esi.iso2.servidor.catalogo.ParametrosSistema;
@@ -29,9 +31,11 @@ import es.uclm.esi.iso2.servidor.controlador.ControladorCatalogo;
 import es.uclm.esi.iso2.servidor.controlador.ControladorCitas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorInformes;
 import es.uclm.esi.iso2.servidor.controlador.ControladorMisCitas;
+import es.uclm.esi.iso2.servidor.controlador.ControladorMisSeguimientos;
 import es.uclm.esi.iso2.servidor.controlador.ControladorNotificaciones;
 import es.uclm.esi.iso2.servidor.controlador.ControladorPacientes;
 import es.uclm.esi.iso2.servidor.controlador.ControladorRealizacion;
+import es.uclm.esi.iso2.servidor.controlador.ControladorSeguimiento;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSesion;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSolicitudes;
 import es.uclm.esi.iso2.servidor.informes.Informe;
@@ -49,6 +53,9 @@ import es.uclm.esi.iso2.servidor.pacientes.ServicioPacientesImpl;
 import es.uclm.esi.iso2.servidor.realizacion.Incidencia;
 import es.uclm.esi.iso2.servidor.realizacion.ServicioRealizacion;
 import es.uclm.esi.iso2.servidor.realizacion.ServicioRealizacionImpl;
+import es.uclm.esi.iso2.servidor.seguimiento.Seguimiento;
+import es.uclm.esi.iso2.servidor.seguimiento.ServicioSeguimiento;
+import es.uclm.esi.iso2.servidor.seguimiento.ServicioSeguimientoImpl;
 import es.uclm.esi.iso2.servidor.seguridad.ControlAcceso;
 import es.uclm.esi.iso2.servidor.seguridad.PoliticaPermisos;
 import es.uclm.esi.iso2.servidor.seguridad.Rol;
@@ -85,6 +92,7 @@ public class Servidor {
     private final ServicioRecordatorios servicioRecordatorios;
     private final ServicioRealizacion servicioRealizacion;
     private final ServicioInformes servicioInformes;
+    private final ServicioSeguimiento servicioSeguimiento;
 
     // --- api (contratos con el cliente) ---
     private final ApiSesion apiSesion;
@@ -97,6 +105,8 @@ public class Servidor {
     private final ApiNotificaciones apiNotificaciones;
     private final ApiRealizacion apiRealizacion;
     private final ApiInformes apiInformes;
+    private final ApiSeguimiento apiSeguimiento;
+    private final ApiMisSeguimientos apiMisSeguimientos;
 
     public Servidor(Clock reloj) {
         this.reloj = reloj;
@@ -121,6 +131,8 @@ public class Servidor {
                 new RepositorioEnMemoria<>(Incidencia::id), reloj);
         this.servicioInformes = new ServicioInformesImpl(new RepositorioEnMemoria<>(Informe::id), servicioSolicitudes,
                 servicioCitas, servicioAgendas, pacs, servicioNotificaciones, reloj);
+        this.servicioSeguimiento = new ServicioSeguimientoImpl(new RepositorioEnMemoria<>(Seguimiento::getId),
+                servicioPacientes, servicioCatalogo, servicioSolicitudes, servicioNotificaciones, reloj);
 
         // api
         this.apiSesion = new ControladorSesion(servicioSesion, acceso);
@@ -133,6 +145,8 @@ public class Servidor {
         this.apiNotificaciones = new ControladorNotificaciones(servicioNotificaciones, servicioRecordatorios, acceso);
         this.apiRealizacion = new ControladorRealizacion(servicioRealizacion, acceso);
         this.apiInformes = new ControladorInformes(servicioInformes, servicioSolicitudes, acceso);
+        this.apiSeguimiento = new ControladorSeguimiento(servicioSeguimiento, acceso);
+        this.apiMisSeguimientos = new ControladorMisSeguimientos(servicioSeguimiento, servicioSolicitudes, acceso);
     }
 
     /** Servidor con el reloj del sistema y los datos de demostración cargados. */
@@ -197,6 +211,14 @@ public class Servidor {
         return apiInformes;
     }
 
+    public ApiSeguimiento seguimiento() {
+        return apiSeguimiento;
+    }
+
+    public ApiMisSeguimientos misSeguimientos() {
+        return apiMisSeguimientos;
+    }
+
     // --- servicios internos (datos de demostración) ---
     ServicioPacientes servicioPacientes() {
         return servicioPacientes;
@@ -224,6 +246,10 @@ public class Servidor {
 
     ServicioInformes servicioInformes() {
         return servicioInformes;
+    }
+
+    ServicioSeguimiento servicioSeguimiento() {
+        return servicioSeguimiento;
     }
 
     /** PACS simulado (para pruebas de tolerancia a fallos y CU19). */
