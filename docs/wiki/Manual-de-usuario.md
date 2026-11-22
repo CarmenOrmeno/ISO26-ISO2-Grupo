@@ -2,7 +2,7 @@
 
 [🏠 Inicio](Home.md)
 
-> Cómo instalar, arrancar y usar la aplicación de Radiodiagnóstico (v1.0): requisitos, base de datos, la
+> Cómo instalar, arrancar y usar la aplicación de Radiodiagnóstico (v1.0.1): requisitos, base de datos, la
 > ventana principal, qué puede hacer cada perfil, un recorrido guiado y solución de problemas.
 
 ---
@@ -23,10 +23,10 @@ bibliotecas nativas: constrúyelo en el mismo sistema en el que se va a usar.
 ```bash
 git clone https://github.com/CarmenOrmeno/ISO26-ISO2-Grupo.git
 cd ISO26-ISO2-Grupo
-git checkout v1.0.0                                   # versión publicada
+git checkout v1.0.1                                   # versión publicada
 mvn -q install -DskipTests                            # construye servidor y cliente
-java -jar cliente/target/cliente-2.0.0.jar            # vista gráfica (JavaFX)
-java -jar cliente/target/cliente-2.0.0.jar --consola  # vista de consola
+java -jar cliente/target/cliente-2.0.1.jar            # vista gráfica (JavaFX)
+java -jar cliente/target/cliente-2.0.1.jar --consola  # vista de consola
 ```
 
 También se puede abrir desde Maven con `mvn -q -pl cliente javafx:run` (después del `install`). Al
@@ -41,7 +41,7 @@ mysql -uroot -p < scripts/crear-bd.sql                # una vez: bases de datos 
 export RADIO_DB_URL=jdbc:mysql://127.0.0.1:3306/radiodiagnostico
 export RADIO_DB_USUARIO=radiodiagnostico
 export RADIO_DB_CLAVE=<tu clave>
-java -jar cliente/target/cliente-2.0.0.jar
+java -jar cliente/target/cliente-2.0.1.jar
 ```
 
 - Las tablas se crean solas al arrancar. Los datos de demostración solo se cargan si la base de datos está vacía.
@@ -131,8 +131,8 @@ Es el mismo recorrido que comprueba la prueba de integración `FlujoCompletoTest
 
 ## 📦 9. Despliegue y versiones
 
-- Cada versión publicada es una etiqueta en `main` con su release en GitHub (Git Flow, D-006). La v1.0.0
-  incluye servidor 1.12.0 y cliente 2.0.0.
+- Cada versión publicada es una etiqueta en `main` con su release en GitHub (Git Flow, D-006). La v1.0.1
+  incluye servidor 1.12.1 y cliente 2.0.1.
 - El CI (GitHub Actions) construye y pasa todas las pruebas, también contra un MySQL 8.0, en cada PR y en
   cada push a `main` y `develop`.
 - Los informes de pruebas y cobertura se generan con `mvn verify site site:stage` (`target/staging`); el

@@ -45,6 +45,7 @@
 | 🏷️ [v0.1.0](https://github.com/CarmenOrmeno/ISO26-ISO2-Grupo/releases/tag/v0.1.0) | 08/11 | Línea base de la arquitectura: CU01–CU06 | ✅ |
 | 🏷️ [v0.2.0](https://github.com/CarmenOrmeno/ISO26-ISO2-Grupo/releases/tag/v0.2.0) | 22/11 | Flujo clínico y avisos al paciente: servidor de CU07–CU12, CU14, CU16 | ✅ |
 | 🏷️ [v1.0.0](https://github.com/CarmenOrmeno/ISO26-ISO2-Grupo/releases/tag/v1.0.0) | 22/11 | Producto completo: CU13, CU15, CU17–CU22, cliente JavaFX y persistencia MySQL | ✅ |
+| 🏷️ [v1.0.1](https://github.com/CarmenOrmeno/ISO26-ISO2-Grupo/releases/tag/v1.0.1) | 22/11 | Transición: pruebas de integración, manual de usuario y de despliegue, encapsulación del dominio | ✅ |
 
 ### Casos de uso
 
