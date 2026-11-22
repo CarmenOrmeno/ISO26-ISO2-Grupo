@@ -45,8 +45,11 @@ public enum Permiso {
     GESTIONAR_LISTAS_ESPERA(true, ADMINISTRATIVO),
     CONSULTAR_ESTADO_SOLICITUDES(true, MEDICO),
     CONSULTAR_DISPONIBILIDAD(false, MEDICO),
-    // It11: CU13
-    CONSULTAR_MI_HISTORIAL(true, PACIENTE);
+    // It11: CU13 y CU15
+    CONSULTAR_MI_HISTORIAL(true, PACIENTE),
+    COMUNICAR_INCIDENCIAS(false, PACIENTE),
+    RESPONDER_ENCUESTAS(false, PACIENTE),
+    ATENDER_INCIDENCIAS(false, ADMINISTRATIVO);
 
     private final boolean datosClinicos;
     private final Set<Rol> rolesPorDefecto;
