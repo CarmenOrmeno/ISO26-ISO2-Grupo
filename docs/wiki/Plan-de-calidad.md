@@ -1,6 +1,12 @@
-# Plan de calidad (Quality by Design · ISO/IEC 25010)
+# 🛡️ Plan de calidad (Quality by Design · ISO/IEC 25010)
 
-## 1. Características seleccionadas y justificación
+[🏠 Inicio](Home.md)
+
+> Calidad desde el diseño: características ISO/IEC 25010 priorizadas, requisitos derivados, controles y métricas.
+
+---
+
+## ⭐ 1. Características seleccionadas y justificación
 
 El producto gestiona **datos clínicos** de pacientes, se integra con sistemas hospitalarios y lo
 desarrolla un equipo con apoyo de agentes de IA. Por eso se priorizan (D-012):
@@ -12,7 +18,7 @@ desarrolla un equipo con apoyo de agentes de IA. Por eso se priorizan (D-012):
 | 3 | **Mantenibilidad** · modularidad, testabilidad, modificabilidad | Desarrollo iterativo por CU con agentes: cada iteración debe poder cambiar un componente sin romper otros |
 | 4 | **Compatibilidad** · interoperabilidad | El enunciado exige integración con SSO, HCE, admisión y RIS/PACS (DICOM, HL7, FHIR) |
 
-## 2. Implicaciones en requisitos
+## 📌 2. Implicaciones en requisitos
 
 | Característica | Requisitos funcionales derivados | Requisitos no funcionales derivados |
 |---|---|---|
@@ -21,7 +27,7 @@ desarrolla un equipo con apoyo de agentes de IA. Por eso se priorizan (D-012):
 | Mantenibilidad | — | RNF-M1: capas api/controlador/servicio/dominio/persistencia sin saltos (CONTEXT.md). RNF-M2: los servicios dependen de interfaces y reciben las dependencias por constructor (DIP). RNF-M3: el reloj es inyectable (D-010). RNF-M4: un componente (paquete) por CU |
 | Compatibilidad | CU19 Integrar sistemas hospitalarios | RNF-C1: cada sistema externo se accede solo a través de su interfaz (`ProveedorSso`, `SistemaHce`, `SistemaAdmision`, `SistemaPacs`). RNF-C2: los identificadores de estudio de imagen siguen el formato DICOM *Study Instance UID* |
 
-## 3. Dónde, cómo y cuándo se controla
+## 🔍 3. Dónde, cómo y cuándo se controla
 
 | Característica | Dónde (artefacto) | Cómo (técnica / herramienta) | Cuándo |
 |---|---|---|---|
@@ -30,7 +36,7 @@ desarrolla un equipo con apoyo de agentes de IA. Por eso se priorizan (D-012):
 | Mantenibilidad | Estructura de paquetes, constructores | Revisión SOLID en el PR; las pruebas usan *fakes* (repositorio en memoria), si una clase es difícil de probar se refactoriza | En cada PR; refactorización en la iteración siguiente |
 | Compatibilidad | Paquete `integracion` | Pruebas del contrato con los simulados; pruebas de integración en ItN | CU19 e ItN |
 
-## 4. Métricas y umbrales
+## 📏 4. Métricas y umbrales
 
 | Métrica | Herramienta | Umbral |
 |---|---|---|
@@ -40,8 +46,12 @@ desarrolla un equipo con apoyo de agentes de IA. Por eso se priorizan (D-012):
 | Operaciones de la API sin permiso exigido | Revisión de código | 0 |
 | Dependencias de servicio a clases concretas de otro componente | Revisión de código | 0 |
 
-## 5. Refactorización asistida por IA
+## 🤖 5. Refactorización asistida por IA
 
 Tras cada release se pide al agente un análisis de *code smells* (métodos largos, duplicación, clases con
 varias responsabilidades) sobre el código fusionado. El equipo decide qué refactorizar; el agente lo aplica
 en una rama `feature/refactor-<tema>` y las pruebas existentes garantizan que no cambia el comportamiento.
+
+---
+
+[🏠 Inicio](Home.md) · [⬆️ Arriba](#)

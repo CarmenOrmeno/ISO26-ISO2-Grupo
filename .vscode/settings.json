@@ -1,4 +1,4 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.configuration.updateBuildConfiguration": "automatic",
     "maven.executable.path": "/Users/Carmen/.maven/maven-3.9.16/bin/mvn"
 }

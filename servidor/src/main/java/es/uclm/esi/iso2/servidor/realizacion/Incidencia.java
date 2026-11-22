@@ -1,12 +1,13 @@
 package es.uclm.esi.iso2.servidor.realizacion;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import es.uclm.esi.iso2.servidor.comun.Validaciones;
 
 /** Incidencia registrada por el médico durante la realización de una prueba (CU08). */
 public record Incidencia(long id, long idCita, TipoIncidencia tipo, String descripcion, String autor,
-        LocalDateTime fecha) {
+        LocalDateTime fecha) implements Serializable {
 
     public Incidencia {
         Validaciones.obligatorio(tipo, "tipo");

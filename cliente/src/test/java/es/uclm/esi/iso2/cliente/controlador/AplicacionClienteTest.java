@@ -6,14 +6,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import es.uclm.esi.iso2.cliente.vista.Guion;
-import es.uclm.esi.iso2.servidor.Servidor;
-import es.uclm.esi.iso2.servidor.seguridad.Rol;
 
+/** Sistema: la vista de consola con entrada simulada. */
 class AplicacionClienteTest {
 
     private String ejecutar(String... lineas) {
         Guion g = new Guion(lineas);
-        FabricaMenus.crear(g.consola(), Servidor.conDatosDemo()).ejecutar();
+        new AplicacionCliente(g.consola(), CatalogoAcciones.sesion(Demo.servidor())).ejecutar();
         return g.salida();
     }
 
@@ -22,6 +21,7 @@ class AplicacionClienteTest {
     void iniciarSesionYPerfil() {
         String salida = ejecutar("medico1", "demo", "1", "0", "");
         assertTrue(salida.contains("Bienvenido/a, Dr. Javier Ruiz Gómez (MEDICO)"));
+        assertTrue(salida.contains("1. CU01 Mi cuenta · Mi perfil"));
         assertTrue(salida.contains("login=medico1"));
         assertTrue(salida.contains("Sesión cerrada"));
         assertTrue(salida.contains("Hasta pronto"));
@@ -30,8 +30,25 @@ class AplicacionClienteTest {
     @Test
     @DisplayName("CU01: contraseña incorrecta muestra el error y vuelve a pedir usuario")
     void contrasenaIncorrecta() {
-        String salida = ejecutar("medico1", "mala", "");
-        assertTrue(salida.contains("ERROR: Usuario o contraseña incorrectos"));
+        assertTrue(ejecutar("medico1", "mala", "").contains("ERROR: Usuario o contraseña incorrectos"));
+    }
+
+    @Test
+    @DisplayName("Una acción con campos: los pide con su formato y muestra el resultado (CU02)")
+    void accionConCampos() {
+        // admisión: 1 perfil, 2 pacientes activos, 3 buscar por DNI
+        String salida = ejecutar("admision1", "demo", "3", "12345678Z", "0", "");
+        assertTrue(salida.contains("DNI (texto): "));
+        assertTrue(salida.contains("Lucía"));
+    }
+
+    @Test
+    @DisplayName("Un valor mal escrito muestra el error y el menú continúa")
+    void valorInvalido() {
+        // admisión: 8 agendas de un día (1 perfil, 2–7 pacientes)
+        String salida = ejecutar("admision1", "demo", "8", "ayer", "0", "");
+        assertTrue(salida.contains("ERROR: «ayer» no es válido en «Fecha» (AAAA-MM-DD)"));
+        assertTrue(salida.contains("Sesión cerrada"));
     }
 
     @Test
@@ -40,27 +57,5 @@ class AplicacionClienteTest {
         String salida = ejecutar("admin1", "demo");
         assertTrue(salida.contains("Sesión cerrada"));
         assertTrue(salida.contains("Hasta pronto"));
-    }
-
-    @Test
-    @DisplayName("Rol sin menú configurado muestra un error")
-    void rolSinMenu() {
-        Guion g = new Guion("paciente1", "demo", "");
-        Servidor s = Servidor.conDatosDemo();
-        new AplicacionCliente(g.consola(), s.sesion())
-                .conMenu(Rol.MEDICO, new Menu("M", g.consola(), s.sesion())).ejecutar();
-        assertTrue(g.salida().contains("No hay menú para el rol PACIENTE"));
-    }
-
-    @Test
-    @DisplayName("Un error del servidor dentro de una opción se muestra y el menú continúa")
-    void errorEnOpcion() {
-        Guion g = new Guion("admin1", "demo", "2", "0", "");
-        Servidor s = Servidor.conDatosDemo();
-        Menu menu = new Menu("M", g.consola(), s.sesion()).agregar("Falla", t -> {
-            throw new IllegalStateException("fallo simulado");
-        });
-        new AplicacionCliente(g.consola(), s.sesion()).conMenu(Rol.ADMINISTRADOR, menu).ejecutar();
-        assertTrue(g.salida().contains("ERROR: fallo simulado"));
     }
 }

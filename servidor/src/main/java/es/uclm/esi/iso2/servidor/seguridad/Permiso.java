@@ -10,7 +10,7 @@ import java.util.Set;
 
 /**
  * Operaciones protegidas de la API (D-011). Cada permiso declara si accede a datos clínicos (se
- * audita, RNF-S2) y a qué roles se concede en la política por defecto. Añadir un permiso no obliga a
+ * audita, RNF-S2; los accesos denegados se auditan siempre, CU18) y a qué roles se concede en la política por defecto. Añadir un permiso no obliga a
  * modificar {@link PoliticaPermisos} (principio abierto/cerrado).
  */
 public enum Permiso {
@@ -44,7 +44,22 @@ public enum Permiso {
     // It10: CU11 y CU14
     GESTIONAR_LISTAS_ESPERA(true, ADMINISTRATIVO),
     CONSULTAR_ESTADO_SOLICITUDES(true, MEDICO),
-    CONSULTAR_DISPONIBILIDAD(false, MEDICO);
+    CONSULTAR_DISPONIBILIDAD(false, MEDICO),
+    // It11: CU13 y CU15
+    CONSULTAR_MI_HISTORIAL(true, PACIENTE),
+    COMUNICAR_INCIDENCIAS(false, PACIENTE),
+    RESPONDER_ENCUESTAS(false, PACIENTE),
+    ATENDER_INCIDENCIAS(false, ADMINISTRATIVO),
+    // It12: CU17
+    GESTIONAR_PERMISOS(false, ADMINISTRADOR),
+    // It12: CU18
+    CONSULTAR_AUDITORIA(false, ADMINISTRADOR),
+    // It12: CU19
+    GESTIONAR_INTEGRACIONES(true, ADMINISTRADOR),
+    // It13: CU20, CU21 y CU22
+    CONSULTAR_MIS_ESTADISTICAS(false, MEDICO),
+    GENERAR_INFORMES_OPERATIVOS(false, ADMINISTRATIVO),
+    CONSULTAR_ESTADISTICAS_GLOBALES(false, ADMINISTRADOR);
 
     private final boolean datosClinicos;
     private final Set<Rol> rolesPorDefecto;

@@ -10,6 +10,7 @@ import es.uclm.esi.iso2.servidor.citas.ServicioCitas;
 import es.uclm.esi.iso2.servidor.comun.AccesoDenegadoException;
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
+import es.uclm.esi.iso2.servidor.comun.Secuencia;
 import es.uclm.esi.iso2.servidor.integracion.SistemaPacs;
 import es.uclm.esi.iso2.servidor.solicitudes.ServicioSolicitudes;
 
@@ -21,7 +22,7 @@ public class ServicioRealizacionImpl implements ServicioRealizacion {
     private final SistemaPacs pacs;
     private final Repositorio<Incidencia, Long> incidencias;
     private final Clock reloj;
-    private long secuencia;
+    private final Secuencia secuencia;
 
     public ServicioRealizacionImpl(ServicioCitas citas, ServicioSolicitudes solicitudes, ServicioAgendas agendas,
             SistemaPacs pacs, Repositorio<Incidencia, Long> incidencias, Clock reloj) {
@@ -30,6 +31,7 @@ public class ServicioRealizacionImpl implements ServicioRealizacion {
         this.agendas = agendas;
         this.pacs = pacs;
         this.incidencias = incidencias;
+        this.secuencia = Secuencia.continuando(incidencias, Incidencia::id);
         this.reloj = reloj;
     }
 
@@ -50,9 +52,9 @@ public class ServicioRealizacionImpl implements ServicioRealizacion {
     @Override
     public Incidencia registrarIncidencia(long idCita, String loginMedico, TipoIncidencia tipo, String descripcion) {
         citaDelMedico(idCita, loginMedico);
-        Incidencia incidencia = new Incidencia(secuencia + 1, idCita, tipo, descripcion, loginMedico,
+        Incidencia incidencia = new Incidencia(secuencia.siguiente(), idCita, tipo, descripcion, loginMedico,
                 LocalDateTime.now(reloj));
-        secuencia++;
+        secuencia.confirmar();
         return incidencias.guardar(incidencia);
     }
 

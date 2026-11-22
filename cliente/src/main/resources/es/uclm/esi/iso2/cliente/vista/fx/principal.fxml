@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Ventana principal: acciones del rol (izquierda), formulario y resultado (centro) -->
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="es.uclm.esi.iso2.cliente.vista.fx.ControladorPrincipal">
+    <top>
+        <HBox styleClass="cabecera" spacing="12" alignment="CENTER_LEFT">
+            <padding><Insets top="10" right="16" bottom="10" left="16"/></padding>
+            <Label text="Radiodiagnóstico SESCAM" styleClass="marca"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="usuario" styleClass="usuario"/>
+            <Button text="Cerrar sesión" onAction="#cerrarSesion"/>
+        </HBox>
+    </top>
+    <left>
+        <TreeView fx:id="acciones" prefWidth="320" styleClass="acciones"/>
+    </left>
+    <center>
+        <VBox spacing="12">
+            <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+            <Label fx:id="titulo" text="Elige una acción" styleClass="titulo-accion"/>
+            <ScrollPane fitToWidth="true" maxHeight="320" styleClass="formulario">
+                <GridPane fx:id="formulario" hgap="12" vgap="8"/>
+            </ScrollPane>
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Button fx:id="ejecutar" text="Ejecutar" defaultButton="true" onAction="#ejecutar"/>
+                <Label fx:id="estado" wrapText="true"/>
+            </HBox>
+            <ListView fx:id="resultado" VBox.vgrow="ALWAYS" styleClass="resultado"/>
+        </VBox>
+    </center>
+</BorderPane>

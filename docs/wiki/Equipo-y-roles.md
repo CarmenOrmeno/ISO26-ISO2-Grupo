@@ -1,4 +1,10 @@
-# Equipo y roles
+# 👥 Equipo y roles
+
+[🏠 Inicio](Home.md)
+
+> Quién forma el equipo, qué responsabilidad tiene cada rol y qué hace el humano frente al agente.
+
+---
 
 > Completad la columna «Persona» con el nombre y el usuario de GitHub (cuenta @alu.uclm.es).
 
@@ -12,7 +18,7 @@
 
 Todos los miembros analizan, diseñan, revisan pull requests y supervisan a los agentes.
 
-## Quién aprueba qué (resumen del plan de configuración)
+## ✅ Quién aprueba qué (resumen del plan de configuración)
 
 | Elemento de configuración | Responsable | Aprueba |
 |---|---|---|
@@ -23,7 +29,7 @@ Todos los miembros analizan, diseñan, revisan pull requests y supervisan a los 
 | Plan de pruebas y casos de prueba | Responsable de calidad | Arquitecto |
 | Versiones y releases | Responsable de configuración | Coordinador |
 
-## Humanos y agentes
+## 🤝 Humanos y agentes
 
 | Lo hace el equipo (humano) | Lo hace el agente (IA) bajo supervisión |
 |---|---|
@@ -31,3 +37,7 @@ Todos los miembros analizan, diseñan, revisan pull requests y supervisan a los 
 | Planificar, estimar y decidir la arquitectura | Implementar las clases que cumplen las interfaces |
 | Diseñar interfaces y casos de prueba (técnicas de caja negra) | Implementar los casos de prueba diseñados y ejecutarlos |
 | Revisar y aprobar cada PR | Proponer refactorizaciones y explicar errores de compilación |
+
+---
+
+[🏠 Inicio](Home.md) · [⬆️ Arriba](#)

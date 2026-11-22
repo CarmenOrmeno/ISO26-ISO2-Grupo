@@ -1,61 +1,101 @@
 package es.uclm.esi.iso2.servidor;
 
 import java.time.Clock;
+import java.util.List;
 
 import es.uclm.esi.iso2.servidor.agendas.Agenda;
 import es.uclm.esi.iso2.servidor.agendas.ServicioAgendas;
 import es.uclm.esi.iso2.servidor.agendas.ServicioAgendasImpl;
 import es.uclm.esi.iso2.servidor.api.ApiAgendas;
+import es.uclm.esi.iso2.servidor.api.ApiAtencion;
+import es.uclm.esi.iso2.servidor.api.ApiAtencionPaciente;
+import es.uclm.esi.iso2.servidor.api.ApiAuditoria;
 import es.uclm.esi.iso2.servidor.api.ApiCatalogo;
 import es.uclm.esi.iso2.servidor.api.ApiCitas;
 import es.uclm.esi.iso2.servidor.api.ApiEsperas;
+import es.uclm.esi.iso2.servidor.api.ApiEstadisticasGlobales;
+import es.uclm.esi.iso2.servidor.api.ApiEstadisticasMedico;
 import es.uclm.esi.iso2.servidor.api.ApiEstadoSolicitudes;
+import es.uclm.esi.iso2.servidor.api.ApiHistorial;
 import es.uclm.esi.iso2.servidor.api.ApiInformes;
+import es.uclm.esi.iso2.servidor.api.ApiInformesOperativos;
+import es.uclm.esi.iso2.servidor.api.ApiIntegracion;
 import es.uclm.esi.iso2.servidor.api.ApiMisCitas;
 import es.uclm.esi.iso2.servidor.api.ApiMisSeguimientos;
 import es.uclm.esi.iso2.servidor.api.ApiNotificaciones;
 import es.uclm.esi.iso2.servidor.api.ApiPacientes;
+import es.uclm.esi.iso2.servidor.api.ApiPermisos;
 import es.uclm.esi.iso2.servidor.api.ApiRealizacion;
 import es.uclm.esi.iso2.servidor.api.ApiSeguimiento;
 import es.uclm.esi.iso2.servidor.api.ApiSesion;
 import es.uclm.esi.iso2.servidor.api.ApiSolicitudes;
-import es.uclm.esi.iso2.servidor.catalogo.ParametrosSistema;
+import es.uclm.esi.iso2.servidor.api.Apis;
+import es.uclm.esi.iso2.servidor.atencion.Encuesta;
+import es.uclm.esi.iso2.servidor.atencion.IncidenciaPaciente;
+import es.uclm.esi.iso2.servidor.atencion.ServicioAtencion;
+import es.uclm.esi.iso2.servidor.atencion.ServicioAtencionImpl;
+import es.uclm.esi.iso2.servidor.auditoria.RegistroAuditoria;
+import es.uclm.esi.iso2.servidor.auditoria.ServicioAuditoria;
+import es.uclm.esi.iso2.servidor.auditoria.ServicioAuditoriaImpl;
 import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogo;
 import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogoImpl;
 import es.uclm.esi.iso2.servidor.catalogo.TipoPrueba;
 import es.uclm.esi.iso2.servidor.citas.Cita;
 import es.uclm.esi.iso2.servidor.citas.ServicioCitas;
 import es.uclm.esi.iso2.servidor.citas.ServicioCitasImpl;
+import es.uclm.esi.iso2.servidor.citas.ServicioRecordatorios;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
-import es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria;
 import es.uclm.esi.iso2.servidor.controlador.ControladorAgendas;
+import es.uclm.esi.iso2.servidor.controlador.ControladorAtencion;
+import es.uclm.esi.iso2.servidor.controlador.ControladorAtencionPaciente;
+import es.uclm.esi.iso2.servidor.controlador.ControladorAuditoria;
 import es.uclm.esi.iso2.servidor.controlador.ControladorCatalogo;
 import es.uclm.esi.iso2.servidor.controlador.ControladorCitas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorEsperas;
+import es.uclm.esi.iso2.servidor.controlador.ControladorEstadisticasGlobales;
+import es.uclm.esi.iso2.servidor.controlador.ControladorEstadisticasMedico;
 import es.uclm.esi.iso2.servidor.controlador.ControladorEstadoSolicitudes;
+import es.uclm.esi.iso2.servidor.controlador.ControladorHistorial;
 import es.uclm.esi.iso2.servidor.controlador.ControladorInformes;
+import es.uclm.esi.iso2.servidor.controlador.ControladorInformesOperativos;
+import es.uclm.esi.iso2.servidor.controlador.ControladorIntegracion;
 import es.uclm.esi.iso2.servidor.controlador.ControladorMisCitas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorMisSeguimientos;
 import es.uclm.esi.iso2.servidor.controlador.ControladorNotificaciones;
 import es.uclm.esi.iso2.servidor.controlador.ControladorPacientes;
+import es.uclm.esi.iso2.servidor.controlador.ControladorPermisos;
 import es.uclm.esi.iso2.servidor.controlador.ControladorRealizacion;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSeguimiento;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSesion;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSolicitudes;
 import es.uclm.esi.iso2.servidor.esperas.ServicioEsperas;
 import es.uclm.esi.iso2.servidor.esperas.ServicioEsperasImpl;
+import es.uclm.esi.iso2.servidor.estadisticas.ServicioEstadisticasGlobales;
+import es.uclm.esi.iso2.servidor.estadisticas.ServicioEstadisticasGlobalesImpl;
+import es.uclm.esi.iso2.servidor.estadisticas.ServicioEstadisticasMedico;
+import es.uclm.esi.iso2.servidor.estadisticas.ServicioEstadisticasMedicoImpl;
+import es.uclm.esi.iso2.servidor.estadisticas.ServicioInformesOperativos;
+import es.uclm.esi.iso2.servidor.estadisticas.ServicioInformesOperativosImpl;
+import es.uclm.esi.iso2.servidor.historial.ServicioHistorial;
+import es.uclm.esi.iso2.servidor.historial.ServicioHistorialImpl;
 import es.uclm.esi.iso2.servidor.informes.Informe;
 import es.uclm.esi.iso2.servidor.informes.ServicioInformes;
 import es.uclm.esi.iso2.servidor.informes.ServicioInformesImpl;
+import es.uclm.esi.iso2.servidor.integracion.AdmisionSimulado;
+import es.uclm.esi.iso2.servidor.integracion.HceSimulado;
 import es.uclm.esi.iso2.servidor.integracion.PacsSimulado;
 import es.uclm.esi.iso2.servidor.integracion.SsoSimulado;
+import es.uclm.esi.iso2.servidor.interoperabilidad.ServicioIntegracion;
+import es.uclm.esi.iso2.servidor.interoperabilidad.ServicioIntegracionImpl;
+import es.uclm.esi.iso2.servidor.interoperabilidad.Sincronizacion;
 import es.uclm.esi.iso2.servidor.notificaciones.Notificacion;
 import es.uclm.esi.iso2.servidor.notificaciones.ServicioNotificaciones;
 import es.uclm.esi.iso2.servidor.notificaciones.ServicioNotificacionesImpl;
-import es.uclm.esi.iso2.servidor.notificaciones.ServicioRecordatorios;
 import es.uclm.esi.iso2.servidor.pacientes.Paciente;
 import es.uclm.esi.iso2.servidor.pacientes.ServicioPacientes;
 import es.uclm.esi.iso2.servidor.pacientes.ServicioPacientesImpl;
+import es.uclm.esi.iso2.servidor.persistencia.FabricaEnMemoria;
+import es.uclm.esi.iso2.servidor.persistencia.FabricaRepositorios;
 import es.uclm.esi.iso2.servidor.realizacion.Incidencia;
 import es.uclm.esi.iso2.servidor.realizacion.ServicioRealizacion;
 import es.uclm.esi.iso2.servidor.realizacion.ServicioRealizacionImpl;
@@ -65,6 +105,8 @@ import es.uclm.esi.iso2.servidor.seguimiento.ServicioSeguimientoImpl;
 import es.uclm.esi.iso2.servidor.seguridad.ControlAcceso;
 import es.uclm.esi.iso2.servidor.seguridad.PoliticaPermisos;
 import es.uclm.esi.iso2.servidor.seguridad.Rol;
+import es.uclm.esi.iso2.servidor.seguridad.ServicioPermisos;
+import es.uclm.esi.iso2.servidor.seguridad.ServicioPermisosImpl;
 import es.uclm.esi.iso2.servidor.seguridad.ServicioSesion;
 import es.uclm.esi.iso2.servidor.seguridad.ServicioSesionImpl;
 import es.uclm.esi.iso2.servidor.seguridad.Usuario;
@@ -76,15 +118,19 @@ import es.uclm.esi.iso2.servidor.solicitudes.SolicitudPrueba;
  * Raíz de composición del servidor (CONTEXT.md §3): el único sitio donde se crean las
  * implementaciones y se conectan entre sí. El cliente solo recibe las interfaces {@code api}.
  */
-public class Servidor {
+public class Servidor implements Apis {
 
     private final Clock reloj;
+    private final FabricaRepositorios repositorios;
 
     // --- infraestructura y seguridad (CU01) ---
     private final SsoSimulado sso = new SsoSimulado();
     private final PacsSimulado pacs = new PacsSimulado();
-    private final Repositorio<Usuario, String> usuarios = new RepositorioEnMemoria<>(Usuario::login);
-    private final PoliticaPermisos politica = PoliticaPermisos.porDefecto();
+    private final HceSimulado hce = new HceSimulado();
+    private final AdmisionSimulado admision = new AdmisionSimulado();
+    private final Repositorio<Usuario, String> usuarios;
+    private final ServicioPermisos servicioPermisos;
+    private final ServicioAuditoria servicioAuditoria;
     private final ServicioSesion servicioSesion;
     private final ControlAcceso acceso;
 
@@ -100,6 +146,12 @@ public class Servidor {
     private final ServicioInformes servicioInformes;
     private final ServicioSeguimiento servicioSeguimiento;
     private final ServicioEsperas servicioEsperas;
+    private final ServicioHistorial servicioHistorial;
+    private final ServicioAtencion servicioAtencion;
+    private final ServicioIntegracion servicioIntegracion;
+    private final ServicioEstadisticasMedico servicioEstadisticasMedico;
+    private final ServicioInformesOperativos servicioInformesOperativos;
+    private final ServicioEstadisticasGlobales servicioEstadisticasGlobales;
 
     // --- api (contratos con el cliente) ---
     private final ApiSesion apiSesion;
@@ -116,34 +168,69 @@ public class Servidor {
     private final ApiMisSeguimientos apiMisSeguimientos;
     private final ApiEsperas apiEsperas;
     private final ApiEstadoSolicitudes apiEstadoSolicitudes;
+    private final ApiHistorial apiHistorial;
+    private final ApiAtencionPaciente apiAtencionPaciente;
+    private final ApiAtencion apiAtencion;
+    private final ApiPermisos apiPermisos;
+    private final ApiAuditoria apiAuditoria;
+    private final ApiIntegracion apiIntegracion;
+    private final ApiEstadisticasMedico apiEstadisticasMedico;
+    private final ApiInformesOperativos apiInformesOperativos;
+    private final ApiEstadisticasGlobales apiEstadisticasGlobales;
 
+    /** Servidor con los datos en memoria (pruebas). */
     public Servidor(Clock reloj) {
+        this(reloj, new FabricaEnMemoria());
+    }
+
+    /** Servidor que guarda sus datos con la fábrica indicada (memoria o MySQL, D-018). */
+    public Servidor(Clock reloj, FabricaRepositorios repositorios) {
         this.reloj = reloj;
+        this.repositorios = repositorios;
+        this.usuarios = repositorios.crear("usuarios", Usuario::login);
         this.servicioSesion = new ServicioSesionImpl(sso, usuarios, reloj);
-        this.acceso = new ControlAcceso(servicioSesion, politica);
+        this.servicioPermisos = new ServicioPermisosImpl(
+                repositorios.crear("politica_permisos", (PoliticaPermisos p) -> ServicioPermisosImpl.ID_POLITICA),
+                usuarios);
+        this.servicioAuditoria = new ServicioAuditoriaImpl(repositorios.crear("auditoria", RegistroAuditoria::id), reloj);
+        this.acceso = new ControlAcceso(servicioSesion, servicioPermisos, servicioAuditoria);
 
         // servicios
-        this.servicioPacientes = new ServicioPacientesImpl(new RepositorioEnMemoria<>(Paciente::getId), reloj);
-        this.servicioCatalogo = new ServicioCatalogoImpl(new RepositorioEnMemoria<>(TipoPrueba::codigo),
-                new ParametrosSistema());
-        this.servicioSolicitudes = new ServicioSolicitudesImpl(new RepositorioEnMemoria<>(SolicitudPrueba::getId),
-                servicioPacientes, servicioCatalogo, reloj);
-        this.servicioAgendas = new ServicioAgendasImpl(new RepositorioEnMemoria<>(Agenda::getId),
+        this.servicioPacientes = new ServicioPacientesImpl(repositorios.crear("pacientes", Paciente::getId), reloj);
+        this.servicioCatalogo = new ServicioCatalogoImpl(repositorios.crear("tipos_prueba", TipoPrueba::codigo),
+                repositorios.crear("parametros", p -> ServicioCatalogoImpl.ID_PARAMETROS));
+        this.servicioSolicitudes = new ServicioSolicitudesImpl(
+                repositorios.crear("solicitudes", SolicitudPrueba::getId), servicioPacientes, servicioCatalogo, reloj);
+        this.servicioAgendas = new ServicioAgendasImpl(repositorios.crear("agendas", Agenda::getId),
                 servicioCatalogo.parametros(), reloj);
-        this.servicioNotificaciones = new ServicioNotificacionesImpl(new RepositorioEnMemoria<>(Notificacion::getId),
-                reloj);
-        this.servicioCitas = new ServicioCitasImpl(new RepositorioEnMemoria<>(Cita::getId), servicioSolicitudes,
+        this.servicioNotificaciones = new ServicioNotificacionesImpl(
+                repositorios.crear("notificaciones", Notificacion::getId), reloj);
+        this.servicioCitas = new ServicioCitasImpl(repositorios.crear("citas", Cita::getId), servicioSolicitudes,
                 servicioAgendas, servicioCatalogo, servicioNotificaciones, reloj);
         this.servicioRecordatorios = new ServicioRecordatorios(servicioCitas, servicioSolicitudes, servicioCatalogo,
-                servicioNotificaciones, reloj);
-        this.servicioRealizacion = new ServicioRealizacionImpl(servicioCitas, servicioSolicitudes, servicioAgendas, pacs,
-                new RepositorioEnMemoria<>(Incidencia::id), reloj);
-        this.servicioInformes = new ServicioInformesImpl(new RepositorioEnMemoria<>(Informe::id), servicioSolicitudes,
-                servicioCitas, servicioAgendas, pacs, servicioNotificaciones, reloj);
-        this.servicioSeguimiento = new ServicioSeguimientoImpl(new RepositorioEnMemoria<>(Seguimiento::getId),
+                servicioNotificaciones, repositorios.crear("recordatorios_enviados", (Long id) -> id), reloj);
+        this.servicioRealizacion = new ServicioRealizacionImpl(servicioCitas, servicioSolicitudes, servicioAgendas,
+                pacs, repositorios.crear("incidencias", Incidencia::id), reloj);
+        this.servicioInformes = new ServicioInformesImpl(repositorios.crear("informes", Informe::id),
+                servicioSolicitudes, servicioCitas, servicioAgendas, pacs, servicioNotificaciones, reloj);
+        this.servicioSeguimiento = new ServicioSeguimientoImpl(repositorios.crear("seguimientos", Seguimiento::getId),
                 servicioPacientes, servicioCatalogo, servicioSolicitudes, servicioNotificaciones, reloj);
         this.servicioEsperas = new ServicioEsperasImpl(servicioSolicitudes, servicioCatalogo, servicioAgendas,
                 servicioCitas, reloj);
+        this.servicioHistorial = new ServicioHistorialImpl(servicioSolicitudes, servicioCatalogo, servicioInformes);
+        this.servicioAtencion = new ServicioAtencionImpl(
+                repositorios.crear("incidencias_paciente", IncidenciaPaciente::getId),
+                repositorios.crear("encuestas", Encuesta::idSolicitud), servicioSolicitudes, reloj);
+        this.servicioIntegracion = new ServicioIntegracionImpl(List.of(sso, hce, admision, pacs), admision, hce,
+                servicioPacientes, servicioInformes, repositorios.crear("informes_enviados_hce", (Long id) -> id),
+                repositorios.crear("sincronizaciones", Sincronizacion::id), reloj);
+        this.servicioEstadisticasMedico = new ServicioEstadisticasMedicoImpl(servicioSolicitudes, servicioCatalogo,
+                servicioSeguimiento);
+        this.servicioInformesOperativos = new ServicioInformesOperativosImpl(servicioAgendas, servicioCitas,
+                servicioSolicitudes, servicioCatalogo);
+        this.servicioEstadisticasGlobales = new ServicioEstadisticasGlobalesImpl(
+                new ServicioEstadisticasGlobalesImpl.Fuentes(servicioPacientes, servicioPermisos, servicioSesion,
+                        servicioSolicitudes, servicioCitas, servicioInformes, servicioAtencion, servicioAuditoria));
 
         // api
         this.apiSesion = new ControladorSesion(servicioSesion, acceso);
@@ -161,17 +248,49 @@ public class Servidor {
         this.apiEsperas = new ControladorEsperas(servicioEsperas, acceso);
         this.apiEstadoSolicitudes = new ControladorEstadoSolicitudes(servicioSolicitudes, servicioCitas,
                 servicioAgendas, acceso);
+        this.apiHistorial = new ControladorHistorial(servicioHistorial, acceso);
+        this.apiAtencionPaciente = new ControladorAtencionPaciente(servicioAtencion, acceso);
+        this.apiAtencion = new ControladorAtencion(servicioAtencion, acceso);
+        this.apiPermisos = new ControladorPermisos(servicioPermisos, acceso);
+        this.apiAuditoria = new ControladorAuditoria(servicioAuditoria, acceso);
+        this.apiIntegracion = new ControladorIntegracion(servicioIntegracion, acceso);
+        this.apiEstadisticasMedico = new ControladorEstadisticasMedico(servicioEstadisticasMedico, acceso);
+        this.apiInformesOperativos = new ControladorInformesOperativos(servicioInformesOperativos, acceso);
+        this.apiEstadisticasGlobales = new ControladorEstadisticasGlobales(servicioEstadisticasGlobales, acceso);
     }
 
-    /** Servidor con el reloj del sistema y los datos de demostración cargados. */
+    /**
+     * Servidor con el reloj del sistema, guardando en MySQL si está configurado (RADIO_DB_URL…) y con los
+     * datos de demostración.
+     */
     public static Servidor conDatosDemo() {
-        return conDatosDemo(Clock.systemDefaultZone());
+        return conDatosDemo(Clock.systemDefaultZone(), FabricaRepositorios.segunEntorno());
     }
 
     public static Servidor conDatosDemo(Clock reloj) {
-        Servidor servidor = new Servidor(reloj);
+        return conDatosDemo(reloj, new FabricaEnMemoria());
+    }
+
+    /** Las cuentas del SSO simulado se dan de alta siempre; el resto de datos, solo si el almacén está vacío. */
+    public static Servidor conDatosDemo(Clock reloj, FabricaRepositorios repositorios) {
+        Servidor servidor = new Servidor(reloj, repositorios);
         DatosDemo.cargar(servidor);
         return servidor;
+    }
+
+    /** Dónde se guardan los datos (para informar al usuario). */
+    public String almacenamiento() {
+        return repositorios.descripcion();
+    }
+
+    /** No hay ningún usuario guardado: es el primer arranque con este almacén. */
+    boolean sinDatos() {
+        return usuarios.todos().isEmpty();
+    }
+
+    /** Da de alta una cuenta en el SSO simulado (sistema externo: no se guarda en nuestra base de datos). */
+    void registrarCuentaSso(String login, String contrasena, String nombre) {
+        sso.registrar(login, contrasena, nombre);
     }
 
     /** Da de alta una cuenta en el SSO simulado y su usuario en la aplicación. */
@@ -185,60 +304,119 @@ public class Servidor {
     }
 
     // --- api ---
+    @Override
     public ApiSesion sesion() {
         return apiSesion;
     }
 
+    @Override
     public ApiPacientes pacientes() {
         return apiPacientes;
     }
 
+    @Override
     public ApiCatalogo catalogo() {
         return apiCatalogo;
     }
 
+    @Override
     public ApiSolicitudes solicitudes() {
         return apiSolicitudes;
     }
 
+    @Override
     public ApiAgendas agendas() {
         return apiAgendas;
     }
 
+    @Override
     public ApiCitas citas() {
         return apiCitas;
     }
 
+    @Override
     public ApiMisCitas misCitas() {
         return apiMisCitas;
     }
 
+    @Override
     public ApiNotificaciones notificaciones() {
         return apiNotificaciones;
     }
 
+    @Override
     public ApiRealizacion realizacion() {
         return apiRealizacion;
     }
 
+    @Override
     public ApiInformes informes() {
         return apiInformes;
     }
 
+    @Override
     public ApiSeguimiento seguimiento() {
         return apiSeguimiento;
     }
 
+    @Override
     public ApiMisSeguimientos misSeguimientos() {
         return apiMisSeguimientos;
     }
 
+    @Override
     public ApiEsperas esperas() {
         return apiEsperas;
     }
 
+    @Override
     public ApiEstadoSolicitudes estadoSolicitudes() {
         return apiEstadoSolicitudes;
+    }
+
+    @Override
+    public ApiHistorial historial() {
+        return apiHistorial;
+    }
+
+    @Override
+    public ApiAtencionPaciente atencionPaciente() {
+        return apiAtencionPaciente;
+    }
+
+    @Override
+    public ApiAtencion atencion() {
+        return apiAtencion;
+    }
+
+    @Override
+    public ApiPermisos permisos() {
+        return apiPermisos;
+    }
+
+    @Override
+    public ApiAuditoria auditoria() {
+        return apiAuditoria;
+    }
+
+    @Override
+    public ApiIntegracion integracion() {
+        return apiIntegracion;
+    }
+
+    @Override
+    public ApiEstadisticasMedico estadisticasMedico() {
+        return apiEstadisticasMedico;
+    }
+
+    @Override
+    public ApiInformesOperativos informesOperativos() {
+        return apiInformesOperativos;
+    }
+
+    @Override
+    public ApiEstadisticasGlobales estadisticasGlobales() {
+        return apiEstadisticasGlobales;
     }
 
     // --- servicios internos (datos de demostración) ---
@@ -274,8 +452,20 @@ public class Servidor {
         return servicioSeguimiento;
     }
 
-    /** PACS simulado (para pruebas de tolerancia a fallos y CU19). */
-    public PacsSimulado pacs() {
+    // --- sistemas externos simulados: solo para los datos de demostración y las pruebas (no son API) ---
+    PacsSimulado pacs() {
         return pacs;
+    }
+
+    HceSimulado hce() {
+        return hce;
+    }
+
+    AdmisionSimulado admision() {
+        return admision;
+    }
+
+    SsoSimulado sso() {
+        return sso;
     }
 }

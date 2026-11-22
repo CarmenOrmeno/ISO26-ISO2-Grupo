@@ -1,0 +1,41 @@
+/* Vista JavaFX del cliente (D-017) */
+.root {
+    -fx-font-family: "System";
+    -fx-font-size: 13px;
+    -fx-background-color: #f5f7fa;
+}
+.login {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #eaf1f8);
+}
+.titulo {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f4e79;
+}
+.subtitulo {
+    -fx-text-fill: #5b6b7b;
+}
+.cabecera {
+    -fx-background-color: #1f4e79;
+}
+.marca, .usuario {
+    -fx-text-fill: white;
+}
+.marca {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+.titulo-accion {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f4e79;
+}
+.ok {
+    -fx-text-fill: #1e7b34;
+}
+.error {
+    -fx-text-fill: #b3261e;
+}
+.resultado {
+    -fx-font-family: "Monospaced";
+}

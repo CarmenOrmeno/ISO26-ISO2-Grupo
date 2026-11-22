@@ -66,18 +66,18 @@ public class ControladorCatalogo implements ApiCatalogo {
     @Override
     public void cambiarHorario(String token, LocalTime apertura, LocalTime cierre) {
         acceso.exigir(token, Permiso.CONFIGURAR_SISTEMA);
-        servicio.parametros().cambiarHorario(apertura, cierre);
+        servicio.cambiarHorario(apertura, cierre);
     }
 
     @Override
     public void cambiarPlazo(String token, Prioridad prioridad, int dias) {
         acceso.exigir(token, Permiso.CONFIGURAR_SISTEMA);
-        servicio.parametros().cambiarPlazo(prioridad, dias);
+        servicio.cambiarPlazo(prioridad, dias);
     }
 
     @Override
     public void cambiarHorasRecordatorio(String token, int horas) {
         acceso.exigir(token, Permiso.CONFIGURAR_SISTEMA);
-        servicio.parametros().cambiarHorasRecordatorio(horas);
+        servicio.cambiarHorasRecordatorio(horas);
     }
 }

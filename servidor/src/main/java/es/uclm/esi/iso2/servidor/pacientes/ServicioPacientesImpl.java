@@ -7,25 +7,30 @@ import java.util.Optional;
 
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
+import es.uclm.esi.iso2.servidor.comun.Secuencia;
 
 public class ServicioPacientesImpl implements ServicioPacientes {
 
+    private static final String PREFIJO_ID = "PAC-";
+
     private final Repositorio<Paciente, String> repositorio;
     private final Clock reloj;
-    private long secuencia;
+    private final Secuencia secuencia;
 
     public ServicioPacientesImpl(Repositorio<Paciente, String> repositorio, Clock reloj) {
         this.repositorio = repositorio;
+        this.secuencia = Secuencia.continuando(repositorio,
+                p -> Long.parseLong(p.getId().substring(PREFIJO_ID.length())));
         this.reloj = reloj;
     }
 
     @Override
     public Paciente alta(DatosPaciente datos) {
-        Paciente paciente = new Paciente("PAC-" + (secuencia + 1), datos, LocalDate.now(reloj));
+        Paciente paciente = new Paciente(PREFIJO_ID + secuencia.siguiente(), datos, LocalDate.now(reloj));
         if (buscarPorDni(paciente.getDni()).isPresent()) {
             throw new ReglaNegocioException("Ya existe un paciente con DNI " + paciente.getDni());
         }
-        secuencia++;
+        secuencia.confirmar();
         return repositorio.guardar(paciente);
     }
 

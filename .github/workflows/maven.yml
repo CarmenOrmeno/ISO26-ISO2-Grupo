@@ -10,6 +10,23 @@ on:                               # EVENTO: cuándo se ejecuta
 jobs:
   build:                          # JOB: es el nombre del check
     runs-on: ubuntu-latest        # RUNNER: máquina virtual Linux
+    services:                     # D-018: MySQL para las pruebas de integración de la persistencia
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root-ci
+          MYSQL_DATABASE: radiodiagnostico_test
+          MYSQL_USER: radiodiagnostico
+          MYSQL_PASSWORD: clave-ci   # solo vale dentro de este contenedor efímero del CI
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot-ci"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:                          # las pruebas *MySql* usan esta BD (si falta, se omiten)
+      RADIO_DB_TEST_URL: jdbc:mysql://127.0.0.1:3306/radiodiagnostico_test
+      RADIO_DB_USUARIO: radiodiagnostico
+      RADIO_DB_CLAVE: clave-ci
     steps:                        # STEPS: se ejecutan en orden
       - name: Descargar el código
         uses: actions/checkout@v7

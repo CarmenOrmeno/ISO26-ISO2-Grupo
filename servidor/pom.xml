@@ -3,11 +3,16 @@
   <parent>
     <groupId>es.uclm.esi.iso2</groupId>
     <artifactId>radiodiagnostico</artifactId>
-    <version>0.2.0</version>
+    <version>1.0.0</version>
   </parent>
   <artifactId>servidor</artifactId>
-  <version>1.9.0</version>
+  <version>1.12.0</version>
   <dependencies>
+    <dependency>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <scope>runtime</scope>
+    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>

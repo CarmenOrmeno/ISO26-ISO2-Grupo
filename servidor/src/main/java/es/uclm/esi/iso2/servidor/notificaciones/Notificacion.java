@@ -1,11 +1,14 @@
 package es.uclm.esi.iso2.servidor.notificaciones;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import es.uclm.esi.iso2.servidor.comun.Validaciones;
 
 /** Aviso enviado a un paciente; se guarda en su buzón de la aplicación. */
-public class Notificacion {
+public class Notificacion implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final long id;
     private final String idPaciente;

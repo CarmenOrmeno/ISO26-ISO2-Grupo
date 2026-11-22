@@ -7,23 +7,25 @@ import java.util.List;
 
 import es.uclm.esi.iso2.servidor.comun.AccesoDenegadoException;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
+import es.uclm.esi.iso2.servidor.comun.Secuencia;
 
 /** Buzón en la aplicación: guarda cada aviso para que el paciente lo consulte. */
 public class ServicioNotificacionesImpl implements ServicioNotificaciones {
 
     private final Repositorio<Notificacion, Long> repositorio;
     private final Clock reloj;
-    private long secuencia;
+    private final Secuencia secuencia;
 
     public ServicioNotificacionesImpl(Repositorio<Notificacion, Long> repositorio, Clock reloj) {
         this.repositorio = repositorio;
+        this.secuencia = Secuencia.continuando(repositorio, Notificacion::getId);
         this.reloj = reloj;
     }
 
     @Override
     public void notificar(String idPaciente, TipoNotificacion tipo, String mensaje) {
-        Notificacion n = new Notificacion(secuencia + 1, idPaciente, tipo, mensaje, LocalDateTime.now(reloj));
-        secuencia++;
+        Notificacion n = new Notificacion(secuencia.siguiente(), idPaciente, tipo, mensaje, LocalDateTime.now(reloj));
+        secuencia.confirmar();
         repositorio.guardar(n);
     }
 

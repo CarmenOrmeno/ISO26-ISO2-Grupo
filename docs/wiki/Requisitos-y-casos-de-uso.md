@@ -1,6 +1,12 @@
-# Requisitos y casos de uso
+# 🎯 Requisitos y casos de uso
 
-## 1. Actores
+[🏠 Inicio](Home.md)
+
+> Actores, requisitos funcionales (1 RF = 1 CU), priorización por fases y diagramas de casos de uso.
+
+---
+
+## 🧑‍⚕️ 1. Actores
 
 | Actor | Tipo | Descripción |
 |---|---|---|
@@ -12,7 +18,7 @@
 | SSO, HCE, Admisión, RIS/PACS | Sistema externo | Simulados con interfaces (D-009) |
 | Temporizador | Sistema | Dispara recordatorios y genera citas de seguimiento |
 
-## 2. Requisitos funcionales (1 RF : 1 CU, D-004)
+## 📋 2. Requisitos funcionales (1 RF : 1 CU, D-004)
 
 | RF | Descripción | Actor | CU |
 |---|---|---|---|
@@ -39,7 +45,7 @@
 | RF21 | Generar estadísticas globales y reportes de uso | Administrador | CU22 |
 | RF22 | Iniciar y cerrar sesión (SSO corporativo) — **añadido** (D-004) | Todos | CU01 |
 
-## 3. Casos de uso priorizados y asignados a fases
+## 🥇 3. Casos de uso priorizados y asignados a fases
 
 Criterio de prioridad: primero los CU que crean las **entidades centrales y los adaptadores** (línea base
 de la arquitectura), después los que dependen de ellos, y al final consultas y estadísticas.
@@ -69,7 +75,7 @@ de la arquitectura), después los que dependen de ellos, y al final consultas y 
 | 21 | CU21 | Generar informes operativos | Construcción | Media | [CU21](../casos-de-uso/CU21.md) |
 | 22 | CU22 | Generar estadísticas globales | Construcción | Baja | [CU22](../casos-de-uso/CU22.md) |
 
-### Agrupación en iteraciones de Construcción (D-016)
+### 🧺 Agrupación en iteraciones de Construcción (D-016)
 
 | Iteración | CU | Criterio de agrupación |
 |---|---|---|
@@ -81,93 +87,73 @@ de la arquitectura), después los que dependen de ellos, y al final consultas y 
 | It12 | CU17, CU18, CU19 | Administración: permisos, auditoría e integración |
 | It13 | CU20, CU21, CU22 | Estadísticas e informes |
 
-## 4. Diagrama general de casos de uso (cliente)
+## 🖼️ 4. Diagrama general de casos de uso (cliente)
 
-```plantuml
-@startuml
-left to right direction
-actor Paciente
-actor Médico
-actor Administrativo
-actor Administrador
-Médico -|> Paciente
-rectangle "Radiodiagnóstico SESCAM" {
-  (CU01 Iniciar sesión) as CU01
-  (CU07 Gestionar mis citas) as CU07
-  (CU12 Notificar y recordar) as CU12
-  (CU13 Consultar historial) as CU13
-  (CU15 Incidencias y encuestas) as CU15
-  (CU16 Consultar seguimientos) as CU16
-  (CU04 Solicitar prueba) as CU04
-  (CU10 Prescribir seguimiento) as CU10
-  (CU14 Estado de solicitudes y agendas) as CU14
-  (CU09 Informes e imágenes) as CU09
-  (CU08 Registrar realización) as CU08
-  (CU20 Estadísticas del médico) as CU20
-  (CU02 Gestionar pacientes) as CU02
-  (CU06 Gestionar citas) as CU06
-  (CU05 Gestionar agendas) as CU05
-  (CU11 Listas de espera) as CU11
-  (CU21 Informes operativos) as CU21
-  (CU03 Configurar catálogo) as CU03
-  (CU17 Roles y permisos) as CU17
-  (CU18 Auditar accesos) as CU18
-  (CU19 Integrar sistemas) as CU19
-  (CU22 Estadísticas globales) as CU22
-}
-Paciente --> CU01
-Paciente --> CU07
-Paciente --> CU12
-Paciente --> CU13
-Paciente --> CU15
-Paciente --> CU16
-Médico --> CU04
-Médico --> CU10
-Médico --> CU14
-Médico --> CU09
-Médico --> CU08
-Médico --> CU20
-Administrativo --> CU01
-Administrativo --> CU02
-Administrativo --> CU06
-Administrativo --> CU05
-Administrativo --> CU11
-Administrativo --> CU21
-Administrador --> CU01
-Administrador --> CU03
-Administrador --> CU17
-Administrador --> CU18
-Administrador --> CU19
-Administrador --> CU22
-@enduml
+```mermaid
+flowchart LR
+    PAC(["🧑 Paciente"])
+    MED(["🩺 Médico"])
+    ADM(["🗂️ Administrativo"])
+    ADMIN(["🛠️ Administrador"])
+    MED -. hereda de .-> PAC
+    subgraph SIS["🏥 Radiodiagnóstico SESCAM"]
+        CU01(["CU01 Iniciar sesión"])
+        CU07(["CU07 Gestionar mis citas"])
+        CU12(["CU12 Notificar y recordar"])
+        CU13(["CU13 Consultar historial"])
+        CU15(["CU15 Incidencias y encuestas"])
+        CU16(["CU16 Consultar seguimientos"])
+        CU04(["CU04 Solicitar prueba"])
+        CU10(["CU10 Prescribir seguimiento"])
+        CU14(["CU14 Estado de solicitudes y agendas"])
+        CU09(["CU09 Informes e imágenes"])
+        CU08(["CU08 Registrar realización"])
+        CU20(["CU20 Estadísticas del médico"])
+        CU02(["CU02 Gestionar pacientes"])
+        CU06(["CU06 Gestionar citas"])
+        CU05(["CU05 Gestionar agendas"])
+        CU11(["CU11 Listas de espera"])
+        CU21(["CU21 Informes operativos"])
+        CU03(["CU03 Configurar catálogo"])
+        CU17(["CU17 Roles y permisos"])
+        CU18(["CU18 Auditar accesos"])
+        CU19(["CU19 Integrar sistemas"])
+        CU22(["CU22 Estadísticas globales"])
+    end
+    PAC --- CU01 & CU07 & CU12 & CU13 & CU15 & CU16
+    MED --- CU04 & CU10 & CU14 & CU09 & CU08 & CU20
+    ADM --- CU01 & CU02 & CU06 & CU05 & CU11 & CU21
+    ADMIN --- CU01 & CU03 & CU17 & CU18 & CU19 & CU22
 ```
 
-## 5. Diagrama del servidor (actores de tipo sistema)
+## 🖥️ 5. Diagrama del servidor (actores de tipo sistema)
 
-```plantuml
-@startuml
-left to right direction
-actor "Aplicación cliente" as App
-actor Temporizador
-actor "SSO" as SSO
-actor "HCE" as HCE
-actor "Admisión" as ADM
-actor "RIS/PACS" as PACS
-rectangle Servidor {
-  (Autenticar) as A
-  (Sincronizar paciente) as S
-  (Almacenar / recuperar imágenes) as I
-  (Enviar recordatorios) as R
-  (Generar citas de seguimiento) as G
-  (Operaciones de la API) as API
-}
-App --> API
-App --> A
-A --> SSO
-S --> HCE
-S --> ADM
-I --> PACS
-Temporizador --> R
-Temporizador --> G
-@enduml
+```mermaid
+flowchart LR
+    APP(["💻 Aplicación cliente"])
+    TMP(["⏰ Temporizador"])
+    subgraph SRV["🖥️ Servidor"]
+        API(["Operaciones de la API"])
+        A(["Autenticar"])
+        S(["Sincronizar paciente"])
+        I(["Almacenar / recuperar imágenes"])
+        R(["Enviar recordatorios"])
+        G(["Generar citas de seguimiento"])
+    end
+    SSO(["🔐 SSO"])
+    HCE(["📁 HCE"])
+    ADMS(["🗂️ Admisión"])
+    PACS(["🩻 RIS/PACS"])
+    APP --- API
+    APP --- A
+    A --- SSO
+    S --- HCE
+    S --- ADMS
+    I --- PACS
+    TMP --- R
+    TMP --- G
 ```
+
+---
+
+[🏠 Inicio](Home.md) · [⬆️ Arriba](#)

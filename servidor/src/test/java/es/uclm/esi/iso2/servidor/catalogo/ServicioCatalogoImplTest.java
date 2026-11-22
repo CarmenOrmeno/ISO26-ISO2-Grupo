@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import es.uclm.esi.iso2.servidor.comun.NoEncontradoException;
+import es.uclm.esi.iso2.servidor.comun.Repositorio;
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria;
 
@@ -44,5 +45,21 @@ class ServicioCatalogoImplTest {
         assertThrows(ReglaNegocioException.class, () -> servicio.alta(tipo("RX1", Modalidad.US, 20)));
         assertThrows(NoEncontradoException.class, () -> servicio.modificar(tipo("XX", Modalidad.RX, 10)));
         assertThrows(NoEncontradoException.class, () -> servicio.baja("XX"));
+    }
+
+    @Test
+    @DisplayName("D-018: los cambios de parámetros se guardan y otro servicio con el mismo almacén los ve")
+    void parametrosGuardados() {
+        Repositorio<ParametrosSistema, String> almacen = new RepositorioEnMemoria<>(
+                p -> ServicioCatalogoImpl.ID_PARAMETROS);
+        ServicioCatalogo primero = new ServicioCatalogoImpl(new RepositorioEnMemoria<>(TipoPrueba::codigo), almacen);
+        primero.cambiarHorario(java.time.LocalTime.of(7, 0), java.time.LocalTime.of(22, 0));
+        primero.cambiarPlazo(Prioridad.ORDINARIO, 60);
+        primero.cambiarHorasRecordatorio(48);
+
+        ServicioCatalogo reiniciado = new ServicioCatalogoImpl(new RepositorioEnMemoria<>(TipoPrueba::codigo), almacen);
+        assertEquals(java.time.LocalTime.of(7, 0), reiniciado.parametros().apertura());
+        assertEquals(60, reiniciado.parametros().plazoMaximoDias(Prioridad.ORDINARIO));
+        assertEquals(48, reiniciado.parametros().horasAntelacionRecordatorio());
     }
 }

@@ -3,6 +3,24 @@
 Formato basado en *Keep a Changelog*; versiones según *Semantic Versioning* (ver
 [Plan de gestión de configuración](docs/wiki/Plan-de-gestion-de-configuracion.md)).
 
+## [1.0.0] · 2026-11-22 · Producto completo (fin de Construcción)
+Módulos: servidor 1.12.0 · cliente 2.0.0
+
+### Añadido
+- CU13 Consultar historial y CU15 Incidencias y encuestas (portal del paciente).
+- CU17 Roles y permisos configurables y persistentes; CU18 Auditoría de accesos a datos clínicos y de accesos denegados.
+- CU19 Integración con SSO, HCE, Admisión y RIS/PACS (simulados), con sincronizaciones tolerantes a fallos.
+- CU20 Estadísticas del médico, CU21 Informes operativos y CU22 Estadísticas globales.
+- Persistencia en MySQL (D-018).
+- Cliente JavaFX (D-017) con las acciones de los cuatro roles para todos los CU; la consola se conserva con `--consola`.
+
+### Cambiado
+- El cliente pasa a **2.0.0** (versión mayor, D-017): vista gráfica por defecto; el menú de consola de admisión
+  se sustituye por el catálogo de acciones común a las dos vistas.
+- Calidad del diseño: sin ciclos entre paquetes del servidor, el cliente depende solo de las interfaces `api`
+  (`api.Apis`), el control de acceso exige siempre un auditor y `Servidor` no expone los simulados.
+- Un issue y una rama por caso de uso (D-019).
+
 ## [0.2.0] · 2026-11-22 · Flujo clínico completo y avisos al paciente (servidor)
 Módulos: servidor 1.9.0 · cliente 1.1.1
 

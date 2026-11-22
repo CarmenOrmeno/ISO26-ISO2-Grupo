@@ -1,5 +1,6 @@
 package es.uclm.esi.iso2.servidor.seguimiento;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +16,9 @@ import es.uclm.esi.iso2.servidor.solicitudes.DatosSolicitud;
  * Prueba de seguimiento periódica prescrita por un médico (CU10). Cada revisión vencida genera una
  * nueva solicitud de prueba; al generar la última, el seguimiento termina.
  */
-public class Seguimiento {
+public class Seguimiento implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public static final int PERIODICIDAD_MINIMA = 1;
     public static final int PERIODICIDAD_MAXIMA = 60;

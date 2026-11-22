@@ -9,6 +9,7 @@ import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogo;
 import es.uclm.esi.iso2.servidor.comun.AccesoDenegadoException;
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
+import es.uclm.esi.iso2.servidor.comun.Secuencia;
 import es.uclm.esi.iso2.servidor.pacientes.ServicioPacientes;
 
 public class ServicioSolicitudesImpl implements ServicioSolicitudes {
@@ -17,11 +18,12 @@ public class ServicioSolicitudesImpl implements ServicioSolicitudes {
     private final ServicioPacientes pacientes;
     private final ServicioCatalogo catalogo;
     private final Clock reloj;
-    private long secuencia;
+    private final Secuencia secuencia;
 
     public ServicioSolicitudesImpl(Repositorio<SolicitudPrueba, Long> repositorio, ServicioPacientes pacientes,
             ServicioCatalogo catalogo, Clock reloj) {
         this.repositorio = repositorio;
+        this.secuencia = Secuencia.continuando(repositorio, SolicitudPrueba::getId);
         this.pacientes = pacientes;
         this.catalogo = catalogo;
         this.reloj = reloj;
@@ -39,7 +41,7 @@ public class ServicioSolicitudesImpl implements ServicioSolicitudes {
 
     /** Crea y guarda una solicitud validando paciente, tipo y duplicados. */
     protected SolicitudPrueba registrar(String loginMedico, DatosSolicitud datos, Long idSeguimiento) {
-        SolicitudPrueba solicitud = new SolicitudPrueba(secuencia + 1, loginMedico, datos,
+        SolicitudPrueba solicitud = new SolicitudPrueba(secuencia.siguiente(), loginMedico, datos,
                 LocalDateTime.now(reloj), idSeguimiento);
         pacientes.obtenerActivo(solicitud.getIdPaciente());
         catalogo.obtener(solicitud.getCodigoTipo());
@@ -48,7 +50,7 @@ public class ServicioSolicitudesImpl implements ServicioSolicitudes {
         if (duplicada) {
             throw new ReglaNegocioException("El paciente ya tiene una solicitud abierta de " + solicitud.getCodigoTipo());
         }
-        secuencia++;
+        secuencia.confirmar();
         return repositorio.guardar(solicitud);
     }
 
