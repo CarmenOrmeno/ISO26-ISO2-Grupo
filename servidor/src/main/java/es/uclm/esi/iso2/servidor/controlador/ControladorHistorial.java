@@ -21,22 +21,22 @@ public class ControladorHistorial implements ApiHistorial {
         this.acceso = acceso;
     }
 
-    private String paciente(String token) {
-        return acceso.exigir(token, Permiso.CONSULTAR_MI_HISTORIAL).exigirPaciente();
+    private String paciente(String token, String recurso) {
+        return acceso.exigir(token, Permiso.CONSULTAR_MI_HISTORIAL, recurso).exigirPaciente();
     }
 
     @Override
     public List<EntradaHistorial> miHistorial(String token) {
-        return historial.historial(paciente(token));
+        return historial.historial(paciente(token, "historial propio"));
     }
 
     @Override
     public List<EntradaHistorial> miHistorial(String token, LocalDate desde, LocalDate hasta) {
-        return historial.historial(paciente(token), desde, hasta);
+        return historial.historial(paciente(token, "historial propio"), desde, hasta);
     }
 
     @Override
     public Informe miInforme(String token, long idSolicitud) {
-        return historial.informe(paciente(token), idSolicitud);
+        return historial.informe(paciente(token, "informe de la solicitud " + idSolicitud), idSolicitud);
     }
 }

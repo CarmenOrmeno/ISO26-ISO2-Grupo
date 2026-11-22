@@ -8,6 +8,7 @@ import es.uclm.esi.iso2.servidor.agendas.ServicioAgendasImpl;
 import es.uclm.esi.iso2.servidor.api.ApiAgendas;
 import es.uclm.esi.iso2.servidor.api.ApiAtencion;
 import es.uclm.esi.iso2.servidor.api.ApiAtencionPaciente;
+import es.uclm.esi.iso2.servidor.api.ApiAuditoria;
 import es.uclm.esi.iso2.servidor.api.ApiCatalogo;
 import es.uclm.esi.iso2.servidor.api.ApiCitas;
 import es.uclm.esi.iso2.servidor.api.ApiEsperas;
@@ -27,6 +28,9 @@ import es.uclm.esi.iso2.servidor.atencion.Encuesta;
 import es.uclm.esi.iso2.servidor.atencion.IncidenciaPaciente;
 import es.uclm.esi.iso2.servidor.atencion.ServicioAtencion;
 import es.uclm.esi.iso2.servidor.atencion.ServicioAtencionImpl;
+import es.uclm.esi.iso2.servidor.auditoria.RegistroAuditoria;
+import es.uclm.esi.iso2.servidor.auditoria.ServicioAuditoria;
+import es.uclm.esi.iso2.servidor.auditoria.ServicioAuditoriaImpl;
 import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogo;
 import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogoImpl;
 import es.uclm.esi.iso2.servidor.catalogo.TipoPrueba;
@@ -37,6 +41,7 @@ import es.uclm.esi.iso2.servidor.comun.Repositorio;
 import es.uclm.esi.iso2.servidor.controlador.ControladorAgendas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorAtencion;
 import es.uclm.esi.iso2.servidor.controlador.ControladorAtencionPaciente;
+import es.uclm.esi.iso2.servidor.controlador.ControladorAuditoria;
 import es.uclm.esi.iso2.servidor.controlador.ControladorCatalogo;
 import es.uclm.esi.iso2.servidor.controlador.ControladorCitas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorEsperas;
@@ -102,6 +107,7 @@ public class Servidor {
     private final PacsSimulado pacs = new PacsSimulado();
     private final Repositorio<Usuario, String> usuarios;
     private final ServicioPermisos servicioPermisos;
+    private final ServicioAuditoria servicioAuditoria;
     private final ServicioSesion servicioSesion;
     private final ControlAcceso acceso;
 
@@ -139,6 +145,7 @@ public class Servidor {
     private final ApiAtencionPaciente apiAtencionPaciente;
     private final ApiAtencion apiAtencion;
     private final ApiPermisos apiPermisos;
+    private final ApiAuditoria apiAuditoria;
 
     /** Servidor con los datos en memoria (pruebas). */
     public Servidor(Clock reloj) {
@@ -154,7 +161,8 @@ public class Servidor {
         this.servicioPermisos = new ServicioPermisosImpl(
                 repositorios.crear("politica_permisos", (PoliticaPermisos p) -> ServicioPermisosImpl.ID_POLITICA),
                 usuarios);
-        this.acceso = new ControlAcceso(servicioSesion, servicioPermisos);
+        this.servicioAuditoria = new ServicioAuditoriaImpl(repositorios.crear("auditoria", RegistroAuditoria::id), reloj);
+        this.acceso = new ControlAcceso(servicioSesion, servicioPermisos, servicioAuditoria);
 
         // servicios
         this.servicioPacientes = new ServicioPacientesImpl(repositorios.crear("pacientes", Paciente::getId), reloj);
@@ -203,6 +211,7 @@ public class Servidor {
         this.apiAtencionPaciente = new ControladorAtencionPaciente(servicioAtencion, acceso);
         this.apiAtencion = new ControladorAtencion(servicioAtencion, acceso);
         this.apiPermisos = new ControladorPermisos(servicioPermisos, acceso);
+        this.apiAuditoria = new ControladorAuditoria(servicioAuditoria, acceso);
     }
 
     /**
@@ -320,6 +329,10 @@ public class Servidor {
 
     public ApiPermisos permisos() {
         return apiPermisos;
+    }
+
+    public ApiAuditoria auditoria() {
+        return apiAuditoria;
     }
 
     // --- servicios internos (datos de demostración) ---

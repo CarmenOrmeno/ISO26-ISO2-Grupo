@@ -33,14 +33,15 @@ public class ControladorInformes implements ApiInformes {
 
     @Override
     public Informe crearInforme(String token, long idSolicitud, String hallazgos, String conclusion) {
-        String medico = acceso.exigir(token, Permiso.CREAR_INFORMES).login();
+        String medico = acceso.exigir(token, Permiso.CREAR_INFORMES, "solicitud " + idSolicitud).login();
         exigirPacienteSuyo(medico, solicitudes.obtener(idSolicitud).getIdPaciente());
         return informes.crearInforme(idSolicitud, medico, hallazgos, conclusion);
     }
 
     @Override
     public Informe informeDeSolicitud(String token, long idSolicitud) {
-        String medico = acceso.exigir(token, Permiso.CONSULTAR_INFORMES_PACIENTES).login();
+        String medico = acceso.exigir(token, Permiso.CONSULTAR_INFORMES_PACIENTES,
+                "informe de la solicitud " + idSolicitud).login();
         exigirPacienteSuyo(medico, solicitudes.obtener(idSolicitud).getIdPaciente());
         return informes.informeDeSolicitud(idSolicitud)
                 .orElseThrow(() -> new NoEncontradoException("La solicitud " + idSolicitud + " no tiene informe"));
@@ -48,14 +49,16 @@ public class ControladorInformes implements ApiInformes {
 
     @Override
     public List<Informe> informesDePaciente(String token, String idPaciente) {
-        String medico = acceso.exigir(token, Permiso.CONSULTAR_INFORMES_PACIENTES).login();
+        String medico = acceso.exigir(token, Permiso.CONSULTAR_INFORMES_PACIENTES,
+                "informes del paciente " + idPaciente).login();
         exigirPacienteSuyo(medico, idPaciente);
         return informes.informesDePaciente(idPaciente);
     }
 
     @Override
     public List<ImagenDicom> imagenes(String token, long idSolicitud) {
-        String medico = acceso.exigir(token, Permiso.CONSULTAR_INFORMES_PACIENTES).login();
+        String medico = acceso.exigir(token, Permiso.CONSULTAR_INFORMES_PACIENTES,
+                "imágenes de la solicitud " + idSolicitud).login();
         exigirPacienteSuyo(medico, solicitudes.obtener(idSolicitud).getIdPaciente());
         return informes.imagenes(idSolicitud);
     }
