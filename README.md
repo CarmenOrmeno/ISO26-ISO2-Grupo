@@ -22,7 +22,7 @@ ISO26-ISO2-Grupo/
 
 ## Cómo se construye
 
-Requisitos: JDK 17 y Maven 3.9.
+Requisitos: JDK 21 y Maven 3.9 (D-023).
 
 ```bash
 mvn verify               # compila, pasa las pruebas y genera el informe de JaCoCo

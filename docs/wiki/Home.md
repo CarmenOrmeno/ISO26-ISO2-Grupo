@@ -7,7 +7,7 @@
 
 [![CI](https://github.com/CarmenOrmeno/ISO26-ISO2-Grupo/actions/workflows/maven.yml/badge.svg?branch=develop)](https://github.com/CarmenOrmeno/ISO26-ISO2-Grupo/actions/workflows/maven.yml)
 [![Versión](https://img.shields.io/github/v/release/CarmenOrmeno/ISO26-ISO2-Grupo?include_prereleases&label=versi%C3%B3n&color=1d76db)](https://github.com/CarmenOrmeno/ISO26-ISO2-Grupo/releases)
-![Java 17](https://img.shields.io/badge/Java-17-ED8B00?logo=openjdk&logoColor=white)
+![Java 21](https://img.shields.io/badge/Java-21-ED8B00?logo=openjdk&logoColor=white)
 ![Maven](https://img.shields.io/badge/Maven-multim%C3%B3dulo-C71A36?logo=apachemaven&logoColor=white)
 ![JUnit 6](https://img.shields.io/badge/JUnit-6.1.3-25A162?logo=junit5&logoColor=white)
 ![Cobertura](https://img.shields.io/badge/cobertura-%E2%89%A5%2075%25-success)

@@ -64,7 +64,7 @@ En la rama `release` hay que cambiar también `<parent><version>` de los dos mó
 ## ⚙️ 4. Construcciones e integración continua
 
 - `mvn verify` en la raíz construye los dos módulos (reactor), pasa las pruebas y comprueba la cobertura.
-- GitHub Actions (`.github/workflows/maven.yml`) ejecuta `mvn -B verify` con Java 17 en cada *push* y PR a
+- GitHub Actions (`.github/workflows/maven.yml`) ejecuta `mvn -B verify` con Java 21 (D-023) en cada *push* y PR a
   `main` y `develop`.
 - Los informes (`mvn verify site`) no se suben: `target/` está en `.gitignore`; los resultados se resumen
   en el [Plan de pruebas](Plan-de-pruebas.md).

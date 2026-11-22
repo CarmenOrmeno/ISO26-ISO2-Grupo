@@ -11,7 +11,7 @@
 
 | Para | Necesitas |
 |---|---|
-| Usar la aplicación | Java 17 y una pantalla (la vista JavaFX va dentro del jar) |
+| Usar la aplicación | Java 21 y una pantalla (la vista JavaFX va dentro del jar) |
 | Construirla | Maven 3.9 y conexión a Maven Central la primera vez |
 | Guardar los datos | Nada (memoria) o **MySQL 8** si los datos deben conservarse al cerrar (D-018) |
 

@@ -3,6 +3,12 @@
 Formato basado en *Keep a Changelog*; versiones según *Semantic Versioning* (ver
 [Plan de gestión de configuración](docs/wiki/Plan-de-gestion-de-configuracion.md)).
 
+## [Sin publicar]
+Módulos: servidor 1.13.0-SNAPSHOT · cliente 2.1.0-SNAPSHOT
+
+### Cambiado
+- Java 21 (D-023, revisa D-003) en el pom, en el CI y en la documentación; JavaFX 21.0.5.
+
 ## [1.0.1] · 2026-11-22 · Iteración de transición (ItN) y calidad del diseño
 Módulos: servidor 1.12.1 · cliente 2.0.1
 
