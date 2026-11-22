@@ -74,4 +74,15 @@ class ValoresTest {
         assertEquals("Prioridad (URGENTE, PREFERENTE, ORDINARIO)",
                 Campo.opcion("Prioridad", Prioridad.values()).etiquetaConAyuda());
     }
+
+    @Test
+    @DisplayName("Leer un campo con otro tipo o un índice que no existe es un error de programación")
+    void errorDeProgramacion() {
+        Valores v = Valores.de(List.of(Campo.fecha("Fecha")), List.of("2026-11-02"));
+        IllegalStateException tipo = assertThrows(IllegalStateException.class, () -> v.largo(0));
+        assertTrue(tipo.getMessage().startsWith(Valores.ERROR_DE_PROGRAMACION));
+        assertTrue(tipo.getMessage().contains("LocalDate, no Long"));
+        assertThrows(IllegalStateException.class, () -> v.texto(1));
+        assertThrows(IllegalStateException.class, () -> v.texto(-1));
+    }
 }
