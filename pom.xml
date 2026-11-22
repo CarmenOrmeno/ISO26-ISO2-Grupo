@@ -6,6 +6,16 @@
   <packaging>pom</packaging>
   <name>Radiodiagnóstico SESCAM</name>
   <description>Sistema Integral de Gestión de Radiodiagnóstico e Imagen Médica (ISO2 26/27)</description>
+  <!-- url + distributionManagement: necesarios para que "mvn site site:stage"
+       una los sitios de los módulos en target/staging con enlaces relativos -->
+  <url>https://example.org/radiodiagnostico/</url>
+
+  <distributionManagement>
+    <site>
+      <id>sitio-local</id>
+      <url>file:///tmp/radiodiagnostico-site/</url>
+    </site>
+  </distributionManagement>
 
   <modules>
     <module>servidor</module>
@@ -95,6 +105,10 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
         <version>${surefire.version}</version>
+        <configuration>
+          <!-- En el sitio raíz, un único surefire.html con los tests de servidor y cliente -->
+          <aggregate>true</aggregate>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
