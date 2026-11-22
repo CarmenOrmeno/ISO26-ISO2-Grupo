@@ -81,4 +81,19 @@
       </plugin>
     </plugins>
   </build>
+
+  <!-- El informe de cobertura del sitio excluye lo mismo que la comprobación del build (vista JavaFX) -->
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>es/uclm/esi/iso2/cliente/vista/fx/**</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>
