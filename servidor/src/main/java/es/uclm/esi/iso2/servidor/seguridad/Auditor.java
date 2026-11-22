@@ -7,10 +7,6 @@ package es.uclm.esi.iso2.servidor.seguridad;
 @FunctionalInterface
 public interface Auditor {
 
-    /** No registra nada (pruebas de otros componentes). */
-    Auditor NINGUNO = (usuario, permiso, recurso, permitido) -> {
-    };
-
     /**
      * @param recurso   sobre qué se pide el acceso (p. ej. «informe de la solicitud 7»); vacío si no se indica
      * @param permitido si el rol del usuario tenía el permiso

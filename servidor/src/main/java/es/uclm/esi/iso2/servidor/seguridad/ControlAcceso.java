@@ -1,5 +1,7 @@
 package es.uclm.esi.iso2.servidor.seguridad;
 
+import java.util.Objects;
+
 import es.uclm.esi.iso2.servidor.comun.AccesoDenegadoException;
 
 /**
@@ -12,15 +14,11 @@ public class ControlAcceso {
     private final ConsultaPermisos politica;
     private final Auditor auditor;
 
-    /** Sin auditoría (pruebas). */
-    public ControlAcceso(ServicioSesion sesiones, ConsultaPermisos politica) {
-        this(sesiones, politica, Auditor.NINGUNO);
-    }
-
+    /** El auditor es obligatorio: así no se puede montar un control de acceso que no audite (RNF-S2). */
     public ControlAcceso(ServicioSesion sesiones, ConsultaPermisos politica, Auditor auditor) {
         this.sesiones = sesiones;
         this.politica = politica;
-        this.auditor = auditor;
+        this.auditor = Objects.requireNonNull(auditor, "auditor");
     }
 
     /** Devuelve el usuario de la sesión si tiene el permiso; si no, lanza AccesoDenegadoException. */
