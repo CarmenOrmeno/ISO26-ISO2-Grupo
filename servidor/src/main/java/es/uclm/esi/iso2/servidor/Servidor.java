@@ -8,6 +8,8 @@ import es.uclm.esi.iso2.servidor.agendas.ServicioAgendasImpl;
 import es.uclm.esi.iso2.servidor.api.ApiAgendas;
 import es.uclm.esi.iso2.servidor.api.ApiCatalogo;
 import es.uclm.esi.iso2.servidor.api.ApiCitas;
+import es.uclm.esi.iso2.servidor.api.ApiEsperas;
+import es.uclm.esi.iso2.servidor.api.ApiEstadoSolicitudes;
 import es.uclm.esi.iso2.servidor.api.ApiInformes;
 import es.uclm.esi.iso2.servidor.api.ApiMisCitas;
 import es.uclm.esi.iso2.servidor.api.ApiMisSeguimientos;
@@ -29,6 +31,8 @@ import es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria;
 import es.uclm.esi.iso2.servidor.controlador.ControladorAgendas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorCatalogo;
 import es.uclm.esi.iso2.servidor.controlador.ControladorCitas;
+import es.uclm.esi.iso2.servidor.controlador.ControladorEsperas;
+import es.uclm.esi.iso2.servidor.controlador.ControladorEstadoSolicitudes;
 import es.uclm.esi.iso2.servidor.controlador.ControladorInformes;
 import es.uclm.esi.iso2.servidor.controlador.ControladorMisCitas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorMisSeguimientos;
@@ -38,6 +42,8 @@ import es.uclm.esi.iso2.servidor.controlador.ControladorRealizacion;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSeguimiento;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSesion;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSolicitudes;
+import es.uclm.esi.iso2.servidor.esperas.ServicioEsperas;
+import es.uclm.esi.iso2.servidor.esperas.ServicioEsperasImpl;
 import es.uclm.esi.iso2.servidor.informes.Informe;
 import es.uclm.esi.iso2.servidor.informes.ServicioInformes;
 import es.uclm.esi.iso2.servidor.informes.ServicioInformesImpl;
@@ -93,6 +99,7 @@ public class Servidor {
     private final ServicioRealizacion servicioRealizacion;
     private final ServicioInformes servicioInformes;
     private final ServicioSeguimiento servicioSeguimiento;
+    private final ServicioEsperas servicioEsperas;
 
     // --- api (contratos con el cliente) ---
     private final ApiSesion apiSesion;
@@ -107,6 +114,8 @@ public class Servidor {
     private final ApiInformes apiInformes;
     private final ApiSeguimiento apiSeguimiento;
     private final ApiMisSeguimientos apiMisSeguimientos;
+    private final ApiEsperas apiEsperas;
+    private final ApiEstadoSolicitudes apiEstadoSolicitudes;
 
     public Servidor(Clock reloj) {
         this.reloj = reloj;
@@ -133,6 +142,8 @@ public class Servidor {
                 servicioCitas, servicioAgendas, pacs, servicioNotificaciones, reloj);
         this.servicioSeguimiento = new ServicioSeguimientoImpl(new RepositorioEnMemoria<>(Seguimiento::getId),
                 servicioPacientes, servicioCatalogo, servicioSolicitudes, servicioNotificaciones, reloj);
+        this.servicioEsperas = new ServicioEsperasImpl(servicioSolicitudes, servicioCatalogo, servicioAgendas,
+                servicioCitas, reloj);
 
         // api
         this.apiSesion = new ControladorSesion(servicioSesion, acceso);
@@ -147,6 +158,9 @@ public class Servidor {
         this.apiInformes = new ControladorInformes(servicioInformes, servicioSolicitudes, acceso);
         this.apiSeguimiento = new ControladorSeguimiento(servicioSeguimiento, acceso);
         this.apiMisSeguimientos = new ControladorMisSeguimientos(servicioSeguimiento, servicioSolicitudes, acceso);
+        this.apiEsperas = new ControladorEsperas(servicioEsperas, acceso);
+        this.apiEstadoSolicitudes = new ControladorEstadoSolicitudes(servicioSolicitudes, servicioCitas,
+                servicioAgendas, acceso);
     }
 
     /** Servidor con el reloj del sistema y los datos de demostración cargados. */
@@ -217,6 +231,14 @@ public class Servidor {
 
     public ApiMisSeguimientos misSeguimientos() {
         return apiMisSeguimientos;
+    }
+
+    public ApiEsperas esperas() {
+        return apiEsperas;
+    }
+
+    public ApiEstadoSolicitudes estadoSolicitudes() {
+        return apiEstadoSolicitudes;
     }
 
     // --- servicios internos (datos de demostración) ---

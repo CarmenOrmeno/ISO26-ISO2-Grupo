@@ -21,6 +21,9 @@ public interface ServicioCitas {
 
     List<Cita> delDia(LocalDate fecha);
 
+    /** CU14: todas las citas de una solicitud (también las canceladas), de la más antigua a la más reciente. */
+    List<Cita> deSolicitud(long idSolicitud);
+
     List<Cita> todas();
 
     /** CU07: el paciente confirma su cita. */

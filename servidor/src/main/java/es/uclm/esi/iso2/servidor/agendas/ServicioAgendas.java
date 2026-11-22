@@ -20,6 +20,9 @@ public interface ServicioAgendas {
 
     List<Agenda> todas();
 
+    /** CU14: agendas de un médico entre dos fechas (ambas incluidas), por fecha y hora de inicio. */
+    List<Agenda> deMedico(String loginMedico, LocalDate desde, LocalDate hasta);
+
     /** Huecos libres de una modalidad entre dos fechas (ambas incluidas), ordenados por fecha y hora. */
     List<HuecoLibre> huecosLibres(Modalidad modalidad, LocalDate desde, LocalDate hasta);
 
