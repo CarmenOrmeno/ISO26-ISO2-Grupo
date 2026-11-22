@@ -9,7 +9,7 @@ Sistema de gestión de Radiodiagnóstico del SESCAM. Enunciado y requisitos en
 [docs/wiki/Requisitos-y-casos-de-uso.md](docs/wiki/Requisitos-y-casos-de-uso.md).
 
 ## 2. Reglas generales
-1. Java 17, Maven multimódulo (`radiodiagnostico` → `servidor`, `cliente`). No añadir módulos ni dependencias
+1. Java 21 (D-023), Maven multimódulo (`radiodiagnostico` → `servidor`, `cliente`). No añadir módulos ni dependencias
    sin una entrada nueva en `DECISIONS.md`.
 2. Dependencias permitidas: `org.junit.jupiter:junit-jupiter` (scope test), `com.mysql:mysql-connector-j`
    (scope runtime, D-018) y `org.openjfx` solo en el cliente (D-017). Nada de JUnit 4, Spring, JPA/Hibernate,

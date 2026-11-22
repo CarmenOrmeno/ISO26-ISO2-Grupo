@@ -26,7 +26,7 @@ Fecha: 19/10 · It. 0 · Acta: 19/10 · Issue: Estructura Maven
 - **Consecuencias:** cada módulo con su versión; al cambiar la del padre hay que actualizar `<parent>`.
   Los componentes de cada CU se separan como **paquetes** dentro del módulo servidor.
 
-## D-003 · Versión de Java 17
+## D-003 · Versión de Java 17 (revisada por D-023)
 Fecha: 19/10 · It. 0 · Acta: 19/10
 - **Contexto:** las transparencias proponen Java 21, pero el JDK instalado en los equipos es el 17 LTS.
 - **Decisión:** `maven.compiler.release` = 17 en el pom padre y `java-version: '17'` en el workflow.
@@ -182,3 +182,18 @@ Fecha: 22/11 · It. 10 · Acta: 23/11
   publica como **1.1.1** (reempaquetado con el servidor 1.9.0). El cliente del médico llega en la v1.0.0 con JavaFX.
 - **Alternativas:** retrasar la v0.2.0 hasta tener el cliente JavaFX; hacer el menú del médico en consola.
 - **Motivo:** no retrasar la integración del servidor en `main` y no hacer trabajo que se va a sustituir.
+
+## D-023 · Java 21 (revisa D-003)
+Fecha: 23/11 · It. N · Acta: _pendiente_
+- **Contexto:** D-003 eligió Java 17 porque era el JDK instalado en los equipos. El equipo ya trabaja con el
+  JDK 21 LTS, que es además la versión que proponen las transparencias.
+- **Decisión:** `maven.compiler.release` = 21 en el pom padre y `java-version: '21'` en el workflow. JavaFX
+  pasa a la 21.0.5 (la versión LTS que corresponde a Java 21). Producto 1.1.0-SNAPSHOT (servidor 1.13.0, cliente
+  2.1.0): cambia la plataforma, no la API.
+- **Alternativas:** seguir en Java 17 (el código compila con los dos, pero el equipo ya no tiene el JDK 17 como
+  JDK por defecto).
+- **Motivo:** una sola versión de Java en los equipos, en el CI y en el pom; Java 21 es LTS y lo soportan JUnit
+  6, JaCoCo 0.8.16, Maven y el driver de MySQL.
+- **Consecuencias:** hace falta el JDK 21 para construir y ejecutar la aplicación (README y manual). Se pueden
+  usar las novedades de Java 21 (*pattern matching* en `switch`, *records* en patrones), aunque el código
+  actual no lo necesita.
