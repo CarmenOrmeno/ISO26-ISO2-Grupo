@@ -98,6 +98,36 @@ Las dos vistas usan los mismos controladores. Añadir una operación al cliente 
 catálogo del rol, sin tocar las vistas (OCP). El cliente solo depende de la interfaz `api.Apis` (acceso a los contratos
 `ApiXxx`), que implementa `Servidor`; solo `Main`, la raíz de composición del cliente, crea el `Servidor`.
 
+### Capas por componente (D-021)
+
+Los paquetes son **por componente**. Las capas de D-007 son conjuntos de clases dentro de cada componente, no
+paquetes. Los métodos que cambian el estado de una entidad son de paquete: solo los usa su servicio (D-022).
+
+| Componente | API (`api`) | Controlador (`controlador`) | Servicio (interfaz → implementación) | Dominio (entidades y valores) |
+|---|---|---|---|---|
+| `seguridad` | `ApiSesion`, `ApiPermisos` | `ControladorSesion`, `ControladorPermisos` | `ServicioSesion`, `ServicioPermisos` → `…Impl`; `ControlAcceso` | `Usuario`, `Rol`, `Permiso`, `PoliticaPermisos`, `Sesion` |
+| `pacientes` | `ApiPacientes` | `ControladorPacientes` | `ServicioPacientes` → `ServicioPacientesImpl` | `Paciente`, `Dni`, `DatosPaciente` |
+| `catalogo` | `ApiCatalogo` | `ControladorCatalogo` | `ServicioCatalogo` → `ServicioCatalogoImpl` | `TipoPrueba`, `ParametrosSistema`, `Modalidad`, `Prioridad` |
+| `solicitudes` | `ApiSolicitudes`, `ApiEstadoSolicitudes` | `ControladorSolicitudes`, `ControladorEstadoSolicitudes` | `ServicioSolicitudes` → `ServicioSolicitudesImpl` | `SolicitudPrueba`, `EstadoSolicitud`, `DatosSolicitud` |
+| `agendas` | `ApiAgendas` | `ControladorAgendas` | `ServicioAgendas` → `ServicioAgendasImpl` | `Agenda`, `Hueco`, `HuecoLibre`, `DatosAgenda` |
+| `citas` | `ApiCitas`, `ApiMisCitas` | `ControladorCitas`, `ControladorMisCitas` | `ServicioCitas` → `ServicioCitasImpl`; `ServicioRecordatorios` | `Cita`, `EstadoCita`, `SituacionSolicitud` |
+| `realizacion` | `ApiRealizacion` | `ControladorRealizacion` | `ServicioRealizacion` → `ServicioRealizacionImpl` | `Incidencia`, `TipoIncidencia` |
+| `informes` | `ApiInformes` | `ControladorInformes` | `ServicioInformes` → `ServicioInformesImpl` | `Informe` |
+| `seguimiento` | `ApiSeguimiento`, `ApiMisSeguimientos` | `ControladorSeguimiento`, `ControladorMisSeguimientos` | `ServicioSeguimiento` → `ServicioSeguimientoImpl` | `Seguimiento`, `EstadoSeguimiento`, `DatosSeguimiento` |
+| `esperas` | `ApiEsperas` | `ControladorEsperas` | `ServicioEsperas` → `ServicioEsperasImpl` | `EntradaEspera` |
+| `notificaciones` | `ApiNotificaciones` | `ControladorNotificaciones` | `ServicioNotificaciones` → `ServicioNotificacionesImpl`; `Notificador` | `Notificacion`, `TipoNotificacion` |
+| `historial` | `ApiHistorial` | `ControladorHistorial` | `ServicioHistorial` → `ServicioHistorialImpl` | `EntradaHistorial` |
+| `atencion` | `ApiAtencionPaciente`, `ApiAtencion` | `ControladorAtencionPaciente`, `ControladorAtencion` | `ServicioAtencion` → `ServicioAtencionImpl` | `IncidenciaPaciente`, `Encuesta`, `CategoriaIncidencia`, `EstadoIncidencia` |
+| `auditoria` | `ApiAuditoria` | `ControladorAuditoria` | `ServicioAuditoria` → `ServicioAuditoriaImpl` (implementa `seguridad.Auditor`) | `RegistroAuditoria` |
+| `sincronizacion` | `ApiIntegracion` | `ControladorIntegracion` | `ServicioIntegracion` → `ServicioIntegracionImpl` | `Sincronizacion`, `EstadoSistema`, `TipoSincronizacion` |
+| `estadisticas` | `ApiEstadisticasMedico`, `ApiInformesOperativos`, `ApiEstadisticasGlobales` | `ControladorEstadisticasMedico`, `ControladorInformesOperativos`, `ControladorEstadisticasGlobales` | `ServicioEstadisticasMedico`, `ServicioInformesOperativos`, `ServicioEstadisticasGlobales` → `…Impl` | `EstadisticasMedico`, `InformeOperativo`, `EstadisticasGlobales`, `Periodo` |
+
+Fuera de los componentes:
+- `integracion` contiene las interfaces de los sistemas externos (`SistemaExterno`, `ProveedorSso`, `SistemaPacs`,
+  `SistemaHce`, `SistemaAdmision`) y sus simulados.
+- `persistencia` contiene las implementaciones de `comun.Repositorio`.
+- `Servidor` es la raíz de composición e implementa `api.Apis`.
+
 ## 🔄 4. Ciclo de vida de una solicitud
 
 ```mermaid

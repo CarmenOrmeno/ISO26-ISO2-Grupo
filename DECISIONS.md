@@ -183,6 +183,38 @@ Fecha: 22/11 · It. 10 · Acta: 23/11
 - **Alternativas:** retrasar la v0.2.0 hasta tener el cliente JavaFX; hacer el menú del médico en consola.
 - **Motivo:** no retrasar la integración del servidor en `main` y no hacer trabajo que se va a sustituir.
 
+## D-021 · Paquetes por componente; las capas son de clases, no de paquetes
+Fecha: 23/11 · It. N · Acta: _pendiente de aprobar por el equipo_
+- **Contexto:** al revisar la gestión de paquetes se planteó crear un paquete `dominio` (y `servicio`,
+  `persistencia`…) para que las capas de D-007 se vean en la estructura del código.
+- **Decisión:** el servidor se organiza **por componente** (`citas`, `agendas`, `pacientes`…). Cada uno tiene
+  sus entidades y valores (capa dominio), su interfaz `ServicioXxx` y su `ServicioXxxImpl` (capa servicio). Solo
+  se separan en paquetes propios lo que es común a todos: los contratos con el cliente (`api`), sus
+  implementaciones (`controlador`), `persistencia` y `comun`. La correspondencia capa → clases está en la
+  página de Arquitectura.
+- **Alternativas:** paquetes por capa (`dominio`, `servicio`…); subpaquetes por capa dentro de cada componente
+  (`citas.dominio`, `citas.servicio`).
+- **Motivo:** cohesión (todo lo de un CU está junto, y cambiar un CU toca un paquete) y **encapsulación**: los
+  métodos que cambian el estado de una entidad son de paquete y solo los usa su servicio (D-022). Con paquetes
+  por capa, o con subpaquetes, esos métodos tendrían que ser públicos, porque en Java el acceso de paquete no
+  llega a otros paquetes ni a los subpaquetes.
+- **Consecuencias:** las capas se comprueban con las dependencias, no con los nombres de los paquetes: sin
+  ciclos y sin dependencias del dominio o los servicios hacia `api` o `controlador` (`jdeps`).
+
+## D-022 · La API devuelve entidades del dominio protegidas, no DTO
+Fecha: 23/11 · It. N · Acta: _pendiente de aprobar por el equipo_
+- **Contexto:** la API devolvía las entidades con sus métodos de cambio de estado públicos, así que un cliente
+  podía modificar el estado del servidor sin pasar por el control de acceso ni por la auditoría (corregido en
+  la v1.0.1).
+- **Decisión:** la API sigue devolviendo las entidades del dominio (`Cita`, `Paciente`…), pero sus métodos de
+  cambio de estado son de paquete. `EncapsulacionTest` falla si una entidad vuelve a exponer uno público.
+- **Alternativas:** objetos de transferencia (DTO) en `api`, de modo que el cliente solo conozca `api`;
+  entidades inmutables.
+- **Motivo:** cierra la fuga sin rehacer los 23 contratos `api` ni el cliente justo antes de la entrega; las
+  entidades siguen validando sus invariantes.
+- **Consecuencias:** el cliente conoce los tipos del dominio del servidor (acoplamiento aceptado). Si el
+  cliente pasara a comunicarse por red (REST, D-007), habría que introducir DTO en ese momento.
+
 ## D-023 · Java 21 (revisa D-003)
 Fecha: 23/11 · It. N · Acta: _pendiente_
 - **Contexto:** D-003 eligió Java 17 porque era el JDK instalado en los equipos. El equipo ya trabaja con el
