@@ -74,12 +74,12 @@ Cada componente expone **dos** interfaces:
 | `catalogo` | Tipos de prueba, modalidades, prioridades y parámetros | CU03 |
 | `solicitudes` | Solicitudes de prueba y su ciclo de vida | CU04, CU14 |
 | `agendas` | Agendas diarias y huecos | CU05, CU14 |
-| `citas` | Citas: asignar, reprogramar, cancelar, confirmar | CU06, CU07 |
+| `citas` | Citas: asignar, reprogramar, cancelar, confirmar; recordatorios de citas (tarea programada) | CU06, CU07, CU12 |
 | `realizacion` | Registro de realización e incidencias técnicas | CU08 |
 | `informes` | Informes radiológicos e imágenes | CU09 |
 | `seguimiento` | Pruebas de seguimiento periódicas | CU10, CU16 |
 | `esperas` | Listas de espera, prioridades y huecos | CU11 |
-| `notificaciones` | Notificaciones y recordatorios | CU12 |
+| `notificaciones` | Buzón de notificaciones del paciente y `Notificador` | CU12 |
 | `historial` | Historial de pruebas del paciente | CU13 |
 | `atencion` | Incidencias del paciente y encuestas | CU15 |
 | `auditoria` | Registro y consulta de accesos | CU18 |

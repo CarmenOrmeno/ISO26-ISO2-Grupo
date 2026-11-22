@@ -3,9 +3,9 @@ package es.uclm.esi.iso2.servidor.controlador;
 import java.util.List;
 
 import es.uclm.esi.iso2.servidor.api.ApiNotificaciones;
+import es.uclm.esi.iso2.servidor.citas.ServicioRecordatorios;
 import es.uclm.esi.iso2.servidor.notificaciones.Notificacion;
 import es.uclm.esi.iso2.servidor.notificaciones.ServicioNotificaciones;
-import es.uclm.esi.iso2.servidor.notificaciones.ServicioRecordatorios;
 import es.uclm.esi.iso2.servidor.seguridad.ControlAcceso;
 import es.uclm.esi.iso2.servidor.seguridad.Permiso;
 
