@@ -23,7 +23,7 @@ public class Sesion {
         return !ahora.isBefore(ultimoAcceso.plus(inactividadMaxima));
     }
 
-    public void registrarAcceso(LocalDateTime ahora) {
+    void registrarAcceso(LocalDateTime ahora) {
         this.ultimoAcceso = ahora;
     }
 

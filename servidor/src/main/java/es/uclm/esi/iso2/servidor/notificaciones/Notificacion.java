@@ -25,7 +25,7 @@ public class Notificacion implements Serializable {
         this.fecha = Validaciones.obligatorio(fecha, "fecha");
     }
 
-    public void marcarLeida() {
+    void marcarLeida() {
         leida = true;
     }
 

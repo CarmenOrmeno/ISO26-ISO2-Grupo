@@ -31,7 +31,10 @@ cliente ──► api (interfaces) ──► controlador ──► servicio ─�
   nunca de implementaciones concretas (DIP). Recibe dependencias por constructor.
 - **dominio**: entidades y valores. Validan sus invariantes en el constructor y lanzan
   `IllegalArgumentException` si un dato es inválido.
-- **persistencia**: `Repositorio<T, ID>`; implementaciones `RepositorioEnMemoria` (pruebas) y `RepositorioMySql`
+  Los métodos que cambian el estado de una entidad son **de paquete**: solo los usa el servicio de su
+  componente, que aplica las reglas. Así, un objeto devuelto por la API no se puede modificar desde fuera
+  (lo comprueba `EncapsulacionTest`).
+- **persistencia**: interfaz `comun.Repositorio<T, ID>`; implementaciones `persistencia.RepositorioEnMemoria` y `RepositorioMySql`
   (D-018). Los servicios reciben el `Repositorio` por constructor y generan sus ids con `comun.Secuencia`;
   solo `Servidor` usa la `FabricaRepositorios`. Las entidades que se guardan implementan `Serializable`.
 - **integracion**: interfaces de sistemas externos y sus adaptadores simulados.

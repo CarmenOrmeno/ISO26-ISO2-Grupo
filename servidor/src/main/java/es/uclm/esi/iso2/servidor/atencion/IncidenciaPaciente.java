@@ -39,7 +39,7 @@ public class IncidenciaPaciente implements Serializable {
     }
 
     /** ABIERTA → RESPONDIDA. Una incidencia solo se responde una vez. */
-    public void responder(String respuesta, String login, LocalDateTime cuando) {
+    void responder(String respuesta, String login, LocalDateTime cuando) {
         if (estado == EstadoIncidencia.RESPONDIDA) {
             throw new ReglaNegocioException("La incidencia " + id + " ya está respondida");
         }
