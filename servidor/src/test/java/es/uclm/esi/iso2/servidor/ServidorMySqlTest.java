@@ -4,12 +4,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import es.uclm.esi.iso2.servidor.agendas.DatosAgenda;
+import es.uclm.esi.iso2.servidor.atencion.CategoriaIncidencia;
+import es.uclm.esi.iso2.servidor.catalogo.Modalidad;
 import es.uclm.esi.iso2.servidor.catalogo.Prioridad;
 import es.uclm.esi.iso2.servidor.comun.RelojAjustable;
 import es.uclm.esi.iso2.servidor.persistencia.BdPruebas;
@@ -111,5 +116,34 @@ class ServidorMySqlTest {
         String admin = token(segundo, "admin1");
         assertEquals(0, segundo.integracion().importarPacientes(admin).procesados());
         assertEquals(2, segundo.integracion().sincronizaciones(admin).size());
+    }
+
+    @Test
+    @DisplayName("ItN: el ciclo completo de una prueba se conserva tras reiniciar y la HCE no recibe duplicados")
+    void cicloCompletoTrasReinicio() {
+        Servidor s = arrancar();
+        long solicitud = s.solicitudes().solicitar(token(s, "medico1"), new DatosSolicitud("PAC-1", "US-ABD",
+                "Dolor abdominal", "Descartar colelitiasis", Prioridad.ORDINARIO)).getId();
+        LocalDate manana = LocalDate.of(2026, 11, 3);
+        s.agendas().crear(token(s, "admision1"), new DatosAgenda(manana, "ECO1", Modalidad.US, "medico1",
+                LocalTime.of(15, 0), LocalTime.of(16, 0), 15));
+        long cita = s.esperas().citarEnPrimerHueco(token(s, "admision1"), solicitud).getId();
+        reloj.fijar(manana.atTime(15, 5));
+        s.realizacion().registrarRealizacion(token(s, "medico1"), cita, 3, "");
+        s.informes().crearInforme(token(s, "medico1"), solicitud, "Vesícula sin litiasis", "Normal");
+        s.historial().miInforme(token(s, "paciente1"), solicitud);
+        s.atencionPaciente().responderEncuesta(token(s, "paciente1"), solicitud, 5, "");
+        s.atencionPaciente().comunicarIncidencia(token(s, "paciente1"), CategoriaIncidencia.CITA, "Texto", null);
+        assertEquals(1, s.integracion().enviarInformesHce(token(s, "admin1")).procesados());
+
+        Servidor r = arrancar();
+        String paciente = token(r, "paciente1");
+        assertTrue(r.historial().miHistorial(paciente).stream().anyMatch(e -> e.idSolicitud() == solicitud
+                && e.informeDisponible()));
+        assertEquals(1, r.atencionPaciente().misEncuestas(paciente).size());
+        assertEquals(1, r.atencionPaciente().misIncidencias(paciente).size());
+        assertTrue(r.auditoria().accesosARecurso(token(r, "admin1"), "informe de la solicitud " + solicitud,
+                manana, manana).size() >= 1);
+        assertEquals(0, r.integracion().enviarInformesHce(token(r, "admin1")).procesados());
     }
 }
