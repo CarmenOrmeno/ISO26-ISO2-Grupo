@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- CU01 · Inicio de sesión con el SSO corporativo -->
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="es.uclm.esi.iso2.cliente.vista.fx.ControladorLogin"
+      styleClass="login" spacing="12" alignment="CENTER">
+    <padding><Insets top="32" right="48" bottom="32" left="48"/></padding>
+    <Label text="Radiodiagnóstico" styleClass="titulo"/>
+    <Label text="Servicio de Salud de Castilla-La Mancha" styleClass="subtitulo"/>
+    <TextField fx:id="usuario" promptText="Usuario"/>
+    <PasswordField fx:id="contrasena" promptText="Contraseña" onAction="#entrar"/>
+    <Button text="Entrar" defaultButton="true" onAction="#entrar" maxWidth="Infinity"/>
+    <Label fx:id="mensaje" wrapText="true" styleClass="mensaje"/>
+</VBox>
