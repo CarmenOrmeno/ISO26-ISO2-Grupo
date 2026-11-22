@@ -1,29 +1,24 @@
 package es.uclm.esi.iso2.cliente.controlador;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import es.uclm.esi.iso2.cliente.vista.Consola;
 import es.uclm.esi.iso2.cliente.vista.FinDeEntradaException;
-import es.uclm.esi.iso2.servidor.api.ApiSesion;
-import es.uclm.esi.iso2.servidor.comun.AccesoDenegadoException;
-import es.uclm.esi.iso2.servidor.seguridad.Rol;
+import es.uclm.esi.iso2.servidor.seguridad.Usuario;
 
-/** Controlador principal del cliente: inicio de sesión (CU01) y menú según el rol. */
+/**
+ * Controlador de la vista de consola (alternativa a JavaFX, D-017): inicio de sesión (CU01) y menú con las
+ * acciones del rol. Usa el mismo {@link SesionCliente} y las mismas {@link Accion} que la vista gráfica.
+ */
 public class AplicacionCliente {
 
     private final Consola consola;
-    private final ApiSesion sesion;
-    private final Map<Rol, Menu> menus = new EnumMap<>(Rol.class);
+    private final SesionCliente sesion;
 
-    public AplicacionCliente(Consola consola, ApiSesion sesion) {
+    public AplicacionCliente(Consola consola, SesionCliente sesion) {
         this.consola = consola;
         this.sesion = sesion;
-    }
-
-    public AplicacionCliente conMenu(Rol rol, Menu menu) {
-        menus.put(rol, menu);
-        return this;
     }
 
     /** Bucle principal: hasta que el usuario deja el login vacío o se acaba la entrada. */
@@ -36,7 +31,14 @@ public class AplicacionCliente {
                     break;
                 }
                 String contrasena = consola.leer("Contraseña");
-                iniciarSesion(login, contrasena);
+                if (iniciarSesion(login, contrasena)) {
+                    try {
+                        menu();
+                    } finally {
+                        sesion.cerrar();
+                        consola.mostrar("Sesión cerrada");
+                    }
+                }
             }
         } catch (FinDeEntradaException e) {
             // fin de la entrada: se sale sin error
@@ -44,26 +46,38 @@ public class AplicacionCliente {
         consola.mostrar("Hasta pronto");
     }
 
-    private void iniciarSesion(String login, String contrasena) {
-        String token;
+    private boolean iniciarSesion(String login, String contrasena) {
         try {
-            token = sesion.iniciarSesion(login, contrasena);
-        } catch (AccesoDenegadoException e) {
+            Usuario u = sesion.iniciar(login, contrasena);
+            consola.mostrar("Bienvenido/a, " + u.nombre() + " (" + u.rol() + ")");
+            return true;
+        } catch (RuntimeException e) {
             consola.error(e.getMessage());
+            return false;
+        }
+    }
+
+    private void menu() {
+        List<Accion> acciones = sesion.acciones();
+        List<String> textos = acciones.stream().map(a -> a.grupo() + " · " + a.nombre()).toList();
+        while (true) {
+            int opcion = consola.elegir("Menú de " + sesion.usuario().nombre(), textos);
+            if (opcion == 0) {
+                return;
+            }
+            Accion accion = acciones.get(opcion - 1);
+            List<String> valores = new ArrayList<>();
+            accion.campos().forEach(c -> valores.add(consola.leer(c.etiquetaConAyuda())));
+            mostrar(sesion.ejecutar(accion, valores));
+        }
+    }
+
+    private void mostrar(Resultado r) {
+        if (!r.correcto()) {
+            consola.error(r.mensaje());
             return;
         }
-        try {
-            Rol rol = sesion.usuarioActual(token).rol();
-            consola.mostrar("Bienvenido/a, " + sesion.usuarioActual(token).nombre() + " (" + rol + ")");
-            Menu menu = menus.get(rol);
-            if (menu == null) {
-                consola.error("No hay menú para el rol " + rol);
-            } else {
-                menu.ejecutar(token);
-            }
-        } finally {
-            sesion.cerrarSesion(token);
-            consola.mostrar("Sesión cerrada");
-        }
+        consola.mostrar(r.mensaje());
+        r.lineas().forEach(l -> consola.mostrar("- " + l));
     }
 }
