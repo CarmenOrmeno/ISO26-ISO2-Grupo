@@ -95,7 +95,8 @@ Cada componente expone **dos** interfaces:
 | `vista` | Consola (`--consola`), usada también en las pruebas de sistema |
 
 Las dos vistas usan los mismos controladores. Añadir una operación al cliente es añadir una `Accion` al
-catálogo del rol, sin tocar las vistas (OCP).
+catálogo del rol, sin tocar las vistas (OCP). El cliente solo depende de la interfaz `api.Apis` (acceso a los contratos
+`ApiXxx`), que implementa `Servidor`; solo `Main`, la raíz de composición del cliente, crea el `Servidor`.
 
 ## 🔄 4. Ciclo de vida de una solicitud
 

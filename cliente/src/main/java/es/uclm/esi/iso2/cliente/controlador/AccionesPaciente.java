@@ -10,7 +10,11 @@ import static es.uclm.esi.iso2.cliente.controlador.Campo.textoOpcional;
 
 import java.util.List;
 
-import es.uclm.esi.iso2.servidor.Servidor;
+import es.uclm.esi.iso2.servidor.api.ApiAtencionPaciente;
+import es.uclm.esi.iso2.servidor.api.ApiHistorial;
+import es.uclm.esi.iso2.servidor.api.ApiMisCitas;
+import es.uclm.esi.iso2.servidor.api.ApiMisSeguimientos;
+import es.uclm.esi.iso2.servidor.api.ApiNotificaciones;
 import es.uclm.esi.iso2.servidor.atencion.CategoriaIncidencia;
 
 /** Acciones del paciente (CU07, CU12, CU13, CU15, CU16). El médico también las tiene (D-005). */
@@ -19,12 +23,8 @@ final class AccionesPaciente {
     private AccionesPaciente() {
     }
 
-    static List<Accion> crear(Servidor s) {
-        var citas = s.misCitas();
-        var avisos = s.notificaciones();
-        var historial = s.historial();
-        var atencion = s.atencionPaciente();
-        var seguimientos = s.misSeguimientos();
+    static List<Accion> crear(ApiMisCitas citas, ApiNotificaciones avisos, ApiHistorial historial,
+            ApiAtencionPaciente atencion, ApiMisSeguimientos seguimientos) {
         return List.of(
                 // CU07
                 de("CU07 Mis citas", "Ver mis citas", (t, v) -> citas.misCitas(t)),

@@ -29,6 +29,7 @@ import es.uclm.esi.iso2.servidor.api.ApiRealizacion;
 import es.uclm.esi.iso2.servidor.api.ApiSeguimiento;
 import es.uclm.esi.iso2.servidor.api.ApiSesion;
 import es.uclm.esi.iso2.servidor.api.ApiSolicitudes;
+import es.uclm.esi.iso2.servidor.api.Apis;
 import es.uclm.esi.iso2.servidor.atencion.Encuesta;
 import es.uclm.esi.iso2.servidor.atencion.IncidenciaPaciente;
 import es.uclm.esi.iso2.servidor.atencion.ServicioAtencion;
@@ -117,7 +118,7 @@ import es.uclm.esi.iso2.servidor.solicitudes.SolicitudPrueba;
  * Raíz de composición del servidor (CONTEXT.md §3): el único sitio donde se crean las
  * implementaciones y se conectan entre sí. El cliente solo recibe las interfaces {@code api}.
  */
-public class Servidor {
+public class Servidor implements Apis {
 
     private final Clock reloj;
     private final FabricaRepositorios repositorios;
@@ -303,94 +304,117 @@ public class Servidor {
     }
 
     // --- api ---
+    @Override
     public ApiSesion sesion() {
         return apiSesion;
     }
 
+    @Override
     public ApiPacientes pacientes() {
         return apiPacientes;
     }
 
+    @Override
     public ApiCatalogo catalogo() {
         return apiCatalogo;
     }
 
+    @Override
     public ApiSolicitudes solicitudes() {
         return apiSolicitudes;
     }
 
+    @Override
     public ApiAgendas agendas() {
         return apiAgendas;
     }
 
+    @Override
     public ApiCitas citas() {
         return apiCitas;
     }
 
+    @Override
     public ApiMisCitas misCitas() {
         return apiMisCitas;
     }
 
+    @Override
     public ApiNotificaciones notificaciones() {
         return apiNotificaciones;
     }
 
+    @Override
     public ApiRealizacion realizacion() {
         return apiRealizacion;
     }
 
+    @Override
     public ApiInformes informes() {
         return apiInformes;
     }
 
+    @Override
     public ApiSeguimiento seguimiento() {
         return apiSeguimiento;
     }
 
+    @Override
     public ApiMisSeguimientos misSeguimientos() {
         return apiMisSeguimientos;
     }
 
+    @Override
     public ApiEsperas esperas() {
         return apiEsperas;
     }
 
+    @Override
     public ApiEstadoSolicitudes estadoSolicitudes() {
         return apiEstadoSolicitudes;
     }
 
+    @Override
     public ApiHistorial historial() {
         return apiHistorial;
     }
 
+    @Override
     public ApiAtencionPaciente atencionPaciente() {
         return apiAtencionPaciente;
     }
 
+    @Override
     public ApiAtencion atencion() {
         return apiAtencion;
     }
 
+    @Override
     public ApiPermisos permisos() {
         return apiPermisos;
     }
 
+    @Override
     public ApiAuditoria auditoria() {
         return apiAuditoria;
     }
 
+    @Override
     public ApiIntegracion integracion() {
         return apiIntegracion;
     }
 
+    @Override
     public ApiEstadisticasMedico estadisticasMedico() {
         return apiEstadisticasMedico;
     }
 
+    @Override
     public ApiInformesOperativos informesOperativos() {
         return apiInformesOperativos;
     }
 
+    @Override
     public ApiEstadisticasGlobales estadisticasGlobales() {
         return apiEstadisticasGlobales;
     }

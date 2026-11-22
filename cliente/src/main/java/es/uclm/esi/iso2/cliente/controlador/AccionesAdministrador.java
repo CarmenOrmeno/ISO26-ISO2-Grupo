@@ -12,7 +12,13 @@ import static es.uclm.esi.iso2.cliente.controlador.Campo.textoOpcional;
 
 import java.util.List;
 
-import es.uclm.esi.iso2.servidor.Servidor;
+import es.uclm.esi.iso2.servidor.api.ApiAuditoria;
+import es.uclm.esi.iso2.servidor.api.ApiCatalogo;
+import es.uclm.esi.iso2.servidor.api.ApiEstadisticasGlobales;
+import es.uclm.esi.iso2.servidor.api.ApiIntegracion;
+import es.uclm.esi.iso2.servidor.api.ApiNotificaciones;
+import es.uclm.esi.iso2.servidor.api.ApiPermisos;
+import es.uclm.esi.iso2.servidor.api.ApiSeguimiento;
 import es.uclm.esi.iso2.servidor.catalogo.Modalidad;
 import es.uclm.esi.iso2.servidor.catalogo.Prioridad;
 import es.uclm.esi.iso2.servidor.catalogo.TipoPrueba;
@@ -35,11 +41,9 @@ final class AccionesAdministrador {
                 v.textoOVacio(5), v.siNo(6), v.siNo(7), v.textoOVacio(8), v.siNo(9));
     }
 
-    static List<Accion> crear(Servidor s) {
-        var catalogo = s.catalogo();
-        var permisos = s.permisos();
-        var auditoria = s.auditoria();
-        var integracion = s.integracion();
+    static List<Accion> crear(ApiCatalogo catalogo, ApiNotificaciones notificaciones, ApiSeguimiento seguimiento,
+            ApiPermisos permisos, ApiAuditoria auditoria, ApiIntegracion integracion,
+            ApiEstadisticasGlobales estadisticas) {
         return List.of(
                 // CU03
                 de("CU03 Catálogo y parámetros", "Tipos de prueba", (t, v) -> catalogo.listar(t)),
@@ -59,9 +63,9 @@ final class AccionesAdministrador {
                         (t, v) -> catalogo.cambiarHorasRecordatorio(t, v.entero(0)), entero("Horas")),
                 // tareas programadas (actor Temporizador)
                 de("Tareas programadas", "Enviar recordatorios (CU12)",
-                        (t, v) -> "Citas recordadas: " + s.notificaciones().enviarRecordatorios(t)),
+                        (t, v) -> "Citas recordadas: " + notificaciones.enviarRecordatorios(t)),
                 de("Tareas programadas", "Generar revisiones de seguimiento (CU10)",
-                        (t, v) -> "Solicitudes generadas: " + s.seguimiento().generarRevisiones(t)),
+                        (t, v) -> "Solicitudes generadas: " + seguimiento.generarRevisiones(t)),
                 // CU17
                 de("CU17 Roles y permisos", "Usuarios", (t, v) -> permisos.usuarios(t)),
                 de("CU17 Roles y permisos", "Permisos de un rol",
@@ -92,7 +96,7 @@ final class AccionesAdministrador {
                 de("CU19 Integración", "Enviar informes a la HCE", (t, v) -> integracion.enviarInformesHce(t)),
                 de("CU19 Integración", "Sincronizaciones", (t, v) -> integracion.sincronizaciones(t)),
                 // CU22
-                de("CU22 Estadísticas globales", "Estadísticas globales", (t, v) -> s.estadisticasGlobales()
+                de("CU22 Estadísticas globales", "Estadísticas globales", (t, v) -> estadisticas
                         .estadisticas(t, v.fecha(0), v.fecha(1)), fecha("Desde"), fecha("Hasta")));
     }
 }

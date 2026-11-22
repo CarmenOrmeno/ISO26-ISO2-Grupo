@@ -11,7 +11,13 @@ import static es.uclm.esi.iso2.cliente.controlador.Campo.textoOpcional;
 
 import java.util.List;
 
-import es.uclm.esi.iso2.servidor.Servidor;
+import es.uclm.esi.iso2.servidor.api.ApiCatalogo;
+import es.uclm.esi.iso2.servidor.api.ApiEstadisticasMedico;
+import es.uclm.esi.iso2.servidor.api.ApiEstadoSolicitudes;
+import es.uclm.esi.iso2.servidor.api.ApiInformes;
+import es.uclm.esi.iso2.servidor.api.ApiRealizacion;
+import es.uclm.esi.iso2.servidor.api.ApiSeguimiento;
+import es.uclm.esi.iso2.servidor.api.ApiSolicitudes;
 import es.uclm.esi.iso2.servidor.catalogo.Modalidad;
 import es.uclm.esi.iso2.servidor.catalogo.Prioridad;
 import es.uclm.esi.iso2.servidor.realizacion.TipoIncidencia;
@@ -25,15 +31,12 @@ final class AccionesMedico {
     private AccionesMedico() {
     }
 
-    static List<Accion> crear(Servidor s) {
-        var solicitudes = s.solicitudes();
-        var estado = s.estadoSolicitudes();
-        var realizacion = s.realizacion();
-        var informes = s.informes();
-        var seguimiento = s.seguimiento();
+    static List<Accion> crear(ApiCatalogo catalogo, ApiSolicitudes solicitudes, ApiEstadoSolicitudes estado,
+            ApiRealizacion realizacion, ApiInformes informes, ApiSeguimiento seguimiento,
+            ApiEstadisticasMedico estadisticas) {
         return List.of(
                 // CU04
-                de("CU04 Solicitar pruebas", "Tipos de prueba", (t, v) -> s.catalogo().listar(t)),
+                de("CU04 Solicitar pruebas", "Tipos de prueba", (t, v) -> catalogo.listar(t)),
                 de("CU04 Solicitar pruebas", "Solicitar prueba", (t, v) -> solicitudes.solicitar(t, new DatosSolicitud(
                         v.texto(0), v.texto(1), v.texto(2), v.texto(3), v.opcion(4, Prioridad.class))),
                         texto("Id del paciente"), texto("Código del tipo de prueba"), texto("Indicación clínica"),
@@ -83,7 +86,7 @@ final class AccionesMedico {
                         texto("Motivo")),
                 de("CU10 Seguimientos", "Mis prescripciones", (t, v) -> seguimiento.misPrescripciones(t)),
                 // CU20
-                de("CU20 Estadísticas", "Mis estadísticas", (t, v) -> s.estadisticasMedico().misEstadisticas(t,
+                de("CU20 Estadísticas", "Mis estadísticas", (t, v) -> estadisticas.misEstadisticas(t,
                         v.fecha(0), v.fecha(1)), fecha("Desde"), fecha("Hasta")));
     }
 }
