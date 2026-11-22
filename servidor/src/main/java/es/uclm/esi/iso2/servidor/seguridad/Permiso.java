@@ -37,7 +37,10 @@ public enum Permiso {
     // It8: CU08 y CU09
     REGISTRAR_REALIZACION(true, MEDICO),
     CREAR_INFORMES(true, MEDICO),
-    CONSULTAR_INFORMES_PACIENTES(true, MEDICO);
+    CONSULTAR_INFORMES_PACIENTES(true, MEDICO),
+    // It9: CU10 y CU16
+    PRESCRIBIR_SEGUIMIENTOS(true, MEDICO),
+    CONSULTAR_MIS_SEGUIMIENTOS(true, PACIENTE);
 
     private final boolean datosClinicos;
     private final Set<Rol> rolesPorDefecto;

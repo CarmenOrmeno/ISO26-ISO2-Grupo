@@ -9,6 +9,7 @@ import es.uclm.esi.iso2.servidor.catalogo.Prioridad;
 import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogo;
 import es.uclm.esi.iso2.servidor.catalogo.TipoPrueba;
 import es.uclm.esi.iso2.servidor.pacientes.DatosPaciente;
+import es.uclm.esi.iso2.servidor.seguimiento.DatosSeguimiento;
 import es.uclm.esi.iso2.servidor.seguridad.Rol;
 import es.uclm.esi.iso2.servidor.solicitudes.DatosSolicitud;
 
@@ -51,6 +52,11 @@ final class DatosDemo {
                 "Tos persistente de 3 semanas", "Descartar neumonía", Prioridad.ORDINARIO));
         s.servicioSolicitudes().solicitar("medico1", new DatosSolicitud("PAC-2", "TC-CRANEO",
                 "Cefalea con signos de alarma", "Descartar lesión ocupante de espacio", Prioridad.PREFERENTE));
+
+        // CU10: seguimiento semestral de ecografía abdominal para PAC-1 (3 revisiones, la primera en un mes)
+        s.servicioSeguimiento().prescribir("medico1", new DatosSeguimiento("PAC-1", "US-ABD",
+                "Control de esteatosis hepática", "Seguimiento evolutivo", Prioridad.ORDINARIO, 6, 3,
+                LocalDate.now(s.reloj()).plusMonths(1)));
 
         // CU05: agendas de los próximos 5 días laborables a partir de mañana
         LocalDate dia = LocalDate.now(s.reloj()).plusDays(1);
