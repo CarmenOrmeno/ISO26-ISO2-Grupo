@@ -3,6 +3,19 @@
 Formato basado en *Keep a Changelog*; versiones según *Semantic Versioning* (ver
 [Plan de gestión de configuración](docs/wiki/Plan-de-gestion-de-configuracion.md)).
 
+## [Sin publicar] · iteración de transición (ItN)
+Módulos: servidor 1.12.1-SNAPSHOT · cliente 2.0.1-SNAPSHOT
+
+### Añadido
+- Pruebas de integración de extremo a extremo: ciclo completo de una prueba con los cuatro roles a través del
+  cliente y el mismo ciclo contra MySQL con reinicio.
+- Manual de usuario y de despliegue en la wiki, con capturas de la vista JavaFX.
+- Resultados finales de las pruebas y la cobertura en el Plan de pruebas.
+
+### Corregido
+- Si MySQL está configurado pero no responde, el cliente explica la causa en lugar de mostrar un volcado de pila.
+- El informe de cobertura del sitio excluye la vista JavaFX, igual que la comprobación del build.
+
 ## [1.0.0] · 2026-11-22 · Producto completo (fin de Construcción)
 Módulos: servidor 1.12.0 · cliente 2.0.0
 
