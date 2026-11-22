@@ -10,6 +10,7 @@ import es.uclm.esi.iso2.servidor.catalogo.Modalidad;
 import es.uclm.esi.iso2.servidor.catalogo.ParametrosSistema;
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
+import es.uclm.esi.iso2.servidor.comun.Validaciones;
 
 public class ServicioAgendasImpl implements ServicioAgendas {
 
@@ -65,6 +66,18 @@ public class ServicioAgendasImpl implements ServicioAgendas {
     public List<Agenda> delDia(LocalDate fecha) {
         return repositorio.filtrar(a -> a.getFecha().equals(fecha)).stream()
                 .sorted(Comparator.comparing(Agenda::getInicio)).toList();
+    }
+
+    @Override
+    public List<Agenda> deMedico(String loginMedico, LocalDate desde, LocalDate hasta) {
+        Validaciones.obligatorio(desde, "desde");
+        Validaciones.obligatorio(hasta, "hasta");
+        if (hasta.isBefore(desde)) {
+            throw new IllegalArgumentException("La fecha final no puede ser anterior a la inicial");
+        }
+        return repositorio.filtrar(a -> a.getLoginMedico().equals(loginMedico) && !a.getFecha().isBefore(desde)
+                && !a.getFecha().isAfter(hasta)).stream()
+                .sorted(Comparator.comparing(Agenda::getFecha).thenComparing(Agenda::getInicio)).toList();
     }
 
     @Override

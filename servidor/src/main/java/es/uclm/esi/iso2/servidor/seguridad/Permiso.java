@@ -40,7 +40,11 @@ public enum Permiso {
     CONSULTAR_INFORMES_PACIENTES(true, MEDICO),
     // It9: CU10 y CU16
     PRESCRIBIR_SEGUIMIENTOS(true, MEDICO),
-    CONSULTAR_MIS_SEGUIMIENTOS(true, PACIENTE);
+    CONSULTAR_MIS_SEGUIMIENTOS(true, PACIENTE),
+    // It10: CU11 y CU14
+    GESTIONAR_LISTAS_ESPERA(true, ADMINISTRATIVO),
+    CONSULTAR_ESTADO_SOLICITUDES(true, MEDICO),
+    CONSULTAR_DISPONIBILIDAD(false, MEDICO);
 
     private final boolean datosClinicos;
     private final Set<Rol> rolesPorDefecto;

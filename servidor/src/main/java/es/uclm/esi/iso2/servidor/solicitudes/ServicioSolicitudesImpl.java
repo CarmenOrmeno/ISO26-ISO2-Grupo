@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import es.uclm.esi.iso2.servidor.catalogo.Prioridad;
 import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogo;
 import es.uclm.esi.iso2.servidor.comun.AccesoDenegadoException;
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
@@ -111,6 +112,13 @@ public class ServicioSolicitudesImpl implements ServicioSolicitudes {
     public void marcarInformada(long idSolicitud) {
         SolicitudPrueba s = repositorio.obtener(idSolicitud);
         s.informar();
+        repositorio.guardar(s);
+    }
+
+    @Override
+    public void cambiarPrioridad(long idSolicitud, Prioridad prioridad) {
+        SolicitudPrueba s = repositorio.obtener(idSolicitud);
+        s.cambiarPrioridad(prioridad);
         repositorio.guardar(s);
     }
 }

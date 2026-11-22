@@ -174,6 +174,12 @@ public class ServicioCitasImpl implements ServicioCitas {
     }
 
     @Override
+    public List<Cita> deSolicitud(long idSolicitud) {
+        return repositorio.filtrar(c -> c.getIdSolicitud() == idSolicitud).stream()
+                .sorted(Comparator.comparingLong(Cita::getId)).toList();
+    }
+
+    @Override
     public List<Cita> todas() {
         return repositorio.todos();
     }

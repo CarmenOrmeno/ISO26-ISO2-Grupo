@@ -2,6 +2,8 @@ package es.uclm.esi.iso2.servidor.solicitudes;
 
 import java.util.List;
 
+import es.uclm.esi.iso2.servidor.catalogo.Prioridad;
+
 /** Contrato interno del componente de solicitudes. */
 public interface ServicioSolicitudes {
 
@@ -36,4 +38,7 @@ public interface ServicioSolicitudes {
 
     /** CU09: REALIZADA → INFORMADA. */
     void marcarInformada(long idSolicitud);
+
+    /** CU11: cambia la prioridad de una solicitud que espera cita. */
+    void cambiarPrioridad(long idSolicitud, Prioridad prioridad);
 }
