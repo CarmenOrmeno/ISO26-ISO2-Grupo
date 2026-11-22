@@ -71,7 +71,7 @@ de la arquitectura), después los que dependen de ellos, y al final consultas y 
 | 17 | CU17 | Gestionar roles y permisos | Construcción | Media | [CU17](../casos-de-uso/CU17.md) |
 | 18 | CU18 | Auditar accesos | Construcción | Media | [CU18](../casos-de-uso/CU18.md) |
 | 19 | CU19 | Integrar sistemas hospitalarios | Construcción | Alta | [CU19](../casos-de-uso/CU19.md) |
-| 20 | CU20 | Consultar estadísticas del médico | Construcción | Media | _pendiente_ |
+| 20 | CU20 | Consultar estadísticas del médico | Construcción | Media | [CU20](../casos-de-uso/CU20.md) |
 | 21 | CU21 | Generar informes operativos | Construcción | Media | _pendiente_ |
 | 22 | CU22 | Generar estadísticas globales | Construcción | Baja | _pendiente_ |
 
