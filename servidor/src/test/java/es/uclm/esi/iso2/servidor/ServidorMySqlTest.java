@@ -101,4 +101,15 @@ class ServidorMySqlTest {
                 reloj.instant().atZone(reloj.getZone()).toLocalDate(),
                 reloj.instant().atZone(reloj.getZone()).toLocalDate()).size());
     }
+
+    @Test
+    @DisplayName("Las sincronizaciones (CU19) se conservan y el paciente importado no se duplica al reiniciar")
+    void integracion() {
+        Servidor primero = arrancar();
+        assertEquals(1, primero.integracion().importarPacientes(token(primero, "admin1")).procesados());
+        Servidor segundo = arrancar();
+        String admin = token(segundo, "admin1");
+        assertEquals(0, segundo.integracion().importarPacientes(admin).procesados());
+        assertEquals(2, segundo.integracion().sincronizaciones(admin).size());
+    }
 }

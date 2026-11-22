@@ -67,8 +67,9 @@ Cada componente expone **dos** interfaces:
 |---|---|---|
 | `comun` | Repositorio genérico, `Secuencia` de ids, excepciones, validaciones | — |
 | `persistencia` | `FabricaRepositorios` (memoria o MySQL según el entorno), `RepositorioMySql`, `ConfiguracionBd` | D-018 |
-| `seguridad` | Usuarios, sesiones, roles, permisos, control de acceso | CU01, CU17 |
-| `integracion` | Interfaces de SSO, HCE, Admisión, RIS/PACS y simulados | CU01, CU09, CU19 |
+| `seguridad` | Usuarios, sesiones, roles, permisos (política configurable), control de acceso, interfaz `Auditor` | CU01, CU17, CU18 |
+| `integracion` | Interfaces de SSO, HCE, Admisión, RIS/PACS (`SistemaExterno`) y simulados | CU01, CU09, CU19 |
+| `interoperabilidad` | Sincronizaciones con Admisión y HCE y estado de los sistemas externos | CU19 |
 | `pacientes` | Alta, modificación y baja de pacientes | CU02 |
 | `catalogo` | Tipos de prueba, modalidades, prioridades y parámetros | CU03 |
 | `solicitudes` | Solicitudes de prueba y su ciclo de vida | CU04, CU14 |
@@ -113,7 +114,7 @@ stateDiagram-v2
 | `RADIO_DB_TEST_URL` | `jdbc:mysql://127.0.0.1:3306/radiodiagnostico_test` (pruebas de integración) |
 | `RADIO_DB_USUARIO` / `RADIO_DB_CLAVE` | usuario y contraseña de la aplicación (nunca en el repositorio) |
 
-Los sistemas externos simulados (SSO, PACS) y las sesiones siguen en memoria: no son datos de la aplicación.
+Los sistemas externos simulados (SSO, HCE, Admisión, PACS) y las sesiones siguen en memoria: no son datos de la aplicación.
 ---
 
 [🏠 Inicio](Home.md) · [⬆️ Arriba](#)
