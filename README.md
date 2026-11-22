@@ -45,6 +45,19 @@ mvn -q install -DskipTests
 java -jar cliente/target/cliente-*.jar
 ```
 
+Sin configuración, los datos se guardan en memoria. Para guardarlos en **MySQL 8** (D-018):
+
+```bash
+mysql -uroot -p < scripts/crear-bd.sql        # una vez: bases de datos y usuario (cambia la clave)
+export RADIO_DB_URL=jdbc:mysql://127.0.0.1:3306/radiodiagnostico
+export RADIO_DB_TEST_URL=jdbc:mysql://127.0.0.1:3306/radiodiagnostico_test   # pruebas de integración
+export RADIO_DB_USUARIO=radiodiagnostico
+export RADIO_DB_CLAVE=<tu clave>
+java -jar cliente/target/cliente-*.jar         # al arrancar indica dónde guarda los datos
+```
+
+Las pruebas contra MySQL se omiten si no está `RADIO_DB_TEST_URL`; en el CI siempre se ejecutan.
+
 Usuarios de demostración (SSO simulado): `paciente1`, `medico1`, `admision1`, `admin1`
 (contraseña: `demo`).
 

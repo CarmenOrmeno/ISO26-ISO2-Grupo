@@ -12,6 +12,7 @@
 |---|---|---|---|
 | Unitarias | Entidades del dominio y servicios de cada componente | `servidor/src/test/java/.../<componente>` | En la iteración de cada CU |
 | Integración (servidor) | Controladores `api` + control de acceso + servicios reales, montados con `Servidor` | `servidor/src/test/java/.../controlador` | En cada CU y en ItN |
+| Integración (MySQL) | `RepositorioMySql` cumple el contrato de `Repositorio`; el servidor conserva sus datos entre arranques | `servidor/src/test/java/.../persistencia`, `ServidorMySqlTest` | En cada PR (el CI levanta MySQL 8.0) |
 | Sistema (cliente) | Flujos completos de consola con entrada simulada | `cliente/src/test/java` | En las iteraciones de cliente y en ItN |
 
 ## 🧰 2. Herramientas (D-013)
