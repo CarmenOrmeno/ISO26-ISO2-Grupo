@@ -17,6 +17,7 @@ import es.uclm.esi.iso2.servidor.api.ApiEstadisticasMedico;
 import es.uclm.esi.iso2.servidor.api.ApiEstadoSolicitudes;
 import es.uclm.esi.iso2.servidor.api.ApiHistorial;
 import es.uclm.esi.iso2.servidor.api.ApiInformes;
+import es.uclm.esi.iso2.servidor.api.ApiInformesOperativos;
 import es.uclm.esi.iso2.servidor.api.ApiIntegracion;
 import es.uclm.esi.iso2.servidor.api.ApiMisCitas;
 import es.uclm.esi.iso2.servidor.api.ApiMisSeguimientos;
@@ -52,6 +53,7 @@ import es.uclm.esi.iso2.servidor.controlador.ControladorEstadisticasMedico;
 import es.uclm.esi.iso2.servidor.controlador.ControladorEstadoSolicitudes;
 import es.uclm.esi.iso2.servidor.controlador.ControladorHistorial;
 import es.uclm.esi.iso2.servidor.controlador.ControladorInformes;
+import es.uclm.esi.iso2.servidor.controlador.ControladorInformesOperativos;
 import es.uclm.esi.iso2.servidor.controlador.ControladorIntegracion;
 import es.uclm.esi.iso2.servidor.controlador.ControladorMisCitas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorMisSeguimientos;
@@ -66,6 +68,8 @@ import es.uclm.esi.iso2.servidor.esperas.ServicioEsperas;
 import es.uclm.esi.iso2.servidor.esperas.ServicioEsperasImpl;
 import es.uclm.esi.iso2.servidor.estadisticas.ServicioEstadisticasMedico;
 import es.uclm.esi.iso2.servidor.estadisticas.ServicioEstadisticasMedicoImpl;
+import es.uclm.esi.iso2.servidor.estadisticas.ServicioInformesOperativos;
+import es.uclm.esi.iso2.servidor.estadisticas.ServicioInformesOperativosImpl;
 import es.uclm.esi.iso2.servidor.historial.ServicioHistorial;
 import es.uclm.esi.iso2.servidor.historial.ServicioHistorialImpl;
 import es.uclm.esi.iso2.servidor.informes.Informe;
@@ -141,6 +145,7 @@ public class Servidor {
     private final ServicioAtencion servicioAtencion;
     private final ServicioIntegracion servicioIntegracion;
     private final ServicioEstadisticasMedico servicioEstadisticasMedico;
+    private final ServicioInformesOperativos servicioInformesOperativos;
 
     // --- api (contratos con el cliente) ---
     private final ApiSesion apiSesion;
@@ -164,6 +169,7 @@ public class Servidor {
     private final ApiAuditoria apiAuditoria;
     private final ApiIntegracion apiIntegracion;
     private final ApiEstadisticasMedico apiEstadisticasMedico;
+    private final ApiInformesOperativos apiInformesOperativos;
 
     /** Servidor con los datos en memoria (pruebas). */
     public Servidor(Clock reloj) {
@@ -213,6 +219,8 @@ public class Servidor {
                 repositorios.crear("sincronizaciones", Sincronizacion::id), reloj);
         this.servicioEstadisticasMedico = new ServicioEstadisticasMedicoImpl(servicioSolicitudes, servicioCatalogo,
                 servicioSeguimiento);
+        this.servicioInformesOperativos = new ServicioInformesOperativosImpl(servicioAgendas, servicioCitas,
+                servicioSolicitudes, servicioCatalogo);
 
         // api
         this.apiSesion = new ControladorSesion(servicioSesion, acceso);
@@ -237,6 +245,7 @@ public class Servidor {
         this.apiAuditoria = new ControladorAuditoria(servicioAuditoria, acceso);
         this.apiIntegracion = new ControladorIntegracion(servicioIntegracion, acceso);
         this.apiEstadisticasMedico = new ControladorEstadisticasMedico(servicioEstadisticasMedico, acceso);
+        this.apiInformesOperativos = new ControladorInformesOperativos(servicioInformesOperativos, acceso);
     }
 
     /**
@@ -366,6 +375,10 @@ public class Servidor {
 
     public ApiEstadisticasMedico estadisticasMedico() {
         return apiEstadisticasMedico;
+    }
+
+    public ApiInformesOperativos informesOperativos() {
+        return apiInformesOperativos;
     }
 
     // --- servicios internos (datos de demostración) ---
