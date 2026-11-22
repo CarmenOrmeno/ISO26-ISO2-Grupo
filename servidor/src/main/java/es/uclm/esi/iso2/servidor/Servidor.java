@@ -8,7 +8,15 @@ import es.uclm.esi.iso2.servidor.agendas.ServicioAgendasImpl;
 import es.uclm.esi.iso2.servidor.api.ApiAgendas;
 import es.uclm.esi.iso2.servidor.api.ApiCatalogo;
 import es.uclm.esi.iso2.servidor.api.ApiCitas;
+import es.uclm.esi.iso2.servidor.api.ApiEsperas;
+import es.uclm.esi.iso2.servidor.api.ApiEstadoSolicitudes;
+import es.uclm.esi.iso2.servidor.api.ApiInformes;
+import es.uclm.esi.iso2.servidor.api.ApiMisCitas;
+import es.uclm.esi.iso2.servidor.api.ApiMisSeguimientos;
+import es.uclm.esi.iso2.servidor.api.ApiNotificaciones;
 import es.uclm.esi.iso2.servidor.api.ApiPacientes;
+import es.uclm.esi.iso2.servidor.api.ApiRealizacion;
+import es.uclm.esi.iso2.servidor.api.ApiSeguimiento;
 import es.uclm.esi.iso2.servidor.api.ApiSesion;
 import es.uclm.esi.iso2.servidor.api.ApiSolicitudes;
 import es.uclm.esi.iso2.servidor.catalogo.ParametrosSistema;
@@ -23,13 +31,37 @@ import es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria;
 import es.uclm.esi.iso2.servidor.controlador.ControladorAgendas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorCatalogo;
 import es.uclm.esi.iso2.servidor.controlador.ControladorCitas;
+import es.uclm.esi.iso2.servidor.controlador.ControladorEsperas;
+import es.uclm.esi.iso2.servidor.controlador.ControladorEstadoSolicitudes;
+import es.uclm.esi.iso2.servidor.controlador.ControladorInformes;
+import es.uclm.esi.iso2.servidor.controlador.ControladorMisCitas;
+import es.uclm.esi.iso2.servidor.controlador.ControladorMisSeguimientos;
+import es.uclm.esi.iso2.servidor.controlador.ControladorNotificaciones;
 import es.uclm.esi.iso2.servidor.controlador.ControladorPacientes;
+import es.uclm.esi.iso2.servidor.controlador.ControladorRealizacion;
+import es.uclm.esi.iso2.servidor.controlador.ControladorSeguimiento;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSesion;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSolicitudes;
+import es.uclm.esi.iso2.servidor.esperas.ServicioEsperas;
+import es.uclm.esi.iso2.servidor.esperas.ServicioEsperasImpl;
+import es.uclm.esi.iso2.servidor.informes.Informe;
+import es.uclm.esi.iso2.servidor.informes.ServicioInformes;
+import es.uclm.esi.iso2.servidor.informes.ServicioInformesImpl;
+import es.uclm.esi.iso2.servidor.integracion.PacsSimulado;
 import es.uclm.esi.iso2.servidor.integracion.SsoSimulado;
+import es.uclm.esi.iso2.servidor.notificaciones.Notificacion;
+import es.uclm.esi.iso2.servidor.notificaciones.ServicioNotificaciones;
+import es.uclm.esi.iso2.servidor.notificaciones.ServicioNotificacionesImpl;
+import es.uclm.esi.iso2.servidor.notificaciones.ServicioRecordatorios;
 import es.uclm.esi.iso2.servidor.pacientes.Paciente;
 import es.uclm.esi.iso2.servidor.pacientes.ServicioPacientes;
 import es.uclm.esi.iso2.servidor.pacientes.ServicioPacientesImpl;
+import es.uclm.esi.iso2.servidor.realizacion.Incidencia;
+import es.uclm.esi.iso2.servidor.realizacion.ServicioRealizacion;
+import es.uclm.esi.iso2.servidor.realizacion.ServicioRealizacionImpl;
+import es.uclm.esi.iso2.servidor.seguimiento.Seguimiento;
+import es.uclm.esi.iso2.servidor.seguimiento.ServicioSeguimiento;
+import es.uclm.esi.iso2.servidor.seguimiento.ServicioSeguimientoImpl;
 import es.uclm.esi.iso2.servidor.seguridad.ControlAcceso;
 import es.uclm.esi.iso2.servidor.seguridad.PoliticaPermisos;
 import es.uclm.esi.iso2.servidor.seguridad.Rol;
@@ -50,6 +82,7 @@ public class Servidor {
 
     // --- infraestructura y seguridad (CU01) ---
     private final SsoSimulado sso = new SsoSimulado();
+    private final PacsSimulado pacs = new PacsSimulado();
     private final Repositorio<Usuario, String> usuarios = new RepositorioEnMemoria<>(Usuario::login);
     private final PoliticaPermisos politica = PoliticaPermisos.porDefecto();
     private final ServicioSesion servicioSesion;
@@ -61,6 +94,12 @@ public class Servidor {
     private final ServicioSolicitudes servicioSolicitudes;
     private final ServicioAgendas servicioAgendas;
     private final ServicioCitas servicioCitas;
+    private final ServicioNotificaciones servicioNotificaciones;
+    private final ServicioRecordatorios servicioRecordatorios;
+    private final ServicioRealizacion servicioRealizacion;
+    private final ServicioInformes servicioInformes;
+    private final ServicioSeguimiento servicioSeguimiento;
+    private final ServicioEsperas servicioEsperas;
 
     // --- api (contratos con el cliente) ---
     private final ApiSesion apiSesion;
@@ -69,6 +108,14 @@ public class Servidor {
     private final ApiSolicitudes apiSolicitudes;
     private final ApiAgendas apiAgendas;
     private final ApiCitas apiCitas;
+    private final ApiMisCitas apiMisCitas;
+    private final ApiNotificaciones apiNotificaciones;
+    private final ApiRealizacion apiRealizacion;
+    private final ApiInformes apiInformes;
+    private final ApiSeguimiento apiSeguimiento;
+    private final ApiMisSeguimientos apiMisSeguimientos;
+    private final ApiEsperas apiEsperas;
+    private final ApiEstadoSolicitudes apiEstadoSolicitudes;
 
     public Servidor(Clock reloj) {
         this.reloj = reloj;
@@ -83,8 +130,20 @@ public class Servidor {
                 servicioPacientes, servicioCatalogo, reloj);
         this.servicioAgendas = new ServicioAgendasImpl(new RepositorioEnMemoria<>(Agenda::getId),
                 servicioCatalogo.parametros(), reloj);
+        this.servicioNotificaciones = new ServicioNotificacionesImpl(new RepositorioEnMemoria<>(Notificacion::getId),
+                reloj);
         this.servicioCitas = new ServicioCitasImpl(new RepositorioEnMemoria<>(Cita::getId), servicioSolicitudes,
-                servicioAgendas, servicioCatalogo, reloj);
+                servicioAgendas, servicioCatalogo, servicioNotificaciones, reloj);
+        this.servicioRecordatorios = new ServicioRecordatorios(servicioCitas, servicioSolicitudes, servicioCatalogo,
+                servicioNotificaciones, reloj);
+        this.servicioRealizacion = new ServicioRealizacionImpl(servicioCitas, servicioSolicitudes, servicioAgendas, pacs,
+                new RepositorioEnMemoria<>(Incidencia::id), reloj);
+        this.servicioInformes = new ServicioInformesImpl(new RepositorioEnMemoria<>(Informe::id), servicioSolicitudes,
+                servicioCitas, servicioAgendas, pacs, servicioNotificaciones, reloj);
+        this.servicioSeguimiento = new ServicioSeguimientoImpl(new RepositorioEnMemoria<>(Seguimiento::getId),
+                servicioPacientes, servicioCatalogo, servicioSolicitudes, servicioNotificaciones, reloj);
+        this.servicioEsperas = new ServicioEsperasImpl(servicioSolicitudes, servicioCatalogo, servicioAgendas,
+                servicioCitas, reloj);
 
         // api
         this.apiSesion = new ControladorSesion(servicioSesion, acceso);
@@ -93,6 +152,15 @@ public class Servidor {
         this.apiSolicitudes = new ControladorSolicitudes(servicioSolicitudes, acceso);
         this.apiAgendas = new ControladorAgendas(servicioAgendas, acceso);
         this.apiCitas = new ControladorCitas(servicioCitas, servicioSolicitudes, acceso);
+        this.apiMisCitas = new ControladorMisCitas(servicioCitas, acceso);
+        this.apiNotificaciones = new ControladorNotificaciones(servicioNotificaciones, servicioRecordatorios, acceso);
+        this.apiRealizacion = new ControladorRealizacion(servicioRealizacion, acceso);
+        this.apiInformes = new ControladorInformes(servicioInformes, servicioSolicitudes, acceso);
+        this.apiSeguimiento = new ControladorSeguimiento(servicioSeguimiento, acceso);
+        this.apiMisSeguimientos = new ControladorMisSeguimientos(servicioSeguimiento, servicioSolicitudes, acceso);
+        this.apiEsperas = new ControladorEsperas(servicioEsperas, acceso);
+        this.apiEstadoSolicitudes = new ControladorEstadoSolicitudes(servicioSolicitudes, servicioCitas,
+                servicioAgendas, acceso);
     }
 
     /** Servidor con el reloj del sistema y los datos de demostración cargados. */
@@ -141,6 +209,38 @@ public class Servidor {
         return apiCitas;
     }
 
+    public ApiMisCitas misCitas() {
+        return apiMisCitas;
+    }
+
+    public ApiNotificaciones notificaciones() {
+        return apiNotificaciones;
+    }
+
+    public ApiRealizacion realizacion() {
+        return apiRealizacion;
+    }
+
+    public ApiInformes informes() {
+        return apiInformes;
+    }
+
+    public ApiSeguimiento seguimiento() {
+        return apiSeguimiento;
+    }
+
+    public ApiMisSeguimientos misSeguimientos() {
+        return apiMisSeguimientos;
+    }
+
+    public ApiEsperas esperas() {
+        return apiEsperas;
+    }
+
+    public ApiEstadoSolicitudes estadoSolicitudes() {
+        return apiEstadoSolicitudes;
+    }
+
     // --- servicios internos (datos de demostración) ---
     ServicioPacientes servicioPacientes() {
         return servicioPacientes;
@@ -160,5 +260,22 @@ public class Servidor {
 
     ServicioCitas servicioCitas() {
         return servicioCitas;
+    }
+
+    ServicioRealizacion servicioRealizacion() {
+        return servicioRealizacion;
+    }
+
+    ServicioInformes servicioInformes() {
+        return servicioInformes;
+    }
+
+    ServicioSeguimiento servicioSeguimiento() {
+        return servicioSeguimiento;
+    }
+
+    /** PACS simulado (para pruebas de tolerancia a fallos y CU19). */
+    public PacsSimulado pacs() {
+        return pacs;
     }
 }

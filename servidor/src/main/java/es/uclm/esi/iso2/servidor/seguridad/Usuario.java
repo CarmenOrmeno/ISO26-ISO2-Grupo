@@ -1,5 +1,6 @@
 package es.uclm.esi.iso2.servidor.seguridad;
 
+import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.Validaciones;
 
 /**
@@ -17,6 +18,14 @@ public record Usuario(String login, String nombre, Rol rol, String idPaciente) {
         if (rol == Rol.PACIENTE && (idPaciente == null || idPaciente.isBlank())) {
             throw new IllegalArgumentException("Un usuario paciente debe estar asociado a un paciente");
         }
+    }
+
+    /** Id del paciente asociado; lanza ReglaNegocioException si el usuario no es paciente de ningún registro. */
+    public String exigirPaciente() {
+        if (idPaciente == null || idPaciente.isBlank()) {
+            throw new ReglaNegocioException("El usuario " + login + " no tiene un paciente asociado");
+        }
+        return idPaciente;
     }
 
     public Usuario conRol(Rol nuevoRol) {

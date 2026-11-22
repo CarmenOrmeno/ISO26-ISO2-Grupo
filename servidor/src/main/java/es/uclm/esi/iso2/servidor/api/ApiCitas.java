@@ -24,4 +24,7 @@ public interface ApiCitas {
     List<Cita> delDia(String token, LocalDate fecha);
 
     List<Cita> dePaciente(String token, String idPaciente);
+
+    /** CU07: citas en las que el paciente ha pedido un cambio. */
+    List<Cita> conCambioSolicitado(String token);
 }

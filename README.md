@@ -21,11 +21,18 @@ ISO26-ISO2-Grupo/
 Requisitos: JDK 17 y Maven 3.9.
 
 ```bash
-mvn verify          # compila, pasa las pruebas y genera el informe de JaCoCo
-mvn verify site     # además genera el sitio con los informes de Surefire y JaCoCo
+mvn verify               # compila, pasa las pruebas y genera el informe de JaCoCo
+mvn site site:stage      # después: sitio único con los informes de Surefire y JaCoCo
 ```
 
-Informes: `servidor/target/site/index.html` y `cliente/target/site/index.html`.
+Los dos comandos van por separado: si se lanzan juntos, el sitio de la raíz se genera antes de que los
+módulos hayan pasado sus pruebas y el informe de Surefire sale vacío.
+
+Informes: abrir **`target/staging/index.html`**. La raíz agrupa las pruebas de los dos módulos en un único
+`surefire.html`; la cobertura de JaCoCo está en `target/staging/servidor/jacoco` y `target/staging/cliente/jacoco`.
+
+> Si el proyecto está en una carpeta sincronizada con iCloud (`~/Documents`, `~/Desktop`), iCloud crea copias
+> «` 2`» (`surefire 2.html`, `target 2`…). Conviene trabajar fuera de iCloud.
 
 ## Cómo se ejecuta el cliente
 

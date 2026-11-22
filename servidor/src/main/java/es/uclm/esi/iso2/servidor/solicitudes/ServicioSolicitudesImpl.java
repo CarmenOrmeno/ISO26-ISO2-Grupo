@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import es.uclm.esi.iso2.servidor.catalogo.Prioridad;
 import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogo;
 import es.uclm.esi.iso2.servidor.comun.AccesoDenegadoException;
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
@@ -29,6 +30,11 @@ public class ServicioSolicitudesImpl implements ServicioSolicitudes {
     @Override
     public SolicitudPrueba solicitar(String loginMedico, DatosSolicitud datos) {
         return registrar(loginMedico, datos, null);
+    }
+
+    @Override
+    public SolicitudPrueba solicitarSeguimiento(String loginMedico, DatosSolicitud datos, long idSeguimiento) {
+        return registrar(loginMedico, datos, idSeguimiento);
     }
 
     /** Crea y guarda una solicitud validando paciente, tipo y duplicados. */
@@ -92,6 +98,27 @@ public class ServicioSolicitudesImpl implements ServicioSolicitudes {
     public void anularCita(long idSolicitud) {
         SolicitudPrueba s = repositorio.obtener(idSolicitud);
         s.anularCita();
+        repositorio.guardar(s);
+    }
+
+    @Override
+    public void registrarRealizacion(long idSolicitud, LocalDateTime fecha, String observaciones) {
+        SolicitudPrueba s = repositorio.obtener(idSolicitud);
+        s.registrarRealizacion(fecha, observaciones);
+        repositorio.guardar(s);
+    }
+
+    @Override
+    public void marcarInformada(long idSolicitud) {
+        SolicitudPrueba s = repositorio.obtener(idSolicitud);
+        s.informar();
+        repositorio.guardar(s);
+    }
+
+    @Override
+    public void cambiarPrioridad(long idSolicitud, Prioridad prioridad) {
+        SolicitudPrueba s = repositorio.obtener(idSolicitud);
+        s.cambiarPrioridad(prioridad);
         repositorio.guardar(s);
     }
 }
