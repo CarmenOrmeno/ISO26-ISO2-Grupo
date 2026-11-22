@@ -10,6 +10,7 @@ import es.uclm.esi.iso2.servidor.api.ApiCatalogo;
 import es.uclm.esi.iso2.servidor.api.ApiCitas;
 import es.uclm.esi.iso2.servidor.api.ApiEsperas;
 import es.uclm.esi.iso2.servidor.api.ApiEstadoSolicitudes;
+import es.uclm.esi.iso2.servidor.api.ApiHistorial;
 import es.uclm.esi.iso2.servidor.api.ApiInformes;
 import es.uclm.esi.iso2.servidor.api.ApiMisCitas;
 import es.uclm.esi.iso2.servidor.api.ApiMisSeguimientos;
@@ -31,6 +32,7 @@ import es.uclm.esi.iso2.servidor.controlador.ControladorCatalogo;
 import es.uclm.esi.iso2.servidor.controlador.ControladorCitas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorEsperas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorEstadoSolicitudes;
+import es.uclm.esi.iso2.servidor.controlador.ControladorHistorial;
 import es.uclm.esi.iso2.servidor.controlador.ControladorInformes;
 import es.uclm.esi.iso2.servidor.controlador.ControladorMisCitas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorMisSeguimientos;
@@ -42,6 +44,8 @@ import es.uclm.esi.iso2.servidor.controlador.ControladorSesion;
 import es.uclm.esi.iso2.servidor.controlador.ControladorSolicitudes;
 import es.uclm.esi.iso2.servidor.esperas.ServicioEsperas;
 import es.uclm.esi.iso2.servidor.esperas.ServicioEsperasImpl;
+import es.uclm.esi.iso2.servidor.historial.ServicioHistorial;
+import es.uclm.esi.iso2.servidor.historial.ServicioHistorialImpl;
 import es.uclm.esi.iso2.servidor.informes.Informe;
 import es.uclm.esi.iso2.servidor.informes.ServicioInformes;
 import es.uclm.esi.iso2.servidor.informes.ServicioInformesImpl;
@@ -101,6 +105,7 @@ public class Servidor {
     private final ServicioInformes servicioInformes;
     private final ServicioSeguimiento servicioSeguimiento;
     private final ServicioEsperas servicioEsperas;
+    private final ServicioHistorial servicioHistorial;
 
     // --- api (contratos con el cliente) ---
     private final ApiSesion apiSesion;
@@ -117,6 +122,7 @@ public class Servidor {
     private final ApiMisSeguimientos apiMisSeguimientos;
     private final ApiEsperas apiEsperas;
     private final ApiEstadoSolicitudes apiEstadoSolicitudes;
+    private final ApiHistorial apiHistorial;
 
     /** Servidor con los datos en memoria (pruebas). */
     public Servidor(Clock reloj) {
@@ -153,6 +159,7 @@ public class Servidor {
                 servicioPacientes, servicioCatalogo, servicioSolicitudes, servicioNotificaciones, reloj);
         this.servicioEsperas = new ServicioEsperasImpl(servicioSolicitudes, servicioCatalogo, servicioAgendas,
                 servicioCitas, reloj);
+        this.servicioHistorial = new ServicioHistorialImpl(servicioSolicitudes, servicioCatalogo, servicioInformes);
 
         // api
         this.apiSesion = new ControladorSesion(servicioSesion, acceso);
@@ -170,6 +177,7 @@ public class Servidor {
         this.apiEsperas = new ControladorEsperas(servicioEsperas, acceso);
         this.apiEstadoSolicitudes = new ControladorEstadoSolicitudes(servicioSolicitudes, servicioCitas,
                 servicioAgendas, acceso);
+        this.apiHistorial = new ControladorHistorial(servicioHistorial, acceso);
     }
 
     /**
@@ -271,6 +279,10 @@ public class Servidor {
 
     public ApiEstadoSolicitudes estadoSolicitudes() {
         return apiEstadoSolicitudes;
+    }
+
+    public ApiHistorial historial() {
+        return apiHistorial;
     }
 
     // --- servicios internos (datos de demostración) ---
