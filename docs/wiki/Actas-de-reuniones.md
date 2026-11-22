@@ -1,4 +1,10 @@
-# Actas de reuniones
+# 📝 Actas de reuniones
+
+[🏠 Inicio](Home.md)
+
+> Registro de las reuniones del equipo: cada decisión acaba en DECISIONS.md y cada compromiso en un issue.
+
+---
 
 Una página por reunión. Cada decisión o compromiso del acta se convierte en un **issue** con responsable y
 fecha, y las decisiones de arquitectura en una entrada de [DECISIONS.md](../../DECISIONS.md).
@@ -6,7 +12,7 @@ fecha, y las decisiones de arquitectura en una entrada de [DECISIONS.md](../../D
 > Las actas deben reflejar reuniones reales del equipo: no se rellenan por adelantado. Abajo está la
 > plantilla y el calendario de reuniones previsto en la planificación.
 
-## Reuniones previstas
+## 🗓️ Reuniones previstas
 
 | Fecha | Iteración / hito | Acta |
 |---|---|---|
@@ -20,7 +26,7 @@ fecha, y las decisiones de arquitectura en una entrada de [DECISIONS.md](../../D
 | 30/11 | Transición · ItN | _pendiente_ |
 | 11/12 | Cierre · release v1.0.0 | _pendiente_ |
 
-## Plantilla de acta
+## 📄 Plantilla de acta
 
 ```markdown
 # Acta DD/MM/AAAA · <motivo>
@@ -38,3 +44,7 @@ fecha, y las decisiones de arquitectura en una entrada de [DECISIONS.md](../../D
 ## Compromisos
 | Compromiso | Responsable | Fecha | Issue |
 ```
+
+---
+
+[🏠 Inicio](Home.md) · [⬆️ Arriba](#)
