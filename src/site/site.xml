@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sitio raíz (mvn verify site site:stage): enlaces a los informes de pruebas y de cobertura de los módulos.
+     Los menús propios no se heredan en los sitios de los módulos (sin atributo inherit). -->
+<site xmlns="http://maven.apache.org/SITE/2.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://maven.apache.org/SITE/2.0.0 https://maven.apache.org/xsd/site-2.0.0.xsd">
+  <!-- El mismo skin que usa el plugin del sitio por defecto -->
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-fluido-skin</artifactId>
+    <version>2.0.0-M9</version>
+  </skin>
+  <body>
+    <menu name="Informes de calidad">
+      <item name="Pruebas de todos los módulos (Surefire)" href="surefire.html"/>
+      <item name="Cobertura del servidor (JaCoCo)" href="servidor/jacoco/index.html"/>
+      <item name="Cobertura del cliente (JaCoCo)" href="cliente/jacoco/index.html"/>
+    </menu>
+    <menu ref="modules"/>
+    <menu ref="reports"/>
+  </body>
+</site>
