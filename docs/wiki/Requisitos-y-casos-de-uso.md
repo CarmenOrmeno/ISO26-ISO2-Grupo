@@ -64,7 +64,7 @@ de la arquitectura), después los que dependen de ellos, y al final consultas y 
 | 10 | CU10 | Prescribir seguimiento | Construcción | Alta | [CU10](../casos-de-uso/CU10.md) |
 | 11 | CU11 | Gestionar listas de espera | Construcción | Media | [CU11](../casos-de-uso/CU11.md) |
 | 12 | CU12 | Notificar y recordar | Construcción | Media | [CU12](../casos-de-uso/CU12.md) |
-| 13 | CU13 | Consultar historial | Construcción | Baja | _pendiente_ |
+| 13 | CU13 | Consultar historial | Construcción | Baja | [CU13](../casos-de-uso/CU13.md) |
 | 14 | CU14 | Consultar estado de solicitudes y agendas | Construcción | Baja | [CU14](../casos-de-uso/CU14.md) |
 | 15 | CU15 | Comunicar incidencias y encuestas | Construcción | Baja | _pendiente_ |
 | 16 | CU16 | Consultar seguimientos | Construcción | Baja | [CU16](../casos-de-uso/CU16.md) |
