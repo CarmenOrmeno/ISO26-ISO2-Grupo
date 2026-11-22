@@ -51,8 +51,8 @@
 |---|---|:---:|:---:|
 | 🧱 Elaboración | [CU01](../casos-de-uso/CU01.md) · [CU02](../casos-de-uso/CU02.md) · [CU05](../casos-de-uso/CU05.md) · [CU06](../casos-de-uso/CU06.md) | ✅ | ✅ |
 | 🧱 Elaboración | [CU03](../casos-de-uso/CU03.md) · [CU04](../casos-de-uso/CU04.md) | ✅ | ⏳ |
-| 🔨 Construcción | [CU07](../casos-de-uso/CU07.md) · [CU08](../casos-de-uso/CU08.md) · [CU09](../casos-de-uso/CU09.md) · [CU10](../casos-de-uso/CU10.md) · [CU11](../casos-de-uso/CU11.md) · [CU12](../casos-de-uso/CU12.md) · [CU13](../casos-de-uso/CU13.md) · [CU14](../casos-de-uso/CU14.md) · [CU15](../casos-de-uso/CU15.md) · [CU16](../casos-de-uso/CU16.md) · [CU17](../casos-de-uso/CU17.md) | ✅ | ⏳ |
-| 🔨 Construcción | CU18 · CU19 · CU20 · CU21 · CU22 | ⏳ | ⏳ |
+| 🔨 Construcción | [CU07](../casos-de-uso/CU07.md) · [CU08](../casos-de-uso/CU08.md) · [CU09](../casos-de-uso/CU09.md) · [CU10](../casos-de-uso/CU10.md) · [CU11](../casos-de-uso/CU11.md) · [CU12](../casos-de-uso/CU12.md) · [CU13](../casos-de-uso/CU13.md) · [CU14](../casos-de-uso/CU14.md) · [CU15](../casos-de-uso/CU15.md) · [CU16](../casos-de-uso/CU16.md) · [CU17](../casos-de-uso/CU17.md) · [CU18](../casos-de-uso/CU18.md) | ✅ | ⏳ |
+| 🔨 Construcción | CU19 · CU20 · CU21 · CU22 | ⏳ | ⏳ |
 
 ✅ terminado · 🚧 en curso · ⏳ pendiente — el detalle de cada CU está en su
 [issue](https://github.com/CarmenOrmeno/ISO26-ISO2-Grupo/issues?q=label%3A%22caso+de+uso%22) y en el
