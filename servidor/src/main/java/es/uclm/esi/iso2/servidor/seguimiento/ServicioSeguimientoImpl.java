@@ -9,6 +9,7 @@ import es.uclm.esi.iso2.servidor.catalogo.TipoPrueba;
 import es.uclm.esi.iso2.servidor.comun.AccesoDenegadoException;
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
+import es.uclm.esi.iso2.servidor.comun.Secuencia;
 import es.uclm.esi.iso2.servidor.notificaciones.Notificador;
 import es.uclm.esi.iso2.servidor.notificaciones.TipoNotificacion;
 import es.uclm.esi.iso2.servidor.pacientes.ServicioPacientes;
@@ -23,11 +24,12 @@ public class ServicioSeguimientoImpl implements ServicioSeguimiento {
     private final ServicioSolicitudes solicitudes;
     private final Notificador notificador;
     private final Clock reloj;
-    private long secuencia;
+    private final Secuencia secuencia;
 
     public ServicioSeguimientoImpl(Repositorio<Seguimiento, Long> repositorio, ServicioPacientes pacientes,
             ServicioCatalogo catalogo, ServicioSolicitudes solicitudes, Notificador notificador, Clock reloj) {
         this.repositorio = repositorio;
+        this.secuencia = Secuencia.continuando(repositorio, Seguimiento::getId);
         this.pacientes = pacientes;
         this.catalogo = catalogo;
         this.solicitudes = solicitudes;
@@ -37,7 +39,7 @@ public class ServicioSeguimientoImpl implements ServicioSeguimiento {
 
     @Override
     public Seguimiento prescribir(String loginMedico, DatosSeguimiento datos) {
-        Seguimiento seguimiento = new Seguimiento(secuencia + 1, loginMedico, datos);
+        Seguimiento seguimiento = new Seguimiento(secuencia.siguiente(), loginMedico, datos);
         pacientes.obtenerActivo(seguimiento.getIdPaciente());
         TipoPrueba tipo = catalogo.obtener(seguimiento.getCodigoTipo());
         if (!tipo.admiteSeguimiento()) {
@@ -46,7 +48,7 @@ public class ServicioSeguimientoImpl implements ServicioSeguimiento {
         if (seguimiento.getPrimeraRevision().isBefore(LocalDate.now(reloj))) {
             throw new ReglaNegocioException("La primera revisión no puede ser anterior a hoy");
         }
-        secuencia++;
+        secuencia.confirmar();
         repositorio.guardar(seguimiento);
         notificador.notificar(seguimiento.getIdPaciente(), TipoNotificacion.SEGUIMIENTO,
                 "Se le ha prescrito un seguimiento de " + tipo.nombre() + " cada "

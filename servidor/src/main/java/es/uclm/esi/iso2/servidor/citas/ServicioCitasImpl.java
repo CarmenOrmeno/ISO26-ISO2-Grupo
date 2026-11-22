@@ -14,6 +14,7 @@ import es.uclm.esi.iso2.servidor.catalogo.TipoPrueba;
 import es.uclm.esi.iso2.servidor.comun.AccesoDenegadoException;
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
+import es.uclm.esi.iso2.servidor.comun.Secuencia;
 import es.uclm.esi.iso2.servidor.notificaciones.Notificador;
 import es.uclm.esi.iso2.servidor.notificaciones.TipoNotificacion;
 import es.uclm.esi.iso2.servidor.solicitudes.EstadoSolicitud;
@@ -28,11 +29,12 @@ public class ServicioCitasImpl implements ServicioCitas {
     private final ServicioCatalogo catalogo;
     private final Notificador notificador;
     private final Clock reloj;
-    private long secuencia;
+    private final Secuencia secuencia;
 
     public ServicioCitasImpl(Repositorio<Cita, Long> repositorio, ServicioSolicitudes solicitudes,
             ServicioAgendas agendas, ServicioCatalogo catalogo, Notificador notificador, Clock reloj) {
         this.repositorio = repositorio;
+        this.secuencia = Secuencia.continuando(repositorio, Cita::getId);
         this.solicitudes = solicitudes;
         this.agendas = agendas;
         this.catalogo = catalogo;
@@ -48,10 +50,10 @@ public class ServicioCitasImpl implements ServicioCitas {
                     + solicitud.getEstado() + ")");
         }
         LocalDateTime momento = comprobarHueco(solicitud, idAgenda, hora, null);
-        Cita cita = new Cita(secuencia + 1, idSolicitud, solicitud.getIdPaciente(), idAgenda, momento);
+        Cita cita = new Cita(secuencia.siguiente(), idSolicitud, solicitud.getIdPaciente(), idAgenda, momento);
         agendas.ocupar(idAgenda, hora, cita.getId());
         solicitudes.marcarCitada(idSolicitud);
-        secuencia++;
+        secuencia.confirmar();
         repositorio.guardar(cita);
         avisar(cita, TipoNotificacion.CITA_ASIGNADA, "Cita asignada");
         return cita;
