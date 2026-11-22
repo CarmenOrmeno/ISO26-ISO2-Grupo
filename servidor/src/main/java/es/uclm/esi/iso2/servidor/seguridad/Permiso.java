@@ -56,9 +56,10 @@ public enum Permiso {
     CONSULTAR_AUDITORIA(false, ADMINISTRADOR),
     // It12: CU19
     GESTIONAR_INTEGRACIONES(true, ADMINISTRADOR),
-    // It13: CU20 y CU21
+    // It13: CU20, CU21 y CU22
     CONSULTAR_MIS_ESTADISTICAS(false, MEDICO),
-    GENERAR_INFORMES_OPERATIVOS(false, ADMINISTRATIVO);
+    GENERAR_INFORMES_OPERATIVOS(false, ADMINISTRATIVO),
+    CONSULTAR_ESTADISTICAS_GLOBALES(false, ADMINISTRADOR);
 
     private final boolean datosClinicos;
     private final Set<Rol> rolesPorDefecto;
