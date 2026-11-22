@@ -73,7 +73,7 @@ de la arquitectura), después los que dependen de ellos, y al final consultas y 
 | 19 | CU19 | Integrar sistemas hospitalarios | Construcción | Alta | [CU19](../casos-de-uso/CU19.md) |
 | 20 | CU20 | Consultar estadísticas del médico | Construcción | Media | [CU20](../casos-de-uso/CU20.md) |
 | 21 | CU21 | Generar informes operativos | Construcción | Media | [CU21](../casos-de-uso/CU21.md) |
-| 22 | CU22 | Generar estadísticas globales | Construcción | Baja | _pendiente_ |
+| 22 | CU22 | Generar estadísticas globales | Construcción | Baja | [CU22](../casos-de-uso/CU22.md) |
 
 ### 🧺 Agrupación en iteraciones de Construcción (D-016)
 
