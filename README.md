@@ -3,6 +3,9 @@
 Sistema Integral de Gestión de Radiodiagnóstico e Imagen Médica del SESCAM.
 Proyecto de prácticas de Ingeniería del Software II (curso 2026/2027).
 
+📖 **[Wiki del proyecto](https://github.com/CarmenOrmeno/ISO26-ISO2-Grupo/wiki)**: guía de lectura con requisitos, planificación,
+arquitectura, planes y decisiones. Se genera desde `docs/wiki/` con `scripts/publicar_wiki.py` (workflow `wiki.yml`).
+
 ## Estructura
 
 ```
@@ -10,7 +13,8 @@ ISO26-ISO2-Grupo/
 ├── pom.xml            # pom padre «radiodiagnostico» (producto, sin código)
 ├── servidor/          # módulo Maven: backend (modelo, servicios, controladores/API)
 ├── cliente/           # módulo Maven: cliente de consola (vista + controlador, MVC)
-├── docs/wiki/         # páginas de la wiki (guía de lectura del proyecto)
+├── docs/wiki/         # páginas de la wiki (fuente; se publican solas en la wiki de GitHub)
+├── scripts/           # publicar_wiki.py: genera la wiki desde docs/
 ├── docs/casos-de-uso/ # especificación de cada caso de uso (una por iteración)
 ├── DECISIONS.md       # registro de decisiones del proyecto
 └── CONTEXT.md         # reglas de arquitectura para los agentes de IA
