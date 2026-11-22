@@ -3,8 +3,8 @@
 Formato basado en *Keep a Changelog*; versiones según *Semantic Versioning* (ver
 [Plan de gestión de configuración](docs/wiki/Plan-de-gestion-de-configuracion.md)).
 
-## [Sin publicar] · iteración de transición (ItN)
-Módulos: servidor 1.12.1-SNAPSHOT · cliente 2.0.1-SNAPSHOT
+## [1.0.1] · 2026-11-22 · Iteración de transición (ItN) y calidad del diseño
+Módulos: servidor 1.12.1 · cliente 2.0.1
 
 ### Añadido
 - Pruebas de integración de extremo a extremo: ciclo completo de una prueba con los cuatro roles a través del
@@ -15,6 +15,12 @@ Módulos: servidor 1.12.1-SNAPSHOT · cliente 2.0.1-SNAPSHOT
 ### Corregido
 - Si MySQL está configurado pero no responde, el cliente explica la causa en lugar de mostrar un volcado de pila.
 - El informe de cobertura del sitio excluye la vista JavaFX, igual que la comprobación del build.
+- Las entidades que devuelve la API ya no se pueden modificar desde fuera de su paquete: un cliente podía
+  cambiar el estado del servidor saltándose el control de acceso y la auditoría.
+
+### Cambiado
+- `RepositorioEnMemoria` pasa a `persistencia` (junto a `RepositorioMySql`) y el paquete `interoperabilidad`
+  se renombra a `sincronizacion`. Sin cambios en la API.
 
 ## [1.0.0] · 2026-11-22 · Producto completo (fin de Construcción)
 Módulos: servidor 1.12.0 · cliente 2.0.0

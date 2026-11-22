@@ -3,10 +3,10 @@
   <parent>
     <groupId>es.uclm.esi.iso2</groupId>
     <artifactId>radiodiagnostico</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
   </parent>
   <artifactId>servidor</artifactId>
-  <version>1.12.1-SNAPSHOT</version>
+  <version>1.12.1</version>
   <dependencies>
     <dependency>
       <groupId>com.mysql</groupId>
