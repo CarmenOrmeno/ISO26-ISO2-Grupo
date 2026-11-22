@@ -1,9 +1,15 @@
-# Arquitectura (línea base)
+# 🏛️ Arquitectura (línea base)
+
+[🏠 Inicio](Home.md)
+
+> Módulos Maven, capas del servidor, componentes por caso de uso y ciclo de vida de una solicitud.
+
+---
 
 Las reglas que deben respetar humanos y agentes están en [CONTEXT.md](../../CONTEXT.md). Decisiones
 relacionadas: D-002, D-007, D-008, D-009, D-010, D-011.
 
-## 1. Módulos Maven
+## 📦 1. Módulos Maven
 
 ```
 radiodiagnostico (pom padre, producto)
@@ -11,37 +17,45 @@ radiodiagnostico (pom padre, producto)
 └── cliente  (jar) ── vista de consola + controladores; depende de servidor y solo usa su paquete api
 ```
 
-## 2. Capas del servidor
+## 🧅 2. Capas del servidor
 
-```plantuml
-@startuml
-package cliente { [Vista] --> [Controlador cliente] }
-package servidor {
-  interface "ApiXxx" as API
-  [ControladorXxx] ..|> API
-  [ControladorXxx] --> [ControlAcceso]
-  [ControlAcceso] --> [Auditor]
-  interface "ServicioXxx" as SRV
-  [ControladorXxx] --> SRV
-  [ServicioXxxImpl] ..|> SRV
-  [ServicioXxxImpl] --> [Dominio]
-  interface "Repositorio<T,ID>" as REP
-  [ServicioXxxImpl] --> REP
-  [RepositorioEnMemoria] ..|> REP
-  interface "SistemaPacs / SistemaHce / ..." as EXT
-  [ServicioXxxImpl] --> EXT
-  [Simulados] ..|> EXT
-  [Servidor] ..> [ControladorXxx] : crea (raíz de composición)
-}
-[Controlador cliente] --> API
-@enduml
+```mermaid
+flowchart LR
+    subgraph CLI["💻 cliente"]
+        V["Vista"] --> CC["Controlador cliente"]
+    end
+    subgraph SRV["🖥️ servidor"]
+        API{{"«interface»<br/>ApiXxx"}}
+        CTRL["ControladorXxx"]
+        CA["ControlAcceso"]
+        AUD["Auditor"]
+        SRVI{{"«interface»<br/>ServicioXxx"}}
+        IMPL["ServicioXxxImpl"]
+        DOM["Dominio"]
+        REP{{"«interface»<br/>Repositorio&lt;T,ID&gt;"}}
+        MEM["RepositorioEnMemoria"]
+        EXT{{"«interface»<br/>SistemaPacs / SistemaHce / …"}}
+        SIM["Simulados"]
+        SERV["Servidor<br/>(raíz de composición)"]
+        CTRL -. implementa .-> API
+        CTRL --> CA --> AUD
+        CTRL --> SRVI
+        IMPL -. implementa .-> SRVI
+        IMPL --> DOM
+        IMPL --> REP
+        MEM -. implementa .-> REP
+        IMPL --> EXT
+        SIM -. implementa .-> EXT
+        SERV -. crea .-> CTRL
+    end
+    CC --> API
 ```
 
 Cada componente expone **dos** interfaces:
 - `ServicioXxx` (contrato interno): lo usan otros componentes del servidor. Sin seguridad.
 - `ApiXxx` (contrato externo): lo usa el cliente. Cada método recibe el *token* y exige un permiso.
 
-## 3. Componentes (paquetes de `es.uclm.esi.iso2.servidor`)
+## 🧩 3. Componentes (paquetes de `es.uclm.esi.iso2.servidor`)
 
 | Paquete | Responsabilidad | CU |
 |---|---|---|
@@ -64,16 +78,19 @@ Cada componente expone **dos** interfaces:
 | `estadisticas` | Estadísticas del médico, informes operativos y globales | CU20–CU22 |
 | `api` / `controlador` | Contratos con el cliente y su implementación | todos |
 
-## 4. Ciclo de vida de una solicitud
+## 🔄 4. Ciclo de vida de una solicitud
 
-```plantuml
-@startuml
-[*] --> SOLICITADA : CU04 / CU10
-SOLICITADA --> CITADA : CU06 asignar
-CITADA --> SOLICITADA : CU06/CU07 cancelar cita
-CITADA --> REALIZADA : CU08
-REALIZADA --> INFORMADA : CU09
-SOLICITADA --> CANCELADA
-INFORMADA --> [*]
-@enduml
+```mermaid
+stateDiagram-v2
+    [*] --> SOLICITADA : CU04 / CU10
+    SOLICITADA --> CITADA : CU06 asignar
+    CITADA --> SOLICITADA : CU06/CU07 cancelar cita
+    CITADA --> REALIZADA : CU08
+    REALIZADA --> INFORMADA : CU09
+    SOLICITADA --> CANCELADA
+    INFORMADA --> [*]
 ```
+
+---
+
+[🏠 Inicio](Home.md) · [⬆️ Arriba](#)

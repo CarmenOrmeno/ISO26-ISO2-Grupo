@@ -1,9 +1,15 @@
-# Autoevaluación y experiencia
+# 🪞 Autoevaluación y experiencia
+
+[🏠 Inicio](Home.md)
+
+> Autoevaluación y autocrítica de cada miembro del equipo (la escribe cada persona, no un agente).
+
+---
 
 Sección obligatoria según el enunciado: **cada miembro** escribe su autoevaluación y su autocrítica.
 No la redacta un agente.
 
-## Plantilla (una por persona)
+## 📄 Plantilla (una por persona)
 
 ```markdown
 ## <Nombre> (<usuario GitHub>)
@@ -16,14 +22,18 @@ No la redacta un agente.
 - Nota que me pongo (0-10) y por qué:
 ```
 
-## Miembro 1
+## 🙋 Miembro 1
 _pendiente_
 
-## Miembro 2
+## 🙋 Miembro 2
 _pendiente_
 
-## Miembro 3
+## 🙋 Miembro 3
 _pendiente_
 
-## Miembro 4
+## 🙋 Miembro 4
 _pendiente_
+
+---
+
+[🏠 Inicio](Home.md) · [⬆️ Arriba](#)

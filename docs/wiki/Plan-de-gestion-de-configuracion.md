@@ -1,6 +1,12 @@
-# Plan de gestión de configuración
+# 🔀 Plan de gestión de configuración
 
-## 1. Elementos de configuración (EC)
+[🏠 Inicio](Home.md)
+
+> Elementos de configuración, estrategia de ramas Git Flow, versionado semántico, integración continua y control de cambios.
+
+---
+
+## 🗂️ 1. Elementos de configuración (EC)
 
 | EC | Ubicación | Responsable | Aprueba | Versionado |
 |---|---|---|---|---|
@@ -13,8 +19,9 @@
 | Módulo cliente | `cliente/` | Asignado en cada issue | Otro miembro (PR) | SemVer del módulo |
 | Pruebas | `*/src/test/java` | Resp. calidad | Arquitecto | Con su módulo |
 | Workflow de CI | `.github/workflows/maven.yml` | Resp. configuración | Coordinador | Git |
+| Wiki | `docs/wiki/`, `docs/casos-de-uso/`, `DECISIONS.md` → wiki de GitHub (`scripts/publicar_wiki.py`, `.github/workflows/wiki.yml`) | Coordinador | Equipo (PR) | Git; la wiki se regenera en cada push a `develop` |
 
-## 2. Estrategia de ramas: Git Flow (D-006)
+## 🌿 2. Estrategia de ramas: Git Flow (D-006)
 
 | Rama | Nace de | Se fusiona en | Uso |
 |---|---|---|---|
@@ -36,7 +43,7 @@ Reglas:
   de cada rama lleva `Closes #n` de su sub-issue y una revisión con comentario (checklist del §5).
 - Hitos de GitHub por versión del producto: `v0.1.0`, `v0.2.0`, `v1.0.0`.
 
-## 3. Plan de versiones (Semantic Versioning)
+## 🏷️ 3. Plan de versiones (Semantic Versioning)
 
 Dos niveles, como en la sesión de Maven:
 
@@ -54,7 +61,7 @@ Dos niveles, como en la sesión de Maven:
 
 En la rama `release` hay que cambiar también `<parent><version>` de los dos módulos.
 
-## 4. Construcciones e integración continua
+## ⚙️ 4. Construcciones e integración continua
 
 - `mvn verify` en la raíz construye los dos módulos (reactor), pasa las pruebas y comprueba la cobertura.
 - GitHub Actions (`.github/workflows/maven.yml`) ejecuta `mvn -B verify` con Java 17 en cada *push* y PR a
@@ -62,10 +69,14 @@ En la rama `release` hay que cambiar también `<parent><version>` de los dos mó
 - Los informes (`mvn verify site`) no se suben: `target/` está en `.gitignore`; los resultados se resumen
   en el [Plan de pruebas](Plan-de-pruebas.md).
 
-## 5. Control de cambios
+## 🔁 5. Control de cambios
 
 1. El cambio se discute en una reunión → acta.
 2. Se crea un issue (plantilla «Caso de uso» si es un CU) con responsable, en el tablero.
 3. Rama desde el issue → commits → PR a `develop` con `Closes #n`.
 4. Revisión por otro miembro (checklist: compila, CI verde, cobertura, SOLID, sin tocar otros CU).
 5. Fusión; el issue pasa a *Done*. Si afecta a una decisión, se actualiza `DECISIONS.md`.
+
+---
+
+[🏠 Inicio](Home.md) · [⬆️ Arriba](#)

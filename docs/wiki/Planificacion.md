@@ -1,6 +1,12 @@
-# Planificación (PUD)
+# 📅 Planificación (PUD)
 
-## 1. Restricciones y suposiciones
+[🏠 Inicio](Home.md)
+
+> Proceso Unificado: restricciones, estimación RADIT con y sin IA, iteraciones, costes y calendario de versiones.
+
+---
+
+## 📐 1. Restricciones y suposiciones
 
 | Parámetro | Valor | Origen |
 |---|---|---|
@@ -13,7 +19,7 @@
 | Fecha de terminación | 15/12/2026 (entrega) | Enunciado |
 | Licencias de IA | 0 € (GitHub Copilot con licencia de estudiante) | D-001 |
 
-## 2. Estimación RADIT por complejidad (D-014)
+## ⏱️ 2. Estimación RADIT por complejidad (D-014)
 
 Se estiman tres tipos de CU. Sin agente, el esfuerzo es el de un desarrollo tradicional. Con agente, el
 equipo sigue haciendo Requisitos, Análisis y Diseño; el agente reduce Implementación (−60 %) y Pruebas
@@ -30,7 +36,7 @@ código, no el diseño, la revisión, las correcciones ni la integración. Por e
 contingencia** sobre las horas de los CU. _Tarea pendiente del equipo:_ pedir al agente la estimación en
 tokens y en € de cada CU y anotarla aquí junto a la nuestra para compararlas.
 
-## 3. Iteraciones, fases y calendario
+## 🗺️ 3. Iteraciones, fases y calendario
 
 Duración = horas ÷ (4 personas × 8 h), con solape: mientras se revisa el PR de una iteración se empieza el
 análisis de la siguiente. En la fase de Construcción cada iteración agrupa 2 o 3 CU muy cohesionados (D-016);
@@ -58,7 +64,7 @@ las horas y el coste de cada CU no cambian.
 | N | Transición | Integración, pruebas de integración, manual, despliegue | — | — | 30/11 – 11/12 | 2.000 | — |
 | | **Hito** | **Release v1.0.0 · entrega** | | | **11/12 (entrega 15/12)** | | |
 
-## 4. Coste
+## 💶 4. Coste
 
 | Concepto | Horas | Coste (€) |
 |---|---|---|
@@ -87,7 +93,7 @@ cumplimiento del RGPD/ENS para datos de salud.
 El ahorro se concentra en Implementación y Pruebas. Requisitos, Análisis y Diseño no se reducen: son las
 tareas del ingeniero. Un modelo especializado en código reduce revisiones (menos horas de I y menos tokens).
 
-## 5. Calendario de liberaciones (Semantic Versioning)
+## 🏷️ 5. Calendario de liberaciones (Semantic Versioning)
 
 | Versión | Fecha | Contenido |
 |---|---|---|
@@ -98,8 +104,12 @@ tareas del ingeniero. Un modelo especializado en código reduce revisiones (meno
 Las versiones del producto están en el pom padre y en las etiquetas de `main`; cada módulo tiene la suya
 (ver [Plan de gestión de configuración](Plan-de-gestion-de-configuracion.md)).
 
-## 6. Seguimiento (real frente a planificado)
+## 📈 6. Seguimiento (real frente a planificado)
 
 | It. | Fecha prevista | Fecha real | Horas previstas | Horas reales | Desviación y causa |
 |---|---|---|---|---|---|
 | _completar al cerrar cada iteración con las horas imputadas_ | | | | | |
+
+---
+
+[🏠 Inicio](Home.md) · [⬆️ Arriba](#)
