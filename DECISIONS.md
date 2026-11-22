@@ -142,6 +142,9 @@ Fecha: 22/11 · It. 10 · Acta: 23/11
 - **Consecuencias:** nuevas dependencias `org.openjfx` en el módulo cliente; los menús pendientes (médico,
   paciente, administrador) se hacen ya en JavaFX; el menú de admisión se migra. El cliente sube de versión
   **mayor** (2.0.0) porque cambia su forma de uso.
+- **Implementación (22/11):** las operaciones del cliente son `Accion` con campos tipados y un catálogo por rol,
+  común a la vista JavaFX y a la de consola (que se conserva con `--consola` para las pruebas de sistema). La
+  vista JavaFX se excluye de la cobertura de JaCoCo porque necesita pantalla; se prueba a mano.
 
 ## D-018 · Persistencia en MySQL
 Fecha: 22/11 · It. 10 · Acta: 23/11

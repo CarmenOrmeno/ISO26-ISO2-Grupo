@@ -14,7 +14,7 @@ relacionadas: D-002, D-007, D-008, D-009, D-010, D-011.
 ```
 radiodiagnostico (pom padre, producto)
 ├── servidor (jar) ── modelo, servicios, controladores y contratos api
-└── cliente  (jar) ── vista de consola + controladores; depende de servidor y solo usa su paquete api
+└── cliente  (jar) ── vistas JavaFX (FXML) y de consola + controladores; depende de servidor y solo usa su paquete api
 ```
 
 ## 🧅 2. Capas del servidor
@@ -85,6 +85,17 @@ Cada componente expone **dos** interfaces:
 | `auditoria` | Registro y consulta de accesos | CU18 |
 | `estadisticas` | Estadísticas del médico, informes operativos y globales | CU20–CU22 |
 | `api` / `controlador` | Contratos con el cliente y su implementación | todos |
+
+### Cliente (D-017)
+
+| Paquete de `es.uclm.esi.iso2.cliente` | Responsabilidad |
+|---|---|
+| `controlador` | `Accion` (operación de la API con sus `Campo` tipados), `Valores` (interpreta lo escrito), `Resultado`, catálogo de acciones por rol (`AccionesPaciente`, `AccionesMedico`, `AccionesAdmision`, `AccionesAdministrador`; el médico tiene las del paciente, D-005), `SesionCliente` (CU01) y `AplicacionCliente` (controlador de la consola) |
+| `vista.fx` | JavaFX: `login.fxml` y `principal.fxml` con sus controladores de vista. El formulario de cada acción se genera a partir de sus campos |
+| `vista` | Consola (`--consola`), usada también en las pruebas de sistema |
+
+Las dos vistas usan los mismos controladores. Añadir una operación al cliente es añadir una `Accion` al
+catálogo del rol, sin tocar las vistas (OCP).
 
 ## 🔄 4. Ciclo de vida de una solicitud
 

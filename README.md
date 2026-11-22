@@ -12,7 +12,7 @@ arquitectura, planes y decisiones. Se genera desde `docs/wiki/` con `scripts/pub
 ISO26-ISO2-Grupo/
 ├── pom.xml            # pom padre «radiodiagnostico» (producto, sin código)
 ├── servidor/          # módulo Maven: backend (modelo, servicios, controladores/API)
-├── cliente/           # módulo Maven: cliente de consola (vista + controlador, MVC)
+├── cliente/           # módulo Maven: cliente JavaFX y de consola (vistas + controladores, MVC)
 ├── docs/wiki/         # páginas de la wiki (fuente; se publican solas en la wiki de GitHub)
 ├── scripts/           # publicar_wiki.py: genera la wiki desde docs/
 ├── docs/casos-de-uso/ # especificación de cada caso de uso (una por iteración)
@@ -42,8 +42,14 @@ Informes: abrir **`target/staging/index.html`**. La raíz agrupa las pruebas de 
 
 ```bash
 mvn -q install -DskipTests
-java -jar cliente/target/cliente-*.jar
+java -jar cliente/target/cliente-*.jar             # vista gráfica JavaFX (D-017)
+java -jar cliente/target/cliente-*.jar --consola   # vista de consola
+mvn -q -pl cliente javafx:run                      # JavaFX desde Maven (tras el install)
 ```
+
+El jar lleva JavaFX para la plataforma en la que se construye (macOS, Linux o Windows). En la ventana
+principal, a la izquierda están las acciones del rol agrupadas por caso de uso; al elegir una se genera su
+formulario y, al pulsar **Ejecutar**, se ve el resultado (las consultas sin datos se ejecutan solas).
 
 Sin configuración, los datos se guardan en memoria. Para guardarlos en **MySQL 8** (D-018):
 
