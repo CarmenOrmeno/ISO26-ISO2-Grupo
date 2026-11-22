@@ -10,6 +10,7 @@ import es.uclm.esi.iso2.servidor.catalogo.Modalidad;
 import es.uclm.esi.iso2.servidor.catalogo.ParametrosSistema;
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
+import es.uclm.esi.iso2.servidor.comun.Secuencia;
 import es.uclm.esi.iso2.servidor.comun.Validaciones;
 
 public class ServicioAgendasImpl implements ServicioAgendas {
@@ -17,17 +18,18 @@ public class ServicioAgendasImpl implements ServicioAgendas {
     private final Repositorio<Agenda, Long> repositorio;
     private final ParametrosSistema parametros;
     private final Clock reloj;
-    private long secuencia;
+    private final Secuencia secuencia;
 
     public ServicioAgendasImpl(Repositorio<Agenda, Long> repositorio, ParametrosSistema parametros, Clock reloj) {
         this.repositorio = repositorio;
+        this.secuencia = Secuencia.continuando(repositorio, Agenda::getId);
         this.parametros = parametros;
         this.reloj = reloj;
     }
 
     @Override
     public Agenda crear(DatosAgenda datos) {
-        Agenda agenda = new Agenda(secuencia + 1, datos);
+        Agenda agenda = new Agenda(secuencia.siguiente(), datos);
         if (agenda.getFecha().isBefore(LocalDate.now(reloj))) {
             throw new ReglaNegocioException("No se pueden crear agendas en fechas pasadas");
         }
@@ -44,7 +46,7 @@ public class ServicioAgendasImpl implements ServicioAgendas {
                 throw new ReglaNegocioException("El médico " + agenda.getLoginMedico() + " ya tiene agenda en ese horario");
             }
         }
-        secuencia++;
+        secuencia.confirmar();
         return repositorio.guardar(agenda);
     }
 

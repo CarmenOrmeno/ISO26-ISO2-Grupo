@@ -152,6 +152,11 @@ Fecha: 22/11 · It. 10 · Acta: 23/11
 - **Motivo:** persistencia real con la BD que pide el equipo, sin tocar las reglas de negocio.
 - **Consecuencias:** hay que instalar MySQL en los equipos y añadir un servicio MySQL al CI; las pruebas de
   persistencia se ejecutan contra MySQL. Se hace después de la v0.2.0, en la rama `feature/persistencia-mysql`.
+- **Detalle de la implementación (22/11):** una tabla por almacén con cada agregado serializado (`orden, id,
+  datos`), filtro de deserialización, `FabricaRepositorios` elegida por variables de entorno (`RADIO_DB_*`) y
+  `Secuencia` para que los ids continúen tras un reinicio. Se descarta mapear cada atributo a columnas: obliga
+  a abrir el dominio con constructores de reconstrucción y duplica las reglas de las entidades. Local: MySQL
+  8.0.31; CI: servicio `mysql:8.0`. Los parámetros de CU03 pasan a guardarse a través de `ServicioCatalogo`.
 
 ## D-019 · Un issue y una rama por caso de uso
 Fecha: 22/11 · It. 10 · Acta: 23/11

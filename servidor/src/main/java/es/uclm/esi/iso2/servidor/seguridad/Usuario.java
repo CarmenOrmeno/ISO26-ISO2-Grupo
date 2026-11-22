@@ -1,5 +1,7 @@
 package es.uclm.esi.iso2.servidor.seguridad;
 
+import java.io.Serializable;
+
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.Validaciones;
 
@@ -9,7 +11,7 @@ import es.uclm.esi.iso2.servidor.comun.Validaciones;
  * @param idPaciente identificador del paciente asociado (obligatorio para el rol PACIENTE; opcional
  *                   para el resto, p. ej. un médico que también es paciente)
  */
-public record Usuario(String login, String nombre, Rol rol, String idPaciente) {
+public record Usuario(String login, String nombre, Rol rol, String idPaciente) implements Serializable {
 
     public Usuario {
         login = Validaciones.texto(login, "login");

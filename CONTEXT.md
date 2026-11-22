@@ -11,7 +11,8 @@ Sistema de gestión de Radiodiagnóstico del SESCAM. Enunciado y requisitos en
 ## 2. Reglas generales
 1. Java 17, Maven multimódulo (`radiodiagnostico` → `servidor`, `cliente`). No añadir módulos ni dependencias
    sin una entrada nueva en `DECISIONS.md`.
-2. Única dependencia permitida: `org.junit.jupiter:junit-jupiter` (scope test). Nada de JUnit 4, Spring,
+2. Dependencias permitidas: `org.junit.jupiter:junit-jupiter` (scope test), `com.mysql:mysql-connector-j`
+   (scope runtime, D-018) y `org.openjfx` solo en el cliente (D-017). Nada de JUnit 4, Spring, JPA/Hibernate,
    Lombok ni Mockito.
 3. Una iteración trabaja **solo** el caso de uso de su issue. No tocar otros CU.
 4. Todo el código en `es.uclm.esi.iso2.servidor.<componente>` o `es.uclm.esi.iso2.cliente.<capa>`.
@@ -30,7 +31,9 @@ cliente ──► api (interfaces) ──► controlador ──► servicio ─�
   nunca de implementaciones concretas (DIP). Recibe dependencias por constructor.
 - **dominio**: entidades y valores. Validan sus invariantes en el constructor y lanzan
   `IllegalArgumentException` si un dato es inválido.
-- **persistencia**: `Repositorio<T, ID>`; implementación `RepositorioEnMemoria`.
+- **persistencia**: `Repositorio<T, ID>`; implementaciones `RepositorioEnMemoria` (pruebas) y `RepositorioMySql`
+  (D-018). Los servicios reciben el `Repositorio` por constructor y generan sus ids con `comun.Secuencia`;
+  solo `Servidor` usa la `FabricaRepositorios`. Las entidades que se guardan implementan `Serializable`.
 - **integracion**: interfaces de sistemas externos y sus adaptadores simulados.
 - `Servidor` es la **raíz de composición**: el único sitio donde se hace `new` de implementaciones.
 

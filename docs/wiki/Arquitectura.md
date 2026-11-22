@@ -2,7 +2,7 @@
 
 [🏠 Inicio](Home.md)
 
-> Módulos Maven, capas del servidor, componentes por caso de uso y ciclo de vida de una solicitud.
+> Módulos Maven, capas del servidor, componentes por caso de uso, ciclo de vida de una solicitud y persistencia en MySQL.
 
 ---
 
@@ -34,6 +34,8 @@ flowchart LR
         DOM["Dominio"]
         REP{{"«interface»<br/>Repositorio&lt;T,ID&gt;"}}
         MEM["RepositorioEnMemoria"]
+        SQL[("RepositorioMySql<br/>🐬 MySQL")]
+        FAB["FabricaRepositorios"]
         EXT{{"«interface»<br/>SistemaPacs / SistemaHce / …"}}
         SIM["Simulados"]
         SERV["Servidor<br/>(raíz de composición)"]
@@ -44,6 +46,10 @@ flowchart LR
         IMPL --> DOM
         IMPL --> REP
         MEM -. implementa .-> REP
+        SQL -. implementa .-> REP
+        SERV --> FAB
+        FAB -. crea .-> MEM
+        FAB -. crea .-> SQL
         IMPL --> EXT
         SIM -. implementa .-> EXT
         SERV -. crea .-> CTRL
@@ -59,7 +65,8 @@ Cada componente expone **dos** interfaces:
 
 | Paquete | Responsabilidad | CU |
 |---|---|---|
-| `comun` | Repositorio genérico, excepciones, validaciones | — |
+| `comun` | Repositorio genérico, `Secuencia` de ids, excepciones, validaciones | — |
+| `persistencia` | `FabricaRepositorios` (memoria o MySQL según el entorno), `RepositorioMySql`, `ConfiguracionBd` | D-018 |
 | `seguridad` | Usuarios, sesiones, roles, permisos, control de acceso | CU01, CU17 |
 | `integracion` | Interfaces de SSO, HCE, Admisión, RIS/PACS y simulados | CU01, CU09, CU19 |
 | `pacientes` | Alta, modificación y baja de pacientes | CU02 |
@@ -91,6 +98,22 @@ stateDiagram-v2
     INFORMADA --> [*]
 ```
 
+## 🐬 5. Persistencia en MySQL (D-018)
+
+- Cada almacén (pacientes, solicitudes, citas…) es una **tabla** `(orden, id, datos)` que la aplicación crea al
+  arrancar. Cada fila guarda un **agregado** completo serializado (por ejemplo, una agenda con sus huecos),
+  identificado por su id; `orden` conserva el orden de inserción.
+- Al leer, un **filtro de deserialización** solo admite clases del servidor y del JDK.
+- Los ids de cada componente los genera `Secuencia`, que continúa desde el mayor id guardado.
+- Se elige con variables de entorno: si existe `RADIO_DB_URL` se usa MySQL; si no, memoria.
+
+| Variable | Ejemplo |
+|---|---|
+| `RADIO_DB_URL` | `jdbc:mysql://127.0.0.1:3306/radiodiagnostico` |
+| `RADIO_DB_TEST_URL` | `jdbc:mysql://127.0.0.1:3306/radiodiagnostico_test` (pruebas de integración) |
+| `RADIO_DB_USUARIO` / `RADIO_DB_CLAVE` | usuario y contraseña de la aplicación (nunca en el repositorio) |
+
+Los sistemas externos simulados (SSO, PACS) y las sesiones siguen en memoria: no son datos de la aplicación.
 ---
 
 [🏠 Inicio](Home.md) · [⬆️ Arriba](#)

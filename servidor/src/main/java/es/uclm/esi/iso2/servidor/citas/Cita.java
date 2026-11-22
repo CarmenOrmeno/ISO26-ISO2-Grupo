@@ -1,12 +1,15 @@
 package es.uclm.esi.iso2.servidor.citas;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.Validaciones;
 
 /** Cita asignada a una solicitud en un hueco de agenda (CU06). */
-public class Cita {
+public class Cita implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final long id;
     private final long idSolicitud;

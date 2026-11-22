@@ -11,6 +11,7 @@
 ![Maven](https://img.shields.io/badge/Maven-multim%C3%B3dulo-C71A36?logo=apachemaven&logoColor=white)
 ![JUnit 6](https://img.shields.io/badge/JUnit-6.1.3-25A162?logo=junit5&logoColor=white)
 ![Cobertura](https://img.shields.io/badge/cobertura-%E2%89%A5%2075%25-success)
+![MySQL 8](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
 ![Git Flow](https://img.shields.io/badge/ramas-Git%20Flow-F05032?logo=git&logoColor=white)
 
 </div>
@@ -42,7 +43,7 @@
 |---|---|---|:---:|
 | 🏷️ [v0.1.0](https://github.com/CarmenOrmeno/ISO26-ISO2-Grupo/releases/tag/v0.1.0) | 08/11 | Línea base de la arquitectura: CU01–CU06 | ✅ |
 | 🏷️ [v0.2.0](https://github.com/CarmenOrmeno/ISO26-ISO2-Grupo/releases/tag/v0.2.0) | 22/11 | Flujo clínico y avisos al paciente: servidor de CU07–CU12, CU14, CU16 | ✅ |
-| 🏷️ v1.0.0 | 11/12 | Producto completo: CU13, CU15, CU17–CU22, cliente JavaFX, MySQL | 🚧 |
+| 🏷️ v1.0.0 | 11/12 | Producto completo: CU13, CU15, CU17–CU22, cliente JavaFX, persistencia MySQL (✅ hecha) | 🚧 |
 
 ### Casos de uso
 
@@ -78,7 +79,7 @@ que no se borran al fusionar. En *Insights → Network* se ve la historia de las
 ## 🚀 Probarlo en 1 minuto
 
 ```bash
-mvn verify                 # compila y pasa las 328 pruebas
+mvn verify                 # compila y pasa las pruebas (las de MySQL, si hay RADIO_DB_TEST_URL)
 java -jar cliente/target/cliente-*.jar
 ```
 

@@ -17,10 +17,12 @@ public final class Main {
     }
 
     public static void main(String[] args) {
+        PrintStream salida = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         Consola consola = new Consola(
-                new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8)),
-                new PrintStream(System.out, true, StandardCharsets.UTF_8));
-        AplicacionCliente app = FabricaMenus.crear(consola, Servidor.conDatosDemo());
+                new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8)), salida);
+        Servidor servidor = Servidor.conDatosDemo();
+        salida.println("Datos guardados en: " + servidor.almacenamiento());
+        AplicacionCliente app = FabricaMenus.crear(consola, servidor);
         app.ejecutar();
     }
 }
