@@ -57,7 +57,7 @@ Fecha: 05/10 · It. 0 · Acta: 05/10
   protegidas (pull request + 1 aprobación). No se borran las ramas al fusionar.
 - **Consecuencias:** cada CU = issue padre + sub-issue y rama por módulo + pull request «Closes #n».
 
-## D-007 · Arquitectura cliente-servidor con MVC y capas
+## D-007 · Arquitectura cliente-servidor con MVC y capas (vista revisada por D-017)
 Fecha: 19/10 · It. 0 · Acta: 19/10
 - **Decisión:** el servidor tiene capas **api** (contratos/interfaces) → **controlador** (control de acceso,
   auditoría) → **servicio** (reglas de negocio) → **dominio** (modelo) → **persistencia** (repositorios).
@@ -67,7 +67,7 @@ Fecha: 19/10 · It. 0 · Acta: 19/10
 - **Consecuencias:** la comunicación cliente-servidor se **simula** en proceso: el cliente recibe una
   implementación de las interfaces `api`. Cambiar a REST solo exigiría un adaptador.
 
-## D-008 · Persistencia en memoria
+## D-008 · Persistencia en memoria (revisada por D-018)
 Fecha: 19/10 · It. 0 · Acta: 19/10
 - **Decisión:** interfaz genérica `Repositorio<T, ID>` con implementación `RepositorioEnMemoria`.
 - **Alternativas:** base de datos H2/MySQL con JDBC.
@@ -118,7 +118,7 @@ Fecha: 26/10 · It. 0 · Acta: 26/10
   médico, It11 paciente, It13 administrador.
 - **Consecuencias:** el módulo cliente sube de versión menor con cada una de esas ramas.
 
-## D-016 · Agrupar varios CU por iteración en la Construcción
+## D-016 · Agrupar varios CU por iteración en la Construcción (ramas revisadas por D-019)
 Fecha: 08/11 · It. 6 · Acta: 09/11
 - **Contexto:** la regla 1 CU : 1 iteración convierte el PUD en una cascada de 22 pasos y genera 16 ramas y PR
   más en Construcción. El enunciado anima a agrupar el software en bloques muy cohesionados y poco acoplados.
@@ -130,3 +130,47 @@ Fecha: 08/11 · It. 6 · Acta: 09/11
   con el calendario (entrega el 15/12).
 - **Consecuencias:** ramas `feature/ItNN-<tema>-servidor`; el módulo servidor sube de versión menor por
   iteración (1.6.0 … 1.12.0); v0.2.0 tras It10. El esfuerzo y el coste por CU no cambian.
+
+## D-017 · Cliente con vista JavaFX
+Fecha: 22/11 · It. 10 · Acta: 23/11
+- **Contexto:** el cliente de consola (D-007) cumple, pero el equipo quiere una interfaz gráfica para los menús
+  del médico, del paciente y del administrador que faltan.
+- **Decisión:** la **vista** del cliente pasa a JavaFX. Se mantiene MVC: los controladores del cliente siguen
+  usando solo las interfaces `api` del servidor. El servidor no cambia (no tiene pantallas).
+- **Alternativas:** seguir en consola; Swing (más antiguo, peor separación vista/controlador).
+- **Motivo:** mejor experiencia de uso y separación clara vista (FXML) / controlador.
+- **Consecuencias:** nuevas dependencias `org.openjfx` en el módulo cliente; los menús pendientes (médico,
+  paciente, administrador) se hacen ya en JavaFX; el menú de admisión se migra. El cliente sube de versión
+  **mayor** (2.0.0) porque cambia su forma de uso.
+
+## D-018 · Persistencia en MySQL
+Fecha: 22/11 · It. 10 · Acta: 23/11
+- **Contexto:** D-008 dejó la persistencia en memoria; el equipo quiere que los datos sobrevivan al cierre.
+- **Decisión:** toda la persistencia pasa a **MySQL** con JDBC (`mysql-connector-j`): una implementación
+  `RepositorioMySql` por entidad de la interfaz `Repositorio<T, ID>`. Los servicios no cambian (DIP).
+- **Alternativas:** H2 embebida (sin instalación, pero no es la BD pedida); JPA/Hibernate (sobreingeniería).
+- **Motivo:** persistencia real con la BD que pide el equipo, sin tocar las reglas de negocio.
+- **Consecuencias:** hay que instalar MySQL en los equipos y añadir un servicio MySQL al CI; las pruebas de
+  persistencia se ejecutan contra MySQL. Se hace después de la v0.2.0, en la rama `feature/persistencia-mysql`.
+
+## D-019 · Un issue y una rama por caso de uso
+Fecha: 22/11 · It. 10 · Acta: 23/11
+- **Contexto:** con D-016 las ramas eran por iteración y no había un issue por CU en el tablero, con lo que se
+  perdía la trazabilidad CU → issue → rama → PR.
+- **Decisión:** cada CU tiene un **issue** (plantilla «Caso de uso», con checks de RADIT y criterios de
+  aceptación) con dos **sub-issues**, `servidor` y `cliente`, y sus ramas `feature/CUxx-servidor` y
+  `feature/CUxx-cliente`. Cada PR cierra su sub-issue (`Closes #n`). Las iteraciones de D-016 se mantienen
+  para planificar y versionar.
+- **Alternativas:** una rama por iteración (D-016); un sub-issue por disciplina RADIT (demasiados issues).
+- **Motivo:** trazabilidad completa en el tablero y PR pequeños y fáciles de revisar.
+- **Consecuencias:** los issues de CU01–CU22 (#29–#94) se crean a posteriori; los ya hechos se cierran
+  enlazados a su PR. Las ramas `feature/It07`–`It10` quedan como histórico. Hitos `v0.1.0`, `v0.2.0`, `v1.0.0`.
+
+## D-020 · Alcance de la versión 0.2.0
+Fecha: 22/11 · It. 10 · Acta: 23/11
+- **Contexto:** el plan de versiones incluía en la v0.2.0 el menú del médico (cliente 1.2.0), pero con D-017
+  hacerlo en consola sería trabajo que se tira.
+- **Decisión:** la v0.2.0 entrega el **servidor 1.9.0** (It7–It10). El cliente no cambia de funcionalidad: se
+  publica como **1.1.1** (reempaquetado con el servidor 1.9.0). El cliente del médico llega en la v1.0.0 con JavaFX.
+- **Alternativas:** retrasar la v0.2.0 hasta tener el cliente JavaFX; hacer el menú del médico en consola.
+- **Motivo:** no retrasar la integración del servidor en `main` y no hacer trabajo que se va a sustituir.

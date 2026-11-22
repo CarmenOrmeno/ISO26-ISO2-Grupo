@@ -20,8 +20,8 @@
 |---|---|---|---|
 | `main` | — | — | Solo versiones entregables, etiquetadas `vX.Y.Z`. **Nunca** commits directos |
 | `develop` | `main` | — | Integración. Rama por defecto |
-| `feature/CUxx-<modulo>` | `develop` | `develop` | Un CU = una iteración (`feature/CU06-servidor`, `feature/CU06-cliente`) |
-| `feature/ItNN-<tema>-<modulo>` | `develop` | `develop` | Iteración que agrupa varios CU (`feature/It07-paciente-servidor`, D-016) |
+| `feature/CUxx-<modulo>` | `develop` | `develop` | Una rama por CU y módulo (`feature/CU13-servidor`, `feature/CU13-cliente`, D-019) |
+| `feature/ItNN-<tema>-<modulo>` | `develop` | `develop` | Histórico It7–It10 (D-016); desde D-019 se usa una rama por CU |
 | `feature/<tarea>` | `develop` | `develop` | Tareas que no son un CU (documentación, pruebas, CI) |
 | `bugfix/<descripcion>` | `develop` | `develop` | Error encontrado en develop ya fusionado (un issue por fallo) |
 | `release/X.Y.Z` | `develop` | `main` y `develop` | Cerrar versión: quitar `-SNAPSHOT`, solo correcciones |
@@ -31,7 +31,10 @@ Reglas:
 - `main` y `develop` protegidas con *ruleset*: pull request + 1 aprobación, sin borrado ni *force push*.
 - Nadie aprueba su propio PR ni un PR con el CI en rojo. Nunca `-DskipTests` para pasar el CI.
 - Las ramas **no se borran** al fusionar.
-- Commits: `tipo(CUxx): descripción (#issue)`. El PR lleva `Closes #n`.
+- Commits: `tipo(CUxx): descripción (#issue)`, con cuerpo que explica qué cambia y por qué.
+- Cada CU tiene un issue (plantilla «Caso de uso») con sub-issues `servidor` y `cliente` (D-019); el PR
+  de cada rama lleva `Closes #n` de su sub-issue y una revisión con comentario (checklist del §5).
+- Hitos de GitHub por versión del producto: `v0.1.0`, `v0.2.0`, `v1.0.0`.
 
 ## 3. Plan de versiones (Semantic Versioning)
 
@@ -46,8 +49,8 @@ Dos niveles, como en la sesión de Maven:
 | Producto | servidor | cliente | CU incluidos |
 |---|---|---|---|
 | v0.1.0 | 1.5.0 | 1.1.0 | CU01–CU06 |
-| v0.2.0 | 1.9.0 | 1.2.0 | It7–It10: CU07–CU12, CU14, CU16 |
-| v1.0.0 | 1.12.0 | 1.4.0 | It11–It13: CU13, CU15, CU17–CU22 + ItN |
+| v0.2.0 | 1.9.0 | 1.1.1 | Servidor de It7–It10: CU07–CU12, CU14, CU16 (D-020) |
+| v1.0.0 | 1.12.0 | 2.0.0 | It11–It13: CU13, CU15, CU17–CU22; cliente JavaFX (D-017); MySQL (D-018) + ItN |
 
 En la rama `release` hay que cambiar también `<parent><version>` de los dos módulos.
 
