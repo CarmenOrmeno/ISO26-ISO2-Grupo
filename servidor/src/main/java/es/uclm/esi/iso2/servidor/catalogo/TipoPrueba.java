@@ -1,5 +1,7 @@
 package es.uclm.esi.iso2.servidor.catalogo;
 
+import java.io.Serializable;
+
 import es.uclm.esi.iso2.servidor.comun.Validaciones;
 
 /**
@@ -10,7 +12,7 @@ import es.uclm.esi.iso2.servidor.comun.Validaciones;
  */
 public record TipoPrueba(String codigo, String nombre, Modalidad modalidad, String sala, int duracionMinutos,
         String preparacion, boolean contraste, boolean consentimiento, String requisitosSeguridad,
-        boolean admiteSeguimiento) {
+        boolean admiteSeguimiento) implements Serializable {
 
     public static final int DURACION_MINIMA = 5;
     public static final int DURACION_MAXIMA = 240;

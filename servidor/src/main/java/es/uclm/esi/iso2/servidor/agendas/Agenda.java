@@ -1,5 +1,6 @@
 package es.uclm.esi.iso2.servidor.agendas;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,7 +13,9 @@ import es.uclm.esi.iso2.servidor.comun.NoEncontradoException;
 import es.uclm.esi.iso2.servidor.comun.Validaciones;
 
 /** Agenda de trabajo de una sala/equipo y un médico en un día, dividida en huecos iguales (CU05). */
-public class Agenda {
+public class Agenda implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public static final int MINUTOS_HUECO_MIN = 5;
     public static final int MINUTOS_HUECO_MAX = 120;

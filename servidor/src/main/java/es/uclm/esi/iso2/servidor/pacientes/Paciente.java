@@ -1,5 +1,6 @@
 package es.uclm.esi.iso2.servidor.pacientes;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
 
@@ -7,7 +8,9 @@ import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.Validaciones;
 
 /** Paciente del SESCAM. La baja es lógica: se conserva para el historial. */
-public class Paciente {
+public class Paciente implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /** Fecha de nacimiento más antigua admitida. */
     public static final LocalDate NACIMIENTO_MINIMO = LocalDate.of(1900, 1, 1);

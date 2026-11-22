@@ -1,11 +1,14 @@
 package es.uclm.esi.iso2.servidor.agendas;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 
 import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 
 /** Hueco de una agenda. Está libre si no tiene cita asociada. */
-public class Hueco {
+public class Hueco implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final LocalTime inicio;
     private final LocalTime fin;

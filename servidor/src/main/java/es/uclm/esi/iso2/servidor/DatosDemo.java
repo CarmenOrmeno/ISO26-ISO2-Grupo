@@ -2,6 +2,7 @@ package es.uclm.esi.iso2.servidor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import es.uclm.esi.iso2.servidor.agendas.DatosAgenda;
 import es.uclm.esi.iso2.servidor.catalogo.Modalidad;
@@ -21,12 +22,35 @@ final class DatosDemo {
     private DatosDemo() {
     }
 
+    /** Usuario de demostración: cuenta del SSO simulado y usuario de la aplicación. */
+    private record CuentaDemo(String login, String nombre, Rol rol, String idPaciente) {
+    }
+
+    private static final List<CuentaDemo> CUENTAS = List.of(
+            new CuentaDemo("paciente1", "Lucía Martín Pérez", Rol.PACIENTE, "PAC-1"),
+            new CuentaDemo("medico1", "Dr. Javier Ruiz Gómez", Rol.MEDICO, null),
+            new CuentaDemo("admision1", "Marta López Sanz", Rol.ADMINISTRATIVO, null),
+            new CuentaDemo("admin1", "Pedro García Díaz", Rol.ADMINISTRADOR, null));
+
+    /**
+     * Las cuentas del SSO simulado (sistema externo, en memoria) se registran en cada arranque. Los datos de
+     * la aplicación solo se cargan si el almacén está vacío, para no duplicarlos al reiniciar con MySQL.
+     */
     static void cargar(Servidor s) {
-        // CU01
-        s.registrarUsuario("paciente1", CONTRASENA, "Lucía Martín Pérez", Rol.PACIENTE, "PAC-1");
-        s.registrarUsuario("medico1", CONTRASENA, "Dr. Javier Ruiz Gómez", Rol.MEDICO, null);
-        s.registrarUsuario("admision1", CONTRASENA, "Marta López Sanz", Rol.ADMINISTRATIVO, null);
-        s.registrarUsuario("admin1", CONTRASENA, "Pedro García Díaz", Rol.ADMINISTRADOR, null);
+        boolean primerArranque = s.sinDatos();
+        for (CuentaDemo c : CUENTAS) {
+            if (primerArranque) {
+                s.registrarUsuario(c.login(), CONTRASENA, c.nombre(), c.rol(), c.idPaciente());
+            } else {
+                s.registrarCuentaSso(c.login(), CONTRASENA, c.nombre());
+            }
+        }
+        if (primerArranque) {
+            cargarDatosClinicos(s);
+        }
+    }
+
+    private static void cargarDatosClinicos(Servidor s) {
 
         // CU02: el primer paciente recibe el id PAC-1, asociado al usuario paciente1
         s.servicioPacientes().alta(new DatosPaciente("12345678Z", "Lucía", "Martín Pérez",

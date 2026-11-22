@@ -1,5 +1,6 @@
 package es.uclm.esi.iso2.servidor.catalogo;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.EnumMap;
 import java.util.Map;
@@ -7,7 +8,9 @@ import java.util.Map;
 import es.uclm.esi.iso2.servidor.comun.Validaciones;
 
 /** Parámetros configurables del servicio: horario, políticas de citación y recordatorios (CU03). */
-public class ParametrosSistema {
+public class ParametrosSistema implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private LocalTime apertura = LocalTime.of(8, 0);
     private LocalTime cierre = LocalTime.of(21, 0);

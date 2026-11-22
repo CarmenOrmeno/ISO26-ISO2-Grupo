@@ -1,5 +1,6 @@
 package es.uclm.esi.iso2.servidor.solicitudes;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
@@ -8,7 +9,9 @@ import es.uclm.esi.iso2.servidor.comun.ReglaNegocioException;
 import es.uclm.esi.iso2.servidor.comun.Validaciones;
 
 /** Solicitud de una prueba diagnóstica hecha por un médico (CU04) o generada por un seguimiento (CU10). */
-public class SolicitudPrueba {
+public class SolicitudPrueba implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final long id;
     private final String idPaciente;

@@ -19,7 +19,6 @@ import es.uclm.esi.iso2.servidor.api.ApiRealizacion;
 import es.uclm.esi.iso2.servidor.api.ApiSeguimiento;
 import es.uclm.esi.iso2.servidor.api.ApiSesion;
 import es.uclm.esi.iso2.servidor.api.ApiSolicitudes;
-import es.uclm.esi.iso2.servidor.catalogo.ParametrosSistema;
 import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogo;
 import es.uclm.esi.iso2.servidor.catalogo.ServicioCatalogoImpl;
 import es.uclm.esi.iso2.servidor.catalogo.TipoPrueba;
@@ -27,7 +26,6 @@ import es.uclm.esi.iso2.servidor.citas.Cita;
 import es.uclm.esi.iso2.servidor.citas.ServicioCitas;
 import es.uclm.esi.iso2.servidor.citas.ServicioCitasImpl;
 import es.uclm.esi.iso2.servidor.comun.Repositorio;
-import es.uclm.esi.iso2.servidor.comun.RepositorioEnMemoria;
 import es.uclm.esi.iso2.servidor.controlador.ControladorAgendas;
 import es.uclm.esi.iso2.servidor.controlador.ControladorCatalogo;
 import es.uclm.esi.iso2.servidor.controlador.ControladorCitas;
@@ -56,6 +54,8 @@ import es.uclm.esi.iso2.servidor.notificaciones.ServicioRecordatorios;
 import es.uclm.esi.iso2.servidor.pacientes.Paciente;
 import es.uclm.esi.iso2.servidor.pacientes.ServicioPacientes;
 import es.uclm.esi.iso2.servidor.pacientes.ServicioPacientesImpl;
+import es.uclm.esi.iso2.servidor.persistencia.FabricaEnMemoria;
+import es.uclm.esi.iso2.servidor.persistencia.FabricaRepositorios;
 import es.uclm.esi.iso2.servidor.realizacion.Incidencia;
 import es.uclm.esi.iso2.servidor.realizacion.ServicioRealizacion;
 import es.uclm.esi.iso2.servidor.realizacion.ServicioRealizacionImpl;
@@ -79,11 +79,12 @@ import es.uclm.esi.iso2.servidor.solicitudes.SolicitudPrueba;
 public class Servidor {
 
     private final Clock reloj;
+    private final FabricaRepositorios repositorios;
 
     // --- infraestructura y seguridad (CU01) ---
     private final SsoSimulado sso = new SsoSimulado();
     private final PacsSimulado pacs = new PacsSimulado();
-    private final Repositorio<Usuario, String> usuarios = new RepositorioEnMemoria<>(Usuario::login);
+    private final Repositorio<Usuario, String> usuarios;
     private final PoliticaPermisos politica = PoliticaPermisos.porDefecto();
     private final ServicioSesion servicioSesion;
     private final ControlAcceso acceso;
@@ -117,30 +118,38 @@ public class Servidor {
     private final ApiEsperas apiEsperas;
     private final ApiEstadoSolicitudes apiEstadoSolicitudes;
 
+    /** Servidor con los datos en memoria (pruebas). */
     public Servidor(Clock reloj) {
+        this(reloj, new FabricaEnMemoria());
+    }
+
+    /** Servidor que guarda sus datos con la fábrica indicada (memoria o MySQL, D-018). */
+    public Servidor(Clock reloj, FabricaRepositorios repositorios) {
         this.reloj = reloj;
+        this.repositorios = repositorios;
+        this.usuarios = repositorios.crear("usuarios", Usuario::login);
         this.servicioSesion = new ServicioSesionImpl(sso, usuarios, reloj);
         this.acceso = new ControlAcceso(servicioSesion, politica);
 
         // servicios
-        this.servicioPacientes = new ServicioPacientesImpl(new RepositorioEnMemoria<>(Paciente::getId), reloj);
-        this.servicioCatalogo = new ServicioCatalogoImpl(new RepositorioEnMemoria<>(TipoPrueba::codigo),
-                new ParametrosSistema());
-        this.servicioSolicitudes = new ServicioSolicitudesImpl(new RepositorioEnMemoria<>(SolicitudPrueba::getId),
-                servicioPacientes, servicioCatalogo, reloj);
-        this.servicioAgendas = new ServicioAgendasImpl(new RepositorioEnMemoria<>(Agenda::getId),
+        this.servicioPacientes = new ServicioPacientesImpl(repositorios.crear("pacientes", Paciente::getId), reloj);
+        this.servicioCatalogo = new ServicioCatalogoImpl(repositorios.crear("tipos_prueba", TipoPrueba::codigo),
+                repositorios.crear("parametros", p -> ServicioCatalogoImpl.ID_PARAMETROS));
+        this.servicioSolicitudes = new ServicioSolicitudesImpl(
+                repositorios.crear("solicitudes", SolicitudPrueba::getId), servicioPacientes, servicioCatalogo, reloj);
+        this.servicioAgendas = new ServicioAgendasImpl(repositorios.crear("agendas", Agenda::getId),
                 servicioCatalogo.parametros(), reloj);
-        this.servicioNotificaciones = new ServicioNotificacionesImpl(new RepositorioEnMemoria<>(Notificacion::getId),
-                reloj);
-        this.servicioCitas = new ServicioCitasImpl(new RepositorioEnMemoria<>(Cita::getId), servicioSolicitudes,
+        this.servicioNotificaciones = new ServicioNotificacionesImpl(
+                repositorios.crear("notificaciones", Notificacion::getId), reloj);
+        this.servicioCitas = new ServicioCitasImpl(repositorios.crear("citas", Cita::getId), servicioSolicitudes,
                 servicioAgendas, servicioCatalogo, servicioNotificaciones, reloj);
         this.servicioRecordatorios = new ServicioRecordatorios(servicioCitas, servicioSolicitudes, servicioCatalogo,
-                servicioNotificaciones, reloj);
-        this.servicioRealizacion = new ServicioRealizacionImpl(servicioCitas, servicioSolicitudes, servicioAgendas, pacs,
-                new RepositorioEnMemoria<>(Incidencia::id), reloj);
-        this.servicioInformes = new ServicioInformesImpl(new RepositorioEnMemoria<>(Informe::id), servicioSolicitudes,
-                servicioCitas, servicioAgendas, pacs, servicioNotificaciones, reloj);
-        this.servicioSeguimiento = new ServicioSeguimientoImpl(new RepositorioEnMemoria<>(Seguimiento::getId),
+                servicioNotificaciones, repositorios.crear("recordatorios_enviados", (Long id) -> id), reloj);
+        this.servicioRealizacion = new ServicioRealizacionImpl(servicioCitas, servicioSolicitudes, servicioAgendas,
+                pacs, repositorios.crear("incidencias", Incidencia::id), reloj);
+        this.servicioInformes = new ServicioInformesImpl(repositorios.crear("informes", Informe::id),
+                servicioSolicitudes, servicioCitas, servicioAgendas, pacs, servicioNotificaciones, reloj);
+        this.servicioSeguimiento = new ServicioSeguimientoImpl(repositorios.crear("seguimientos", Seguimiento::getId),
                 servicioPacientes, servicioCatalogo, servicioSolicitudes, servicioNotificaciones, reloj);
         this.servicioEsperas = new ServicioEsperasImpl(servicioSolicitudes, servicioCatalogo, servicioAgendas,
                 servicioCitas, reloj);
@@ -163,15 +172,38 @@ public class Servidor {
                 servicioAgendas, acceso);
     }
 
-    /** Servidor con el reloj del sistema y los datos de demostración cargados. */
+    /**
+     * Servidor con el reloj del sistema, guardando en MySQL si está configurado (RADIO_DB_URL…) y con los
+     * datos de demostración.
+     */
     public static Servidor conDatosDemo() {
-        return conDatosDemo(Clock.systemDefaultZone());
+        return conDatosDemo(Clock.systemDefaultZone(), FabricaRepositorios.segunEntorno());
     }
 
     public static Servidor conDatosDemo(Clock reloj) {
-        Servidor servidor = new Servidor(reloj);
+        return conDatosDemo(reloj, new FabricaEnMemoria());
+    }
+
+    /** Las cuentas del SSO simulado se dan de alta siempre; el resto de datos, solo si el almacén está vacío. */
+    public static Servidor conDatosDemo(Clock reloj, FabricaRepositorios repositorios) {
+        Servidor servidor = new Servidor(reloj, repositorios);
         DatosDemo.cargar(servidor);
         return servidor;
+    }
+
+    /** Dónde se guardan los datos (para informar al usuario). */
+    public String almacenamiento() {
+        return repositorios.descripcion();
+    }
+
+    /** No hay ningún usuario guardado: es el primer arranque con este almacén. */
+    boolean sinDatos() {
+        return usuarios.todos().isEmpty();
+    }
+
+    /** Da de alta una cuenta en el SSO simulado (sistema externo: no se guarda en nuestra base de datos). */
+    void registrarCuentaSso(String login, String contrasena, String nombre) {
+        sso.registrar(login, contrasena, nombre);
     }
 
     /** Da de alta una cuenta en el SSO simulado y su usuario en la aplicación. */
